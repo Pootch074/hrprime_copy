@@ -225,9 +225,12 @@ Route::resource('/pas/payroll', PayrollController::class);
 Route::resource('/pas/employeeslist', EmployeesListController::class);
 // Route::resource('/pas/leavecredits', LeaveCreditsController::class);
 
-Route::get('pas/leavecredits', [LeaveCreditsController::class, 'index'])->name('leavecredits.index');
-Route::get('pas/leavecredits/auto-generate', [LeaveCreditsController::class, 'autoGenerate'])->name('leavecredits.auto-generate');
-
+// Route::get('pas/leavecredits', [LeaveCreditsController::class, 'index'])->name('leavecredits.index');
+// Route::get('pas/leavecredits/auto-generate', [LeaveCreditsController::class, 'autoGenerate'])->name('leavecredits.auto-generate');
+Route::prefix('/pas/leavecredits')->group(function () {
+  Route::get('/', [LeaveCreditsController::class, 'index'])->name('leavecredits.index');
+  Route::get('/leavecredits/auto-generate', [LeaveCreditsController::class, 'autoGenerate'])->name('leavecredits.auto-generate');
+});
 
 
 

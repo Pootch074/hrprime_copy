@@ -2,60 +2,44 @@
 
 namespace App\Http\Controllers\pas;
 
-
 use App\Http\Controllers\Controller;
 use App\Models\LeaveCredits;
-use Illuminate\Http\Request;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class LeaveCreditsController extends Controller
 {
 
   public function index()
-    {
-      $leavecredits = LeaveCredits::with('user')->get();
+  {
 
-      return view('content.pas.leavecredits', compact( 'leavecredits' ));
-    }
+    $leavecredits = LeaveCredits::with('users')->get();
+    $users = User::all();
 
-    public function autoGenerate()
-    {
-        $now = Carbon::now();
+    return view('content.pas.leavecredits', compact('leavecredits', 'users'));
+  }
 
-        if (Carbon::now()->day != 1) {
-            return redirect()->back()->with('error', 'Leave Credits can only be Generated on the 1st of the Month.');
-        }
+  public function store(Request $request)
+  {
+    $validated = $request->validate([
+    'id'=> 'required|exists:users,employee_id',
+    'last_name_id'=> 'required|exists:users,last_name',
+    'first_name_id'=> 'required|exists:users,first_name',
+    'middle_name_id'=> 'required|exists:users,middle_name',
+    'extension_name_id'=> 'required|exists:users,extension_name',
+    ]);
 
-        $users = User::all();
-        {
-            foreach ($users as $user) {
-            $exists = LeaveCredits::where('employee_id', $user->employee_id)
-            ->where('employee_name_id', $user->employee_name_id)
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->exists();
-
-            if (!$exists) {
-            $vacation = 1.50;
-            $sick = 1.50;
-            $total = $vacation + $sick;
-            }
-            //Kani AKong Error
-            LeaveCredits::create([
-              'employee_id' => $user->employee_id,
-              'employee_name_id' => $user->id,
-              'vacation_leave' => $vacation,
-              'sick_leave' => $sick,
-              'total_leave' => $total,
-            ]);
+    // Convert values to uppercase before saving
+    $validated['last_name_id'] = strtoupper($validated['last_name_id']);
+    $validated['first_name_id'] = strtoupper($validated['first_name_id']);
+    $validated['middle_name_id'] = strtoupper($validated['middle_name_id']);
+    $validated['extension_name_id'] = strtoupper($validated['extension_name_id']);
 
 
-          }
-        }
+    LeaveCredits::create($validated);
 
-        return redirect()->route('leavecredits.index')->with('success', 'Leave Credits Have Been Successfully Generated.');
-}
-
+     return response()->json(['success' => true]);
+  }
 
 }

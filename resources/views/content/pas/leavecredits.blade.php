@@ -18,13 +18,16 @@ $containerNav = 'container-fluid';
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4>Leave Credits Summary</h4>
-
-      @if(session('success'))
+      @if(session('message'))
+        <div class="alert alert-info">{{ session('message') }}</div>
+      @endif
+      <!-- @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
       @endif
       @if(session('error'))
           <div class="alert alert-warning">{{ session('error') }}</div>
-      @endif
+      @endif -->
+
     </div>
 
     <div class="table-responsive">
@@ -33,21 +36,17 @@ $containerNav = 'container-fluid';
         <tr>
           <th style="width: 0;">ID No.</th>
           <th>Employee Name</th>
-          <th>Vacation Leave</th>
-          <th>Sick Leave</th>
-          <th>Total Available Leave</th>
+
         </tr>
       </thead>
       <tbody>
-        @foreach($leavecredits as $credit)
+        @foreach($users as $credit)
         <tr>
-          <td>{{ $credit->user->employee_id }}</td>
-
-<td>{{ strtoupper($credit->user->last_name . ', ' . $credit->user->first_name . ' ' . $credit->user->middle_name) }}</td>
-          <td>{{ number_format($credit->vacation_leave, 2) }}</td>
-          <td>{{ number_format($credit->sick_leave, 2) }}</td>
-          <td>{{ number_format($credit->total_leave, 2) }}</td>
-          <td><a href="#" class="btn btn-sm btn-outline-primary">View</a></td>
+          <td>{{ $credit->employee_id }}</td>
+          <td>{{ Str::upper($credit->first_name) }}
+            {{ Str::upper($credit->middle_name) }}
+            {{ Str::upper($credit->last_name) }}
+            {{ Str::upper($credit->extension_name) }}</td>
         </tr>
         @endforeach
       </tbody>
