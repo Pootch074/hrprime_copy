@@ -24,7 +24,8 @@
         </div>
       @endif
 
-      <form action="{{ route('employee.store') }}" method="POST" autocomplete="off">
+      <form action="{{ route('employee.store') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+
         @csrf
 
         <div class="row mb-4">
@@ -127,7 +128,13 @@
             <input type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
           </div>
         </div>
-
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label for="profile_image">Profile Image</label>
+            <input type="file" name="profile_image" class="form-control" accept="image/*">
+            <small class="text-muted">Allowed: jpeg, png, jpg. Max: 2MB</small>
+          </div>
+        </div>
         <div class="d-flex justify-content-end">
           <button type="submit" class="btn btn-success">Register Employee</button>
         </div>

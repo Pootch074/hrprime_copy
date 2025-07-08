@@ -7,41 +7,42 @@ use App\Models\EmploymentStatus;
 use App\Models\Division;
 use App\Models\Section;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Row;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class EmployeesImport implements ToModel, WithHeadingRow
+class EmployeesImport implements OnEachRow, WithHeadingRow
 {
-    public function model(array $row)
+    public function onRow(Row $row): void
     {
-        if (User::where('employee_id', $row['employee_id'])->exists()) {
-            Log::info('SKIPPED: duplicate employee_id ' . $row['employee_id']);
-            return null;
+        $r = $row->toArray();
+
+        // Skip if duplicate
+        if (User::where('employee_id', $r['employee_id'])->exists()) {
+            return;
         }
 
-        $employmentStatus = EmploymentStatus::where('name', $row['employment_status'])->first();
-        $division = Division::where('name', $row['division'])->first();
-        $section = Section::where('name', $row['section'])->first();
+        $employmentStatus = EmploymentStatus::where('name', $r['employment_status'])->first();
+        $division = Division::where('name', $r['division'])->first();
+        $section = Section::where('name', $r['section'])->first();
 
         if (!$employmentStatus || !$division || !$section) {
-            Log::warning('SKIPPED: missing references for ' . json_encode($row));
-            return null;
+            return;
         }
 
-        return new User([
-            'username' => strtolower($row['username']),
-            'employee_id' => $row['employee_id'],
-            'first_name' => ucwords(strtolower($row['first_name'])),
-            'middle_name' => !empty($row['middle_name']) ? ucwords(strtolower($row['middle_name'])) : null,
-            'last_name' => ucwords(strtolower($row['last_name'])),
-            'gender' => $row['gender'],
-            'extension_name' => !empty($row['extension_name']) ? ucwords(strtolower($row['extension_name'])) : null,
-            'employment_status_id' => $employmentStatus->id,
-            'division_id' => $division->id,
-            'section_id' => $section->id,
-            'email' => strtolower($row['email']),
-            'password' => Hash::make('default123')
+        User::create([
+        'username'             => strtolower($r['username']), // lower by best practice
+        'employee_id'          => strtoupper($r['employee_id']),
+        'first_name'           => strtoupper($r['first_name'] ?? ''),
+        'middle_name'          => !empty($r['middle_name']) ? strtoupper($r['middle_name']) : null,
+        'last_name'            => strtoupper($r['last_name'] ?? ''),
+        'gender'               => strtoupper($r['gender']),
+        'extension_name'       => !empty($r['extension_name']) ? strtoupper($r['extension_name']) : null,
+        'employment_status_id' => $employmentStatus->id,
+        'division_id'          => $division->id,
+        'section_id'           => $section->id,
+        'email'                => strtolower($r['email'] ?? ''), // emails are case-insensitive
+        'password'             => Hash::make('dswd12345'),
         ]);
     }
 }

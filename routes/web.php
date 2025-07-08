@@ -112,6 +112,7 @@ Route::prefix('planning')->group(function () {
 
 // Show Registration Form (from API\UserController)
 Route::get('/planning/registration-form', [\App\Http\Controllers\Api\UserController::class, 'create'])->name('employee.registration-form');
+Route::get('/planning/section', [UserController::class, 'getSections'])->name('planning.section');
     
 // Employee List & Profile Routes
 Route::get('/planning/list-of-employee', [UserController::class, 'bladeIndex'])->name('employee.view-blade');
@@ -142,6 +143,7 @@ Route::prefix('/planning/section')->group(function () {
   Route::post('/store', [SectionController::class, 'store'])->name('section.store');
   Route::post('/{id}/update', [SectionController::class, 'update'])->name('section.update');
   Route::post('/{id}/delete', [SectionController::class, 'destroy'])->name('section.delete');});
+  
 
 //Unit Management
 Route::prefix('planning/unit')->name('unit.')->group(function () {
