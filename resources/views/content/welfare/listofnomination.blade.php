@@ -10,7 +10,7 @@
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0">List of Nominees</h4>
-      <button id="openModalBtn" class="btn btn-success">+ Add New Event</button>
+      <button id="openModalBtn" class="btn btn-success">Add New Event</button>
     </div>
 
     <div class="table-responsive">

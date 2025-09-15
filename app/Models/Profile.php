@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PositionTitle extends Model
+class Profile extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'position_name',
-        'abbreviation',
-    ];
+    
+    public function profile()
+{
+    return $this->hasOne(Profile::class);
+}
 }

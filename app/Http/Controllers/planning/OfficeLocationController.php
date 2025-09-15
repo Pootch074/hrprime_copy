@@ -15,32 +15,41 @@ class OfficeLocationController extends Controller
   }
 
   public function store(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255|unique:office_locations,name',
-      'abbreviation' => 'nullable|string|max:50',
-    ]);
+{
+  $request->validate([
+    'name' => 'required|string|max:255|unique:office_locations,name',
+    'abbreviation' => 'nullable|string|max:50',
+  ]);
 
-    OfficeLocation::create($validated);
+  OfficeLocation::create([
+    'name' => strtoupper(trim($request->name)),
+    'abbreviation' => strtoupper(trim($request->abbreviation)),
+  ]);
 
-    return response()->json(['success' => true]);
-  }
+  return response()->json(['success' => true]);
+}
 
-  public function update(Request $request, $id)
-  {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255|unique:office_locations,name,' . $id,
-      'abbreviation' => 'nullable|string|max:50',
-    ]);
+public function update(Request $request, $id)
+{
+  $request->validate([
+    'name' => 'required|string|max:255|unique:office_locations,name,' . $id,
+    'abbreviation' => 'nullable|string|max:50',
+  ]);
 
-    OfficeLocation::findOrFail($id)->update($validated);
+  $officeLocation = OfficeLocation::findOrFail($id);
 
-    return response()->json(['success' => true]);
-  }
+  $officeLocation->update([
+    'name' => strtoupper(trim($request->name)),
+    'abbreviation' => strtoupper(trim($request->abbreviation)),
+  ]);
 
-  public function destroy($id)
-  {
-    OfficeLocation::findOrFail($id)->delete();
-    return response()->json(['success' => true]);
-  }
+  return response()->json(['success' => true]);
+}
+public function destroy($id)
+{
+  $location = OfficeLocation::findOrFail($id);
+  $location->delete();
+
+  return response()->json(['success' => true]);
+}
 }

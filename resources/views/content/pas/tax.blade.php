@@ -20,7 +20,7 @@ $containerNav = 'container-fluid';
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4>Tax Computation Table</h4>
-      <button id="openModalBtn" class="btn btn-success">+ Add New Tax Column</button>
+      <button id="openModalBtn" class="btn btn-success">Add New Tax Column</button>
     </div>
 
     <div class="table-responsive">

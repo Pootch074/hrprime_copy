@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-  use Notifiable;
+  use HasFactory, Notifiable;
 
   protected $fillable = [
     'employee_id',
@@ -21,11 +22,13 @@ class User extends Authenticatable
     'username',
     'email',
     'password',
+    'profile_image'
   ];
 
   protected $hidden = [
     'password',
   ];
+
   public function division()
   {
     return $this->belongsTo(Division::class);
@@ -39,5 +42,17 @@ class User extends Authenticatable
   public function employmentStatus()
   {
     return $this->belongsTo(EmploymentStatus::class, 'employment_status_id');
+  }
+
+  public function qualification()
+  {
+    return $this->belongsTo(Qualification::class);
+  }
+
+  public function courses()
+  {
+    return $this->belongsToMany(\App\Models\Course::class, 'course_enrollments')
+      ->withPivot('status')
+      ->withTimestamps();
   }
 }

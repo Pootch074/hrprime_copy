@@ -1,6 +1,6 @@
 @extends('layouts/blankLayout')
 
-@section('title', 'Login Page Hrwelfare')
+@section('title', 'Login Page')
 
 @section('page-style')
 @vite([
@@ -19,14 +19,14 @@
         <div class="app-brand justify-content-center mt-5">
           <a href="{{url('/')}}" class="app-brand-link gap-3">
             <span class="app-brand-logo demo">
-              <img src="{{ asset('assets/img/logo-dswd.png') }}" alt="DSWD Logo" height="100" style="background: #fff;">
+              <img src="{{ asset('assets/img/logo-dswd1.png') }}" alt="DSWD Logo" height="100" style="background: #fff;">
             </span>
           </a>
         </div>
         <!-- /Logo -->
 
         <div class="card-body mt-1">
-          <h4 class="mb-1">Welcome to HR PRIME 👋🏻</h4>
+          <h4 class="mb-1">Welcome to HR PRIME</h4>
           <p class="mb-5">Please sign-in to your account and start the adventure</p>
           <form id="formAuthentication" class="mb-5" action="{{ route('login.store') }}" method="POST">
             @csrf

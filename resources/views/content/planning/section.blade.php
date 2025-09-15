@@ -11,8 +11,8 @@
 <div class="card">
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4>List of Sections</h4>
-      <button id="openModalBtn" class="btn btn-success">+ Add New Section</button>
+      <h4 style="color: #1d4bb2;">List of Sections</h4>
+      <button id="openModalBtn" class="btn btn-success">Add New Section</button>
     </div>
 
     <div class="table-responsive">
@@ -31,9 +31,10 @@
           <tr data-id="{{ $section->id }}">
             <td>{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</td>
             <td>{{ $section->division->name }}</td>
-            <td>{{ $section->name }}</td>
-            <td>{{ $section->abbreviation }}</td>
-            <td>
+            <td>{{ Str::upper($section->name) }}</td>
+            <td>{{ Str::upper($section->abbreviation) }}</td>
+          <td>
+            <div class="d-flex gap-1">
               <button class="btn btn-sm btn-primary edit-btn"
                 data-id="{{ $section->id }}"
                 data-division_id="{{ $section->division_id }}"
@@ -41,8 +42,11 @@
                 data-abbreviation="{{ $section->abbreviation }}">
                 Edit
               </button>
-              <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $section->id }}">Delete</button>
-            </td>
+              <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $section->id }}">
+                Delete
+              </button>
+            </div>
+          </td>
           </tr>
           @endforeach
         </tbody>
@@ -60,7 +64,7 @@
         <div class="modal-body">
           <div class="mb-3">
             <label>Division</label>
-            <select name="division_id" class="form-control" required>
+            <select name="division_id" class="form-control text-uppercase" required>
               <option value="">Select Division</option>
               @foreach($divisions as $division)
               <option value="{{ $division->id }}">{{ $division->name }}</option>
@@ -69,11 +73,11 @@
           </div>
           <div class="mb-3">
             <label>Section Name</label>
-            <input type="text" name="name" class="form-control" required>
+            <input type="text" name="name" class="form-control text-uppercase" required>
           </div>
           <div class="mb-3">
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" class="form-control" required>
+            <input type="text" name="abbreviation" class="form-control text-uppercase" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -98,7 +102,7 @@
           <input type="hidden" name="id" id="editSectionId">
           <div class="mb-3">
             <label>Division</label>
-            <select name="division_id" id="editDivisionId" class="form-control" required>
+            <select name="division_id" id="editDivisionId" class="form-control text-uppercase" required>
               <option value="">Select Division</option>
               @foreach($divisions as $division)
               <option value="{{ $division->id }}">{{ $division->name }}</option>
@@ -107,11 +111,11 @@
           </div>
           <div class="mb-3">
             <label>Section Name</label>
-            <input type="text" name="name" id="editSectionName" class="form-control" required>
+            <input type="text" name="name" id="editSectionName" class="form-control text-uppercase" required>
           </div>
           <div class="mb-3">
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" id="editSectionAbbreviation" class="form-control" required>
+            <input type="text" name="abbreviation" id="editSectionAbbreviation" class="form-control text-uppercase" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -148,7 +152,6 @@
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
   $('#openModalBtn').click(function() {

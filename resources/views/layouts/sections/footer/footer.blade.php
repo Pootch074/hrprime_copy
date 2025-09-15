@@ -7,9 +7,10 @@ $containerFooter = !empty($containerNav) ? $containerNav : 'container-fluid';
   <div class="{{ $containerFooter }}">
     <div class="footer-container py-4 d-flex flex-column flex-md-row align-items-center justify-content-center gap-2">
       <div class="text-body">
-        © <script>
+          Department of Social Welfare and Development Field Office XI <span class="text-danger"></i></span>
+          © <script>
           document.write(new Date().getFullYear())
-        </script>, made with <span class="text-danger"><i class="tf-icons ri-heart-fill"></i></span> by Sicnarf
+        </script> 
       </div>
       <!-- Optional footer links -->
       <!--

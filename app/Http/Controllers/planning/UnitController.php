@@ -10,18 +10,22 @@ use App\Models\Division;
 
 class UnitController extends Controller
 {
+  // GET SECTIONS BY DIVISION ID AND RETURN AS JSON
   public function getSectionsByDivision($id)
   {
     $sections = Section::where('division_id', $id)->get();
-
-    return response()->json($sections); // return as JSON
+    return response()->json($sections);
   }
+
+  // DISPLAY ALL UNITS WITH RELATED SECTION AND DIVISION DATA
   public function index()
   {
     $units = Unit::with('section.division')->get();
     $divisions = Division::all();
     return view('content.planning.unit', compact('units', 'divisions'));
   }
+
+  // STORE A NEW UNIT RECORD
   public function store(Request $request)
   {
     $validated = $request->validate([
@@ -32,14 +36,15 @@ class UnitController extends Controller
     ]);
 
     Unit::create([
-      'name' => $validated['name'],
-      'abbreviation' => $validated['abbreviation'],
+      'name' => strtoupper($validated['name']),
+      'abbreviation' => strtoupper($validated['abbreviation']),
       'section_id' => $validated['section_id'],
     ]);
 
     return response()->json(['success' => true]);
   }
 
+  // UPDATE AN EXISTING UNIT
   public function update(Request $request, $id)
   {
     $validated = $request->validate([
@@ -49,30 +54,21 @@ class UnitController extends Controller
       'section_id' => 'required|exists:sections,id',
     ]);
 
-    $unit = Unit::find($id);
-
-    if (!$unit) {
-      return response()->json(['success' => false, 'message' => 'Unit not found.'], 404);
-    }
-
+    $unit = Unit::findOrFail($id);
 
     $unit->update([
-      'name' => $validated['name'],
-      'abbreviation' => $validated['abbreviation'],
+      'name' => strtoupper($validated['name']),
+      'abbreviation' => strtoupper($validated['abbreviation']),
       'section_id' => $validated['section_id'],
     ]);
 
     return response()->json(['success' => true]);
   }
 
+  // DELETE A UNIT
   public function destroy($id)
   {
-    $unit = Unit::find($id);
-
-    if (!$unit) {
-      return response()->json(['success' => false, 'message' => 'Unit not found.'], 404);
-    }
-
+    $unit = Unit::findOrFail($id);
     $unit->delete();
 
     return response()->json(['success' => true]);

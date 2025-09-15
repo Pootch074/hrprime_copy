@@ -11,8 +11,8 @@
 <div class="card">
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4>List of Employment Status</h4>
-      <button id="openModalBtn" class="btn btn-success">+ Add New Employment Status</button>
+      <h4 style="color: #1d4bb2;">List of Employment Status</h4>
+      <button id="openModalBtn" class="btn btn-success">Add New Employment Status</button>
     </div>
 
     <div class="table-responsive">
@@ -29,8 +29,8 @@
           @foreach($employmentStatuses as $index => $status)
           <tr data-id="{{ $status->id }}">
             <td>{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</td>
-            <td>{{ $status->name }}</td>
-            <td>{{ $status->abbreviation }}</td>
+            <td>{{ Str::upper($status->name) }}</td>
+            <td>{{ Str::upper($status->abbreviation) }}</td>
             <td>
               <button class="btn btn-sm btn-primary edit-btn"
                 data-id="{{ $status->id }}"
@@ -55,11 +55,11 @@
         <div class="modal-body">
           <div class="mb-3">
             <label>Status Name</label>
-            <input type="text" name="name" class="form-control" required>
+            <input type="text" name="name" class="form-control text-uppercase" required>
           </div>
           <div class="mb-3">
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" class="form-control">
+            <input type="text" name="abbreviation" class="form-control text-uppercase" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -84,11 +84,11 @@
           <input type="hidden" name="id" id="editEmploymentId">
           <div class="mb-3">
             <label>Status Name</label>
-            <input type="text" name="name" id="editEmploymentName" class="form-control" required>
+            <input type="text" name="name" id="editEmploymentName" class="form-control text-uppercase" required>
           </div>
           <div class="mb-3">
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" id="editEmploymentAbbreviation" class="form-control">
+            <input type="text" name="abbreviation" id="editEmploymentAbbreviation" class="form-control text-uppercase" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -125,7 +125,6 @@
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
   $('#openModalBtn').click(function() {

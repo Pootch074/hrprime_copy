@@ -19,10 +19,13 @@
     margin-bottom: 20px;
   }
 
-  .header-left {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+  .course-title {
+    max-width: 250px;
+    /* adjust based on your layout */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
   }
 
   .search-input {
@@ -69,9 +72,7 @@
 
   .course-image {
     height: 140px;
-    background-image: url('your-image-url.jpg');
-    background-size: cover;
-    background-position: center;
+    background: #eaeaea;
     position: relative;
   }
 
@@ -110,13 +111,6 @@
     color: #666;
   }
 
-  .course-price {
-    font-size: 14px;
-    font-weight: bold;
-    color: #d35400;
-    margin: 6px 0;
-  }
-
   .course-buttons {
     display: flex;
     border-top: 1px solid #eee;
@@ -129,17 +123,12 @@
     cursor: pointer;
   }
 
-  .btn-learn {
-    background: #eee;
-    color: #333;
-  }
-
   .btn-add {
     background: linear-gradient(to right, blue, red);
     color: white;
   }
 
-  /* Modal styles */
+  /* Modal */
   .modal {
     display: none;
     position: fixed;
@@ -154,13 +143,12 @@
   }
 
   .modal-content {
-    background-color: #fff;
+    background: #fff;
     margin: auto;
     padding: 20px;
     border-radius: 8px;
     width: 90%;
-    max-width: 900px;
-    /* You can adjust this max value */
+    max-width: 800px;
     position: relative;
   }
 
@@ -174,17 +162,12 @@
     cursor: pointer;
   }
 
-  .modal-content form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
   .modal-content input,
   .modal-content select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    width: 100%;
   }
 
   .modal-content button[type="submit"] {
@@ -201,7 +184,7 @@
   <div class="container py-4">
     <div class="header">
       <h2>Courses</h2>
-      <button id="openModalBtn" style="padding: 10px 20px; background-color: #2e7d32; color: white; border: none; border-radius: 5px; cursor: pointer;">+ Add Course</button>
+      <button id="openModalBtn" style="padding:10px 20px;background-color:#2e7d32;color:white;border:none;border-radius:5px;cursor:pointer;">Add Course</button>
     </div>
 
     <div class="header">
@@ -217,7 +200,6 @@
           <option>Onboarding</option>
           <option>Compliance</option>
         </select>
-
         <select class="sort-filter">
           <option>Sort</option>
           <option>Date</option>
@@ -225,21 +207,20 @@
       </div>
     </div>
 
-    <div class="course-container mt-4">
+    <div class="course-container" id="courseContainer">
       @foreach ($courses as $course)
       <div class="course-card">
         <div class="course-image">
-          <!-- style="background-image: url('{{ $course->image_url ?? 'default-image.jpg' }}');" -->
           @if($course->is_enrollable)
           <div class="badge">ENROLL NOW</div>
           @endif
         </div>
         <div class="course-content">
-          <div class="course-type">{{ $course->type }}</div>
+          <div class="course-type">Course Type: {{ $course->type }}</div>
           <div class="course-title">{{ $course->title }}</div>
-          <div class="course-code">{{ $course->code }}</div>
-          <div class="course-info">{{ $course->duration }}</div>
-          <div class="course-dates">{{ $course->date }}</div>
+          <div class="course-code">Course Code: {{ $course->code }}</div>
+          <div class="course-info">Duration (hrs): {{ $course->duration }}</div>
+          <div class="course-dates">Date Started: {{ $course->date }}</div>
         </div>
         <div class="course-buttons">
           <button class="btn-add view-course-btn"
@@ -248,7 +229,8 @@
             data-code="{{ $course->code }}"
             data-type="{{ $course->type }}"
             data-duration="{{ $course->duration }}"
-            data-date="{{ $course->date }}">
+            data-date="{{ $course->date }}"
+            data-file="{{ $course->file_path ? asset('storage/'.$course->file_path) : '' }}">
             View Course
           </button>
         </div>
@@ -257,22 +239,25 @@
     </div>
   </div>
 </div>
+
 <!-- Edit Course Modal -->
-<div id="editCourseModal" class="modal" style="display:none;">
+<div id="editCourseModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
     <h3>Edit Course</h3>
     <form id="editCourseForm" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="id" />
+      @csrf
+      @method('PUT')
+      <input type="hidden" name="id" id="editCourseId" />
 
       <label>Course Title:</label>
-      <input type="text" name="title" required />
+      <input type="text" name="title" id="editCourseTitle" required />
 
       <label>Course Code:</label>
-      <input type="text" name="code" required />
+      <input type="text" name="code" id="editCourseCode" required />
 
       <label>Type:</label>
-      <select name="type" required>
+      <select name="type" id="editCourseType" required>
         <option value="Technical">Technical</option>
         <option value="Leadership">Leadership</option>
         <option value="Onboarding">Onboarding</option>
@@ -280,38 +265,35 @@
       </select>
 
       <label>Duration:</label>
-      <input type="date" name="duration" required />
+      <input type="text" name="duration" id="editCourseDuration" required />
 
-      <label>Date Range:</label>
-      <input type="date" name="date" required />
+      <label>Date Started:</label>
+      <input type="date" name="date" id="editCourseDate" required />
 
       <label>Upload File:</label>
-      <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi" />
+      <input type="file" name="file_path" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi" />
 
-      <button type="submit">Save Changes</button>
-      <button type="button"
-        onclick="window.open('{{ asset('storage/' . $course->file) }}', '_blank')"
-        @if(!$course->file) disabled @endif>
-        View File
-      </button>
+      <!-- File Preview -->
+      <div id="filePreview" style="margin-top:1rem;"></div>
 
+      <div class="mt-3">
+        <button type="submit">Save Changes</button>
+      </div>
     </form>
-    <div id="filePreviewContainer" style="display:none; margin-top: 1rem;">
-      <iframe id="filePreviewIframe" width="100%" height="500px" frameborder="0"></iframe>
-    </div>
   </div>
 </div>
+
+<!-- Add Course Modal -->
 <div id="addCourseModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
     <h3>Add New Course</h3>
-    <form id="courseForm">
+    <form id="courseForm" method="POST" enctype="multipart/form-data">
+      @csrf
       <label>Course Title:</label>
       <input type="text" name="title" required>
-
       <label>Course Code:</label>
       <input type="text" name="code" required>
-
       <label>Type:</label>
       <select name="type">
         <option value="Technical">Technical</option>
@@ -319,123 +301,24 @@
         <option value="Onboarding">Onboarding</option>
         <option value="Compliance">Compliance</option>
       </select>
-
       <label>Duration:</label>
       <input type="text" name="duration" required>
-
-      <label>Date Range:</label>
-      <input type="text" name="date" required>
-
+      <label>Date Started:</label>
+      <input type="date" name="date" required>
+      <label>Upload File:</label>
+      <input type="file" name="file_path" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi" />
       <button type="submit">Add Course</button>
     </form>
   </div>
 </div>
-<!-- search and filter -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.querySelector('.search-input');
-    const typeFilter = document.querySelector('.type-filter');
-    const sortFilter = document.querySelector('.sort-filter');
-    const courseContainer = document.querySelector('.course-container');
-    const originalCourses = Array.from(courseContainer.querySelectorAll('.course-card')).map(card => card.cloneNode(true));
-
-    const modal = document.getElementById('editCourseModal');
-    const closeModal = modal.querySelector('.close');
-    const editForm = document.getElementById('editCourseForm');
-
-    function filterAndSortCourses() {
-      const searchText = searchInput.value.toLowerCase();
-      const selectedType = typeFilter.value;
-      const sortOption = sortFilter.value;
-
-      let filteredCourses = originalCourses.filter(card => {
-        const title = card.querySelector('.course-title').textContent.toLowerCase();
-        const type = card.querySelector('.course-type').textContent;
-
-        const matchesSearch = title.includes(searchText);
-        const matchesType = selectedType === 'All' || type === selectedType;
-
-        return matchesSearch && matchesType;
-      });
-
-      if (sortOption === 'Date') {
-        filteredCourses.sort((a, b) => {
-          const dateA = new Date(a.querySelector('.course-dates').textContent);
-          const dateB = new Date(b.querySelector('.course-dates').textContent);
-          return dateA - dateB;
-        });
-      }
-
-      courseContainer.innerHTML = '';
-      filteredCourses.forEach(card => courseContainer.appendChild(card));
-    }
-
-    // Event listeners for search and filters
-    searchInput.addEventListener('input', filterAndSortCourses);
-    typeFilter.addEventListener('change', filterAndSortCourses);
-    sortFilter.addEventListener('change', filterAndSortCourses);
-
-    // View Course - open modal and populate fields
-    courseContainer.addEventListener('click', (e) => {
-      const btn = e.target.closest('.view-course-btn');
-      if (!btn) return;
-
-      const card = btn.closest('.course-card');
-
-      editForm.id.value = btn.dataset.id;
-      editForm.title.value = btn.dataset.title;
-      editForm.code.value = btn.dataset.code;
-      editForm.type.value = btn.dataset.type;
-      editForm.duration.value = btn.dataset.duration;
-      editForm.date.value = btn.dataset.date;
-
-      modal.style.display = 'block';
-    });
-
-    // Close modal
-    closeModal.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-
-    // Save Changes - update course card
-    editForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const id = editForm.id.value;
-
-      const allCards = courseContainer.querySelectorAll('.course-card');
-      allCards.forEach(card => {
-        const btn = card.querySelector('.view-course-btn');
-        if (btn && btn.dataset.id === id) {
-          // Update visible content
-          card.querySelector('.course-title').textContent = editForm.title.value;
-          card.querySelector('.course-code').textContent = editForm.code.value;
-          card.querySelector('.course-type').textContent = editForm.type.value;
-          card.querySelector('.course-info').textContent = editForm.duration.value;
-          card.querySelector('.course-dates').textContent = editForm.date.value;
-
-          // Update button dataset
-          btn.dataset.title = editForm.title.value;
-          btn.dataset.code = editForm.code.value;
-          btn.dataset.type = editForm.type.value;
-          btn.dataset.duration = editForm.duration.value;
-          btn.dataset.date = editForm.date.value;
-        }
-      });
-
-      modal.style.display = 'none';
-    });
-  });
-</script>
 
 <script>
-  // Open edit modal and populate form
+  // Handle View Course -> open Edit modal
   document.querySelectorAll('.view-course-btn').forEach(button => {
     button.addEventListener('click', () => {
       const modal = document.getElementById('editCourseModal');
       const form = modal.querySelector('form');
 
-      // Fill inputs with data attributes
       form.id.value = button.dataset.id;
       form.title.value = button.dataset.title;
       form.code.value = button.dataset.code;
@@ -443,22 +326,36 @@
       form.duration.value = button.dataset.duration;
       form.date.value = button.dataset.date;
 
+      const filePreview = document.getElementById('filePreview');
+      filePreview.innerHTML = '';
+      const fileUrl = button.dataset.file;
+
+      if (fileUrl) {
+        const ext = fileUrl.split('.').pop().toLowerCase();
+        if (['mp4', 'mov', 'avi'].includes(ext)) {
+          filePreview.innerHTML = `<video width="100%" controls><source src="${fileUrl}" type="video/${ext}"></video>`;
+        } else if (ext === 'pdf') {
+          filePreview.innerHTML = `<embed src="${fileUrl}" type="application/pdf" width="100%" height="400px"/>`;
+        } else {
+          filePreview.innerHTML = `<a href="${fileUrl}" target="_blank">Download File</a>`;
+        }
+      }
+
       modal.style.display = 'block';
     });
   });
 
-  // Close modal when clicking the close button or outside modal
-  document.querySelector('#editCourseModal .close').addEventListener('click', () => {
-    document.getElementById('editCourseModal').style.display = 'none';
+  // Close modals
+  document.querySelectorAll('.modal .close').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.modal').style.display = 'none');
   });
   window.addEventListener('click', (e) => {
-    const modal = document.getElementById('editCourseModal');
-    if (e.target === modal) {
-      modal.style.display = 'none';
-    }
+    document.querySelectorAll('.modal').forEach(modal => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
   });
 
-  // Handle form submit to send update request
+  // Submit Edit Course (update)
   document.getElementById('editCourseForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const form = e.target;
@@ -468,10 +365,10 @@
     fetch(`/courses/${courseId}`, {
         method: 'POST',
         headers: {
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-          'Accept': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Accept': 'application/json'
         },
-        body: formData,
+        body: formData
       })
       .then(res => res.json())
       .then(data => {
@@ -483,120 +380,32 @@
         alert('Error updating course.');
       });
   });
-</script>
-<script>
-  // Open modal
+
+  // Add Course Modal
   document.getElementById('openModalBtn').addEventListener('click', () => {
     document.getElementById('addCourseModal').style.display = 'block';
   });
+  document.getElementById('courseForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
 
-  // Close modal
-  document.querySelector('#addCourseModal .close').addEventListener('click', () => {
-    document.getElementById('addCourseModal').style.display = 'none';
-  });
-
-  // Close modal on outside click
-  window.addEventListener('click', (event) => {
-    const modal = document.getElementById('addCourseModal');
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
-
-  // Form submission
-  document.getElementById('courseForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const form = event.target;
-
-    const courseData = {
-      title: form.title.value.trim(),
-      code: form.code.value.trim(),
-      type: form.type.value,
-      duration: form.duration.value.trim(),
-      date: form.date.value.trim(), // this line saves the date string
-    };
     fetch("{{ route('courses.store') }}", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Accept': 'application/json'
         },
-        body: JSON.stringify(courseData)
+        body: formData
       })
-      .then(async response => {
-        if (!response.ok) {
-          // If response is an error, try to parse JSON error message
-          let errorMessage = 'Failed to save course.';
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorMessage;
-          } catch {
-            // ignore parse error
-          }
-          throw new Error(errorMessage);
-        }
-        return response.json();
-      })
+      .then(res => res.json())
       .then(data => {
-        alert(data.message || 'Course added successfully!');
-        form.reset();
-        document.getElementById('addCourseModal').style.display = 'none';
-        window.location.reload(); // Refresh the page
-        // Optionally refresh course list or append new course card here
+        alert(data.message);
+        location.reload();
       })
-      .catch(async (error) => {
-        if (error instanceof Response) {
-          const errorData = await error.json();
-          alert(`Error: ${errorData.message}\n${errorData.error}`);
-          console.error('Full error:', errorData);
-        } else {
-          alert('Unexpected error occurred: ' + error.message);
-        }
+      .catch(err => {
+        console.error(err);
+        alert('Error adding course.');
       });
-  });
-</script>
-<!-- Script -->
-<script>
-  const courseContainer = document.getElementById('courseContainer');
-
-  courseContainer.addEventListener('click', (e) => {
-    const btn = e.target.closest('.view-course-btn');
-    if (!btn) return;
-
-    const modal = document.getElementById('editCourseModal');
-    const editForm = document.getElementById('editCourseForm');
-
-    editForm.id.value = btn.dataset.id;
-    editForm.title.value = btn.dataset.title;
-    editForm.code.value = btn.dataset.code;
-    editForm.type.value = btn.dataset.type;
-    editForm.duration.value = btn.dataset.duration;
-    editForm.date.value = btn.dataset.date;
-
-    const filePreview = document.getElementById('filePreview');
-    const fileUrl = btn.dataset.file;
-    filePreview.innerHTML = ''; // Clear previous
-
-    if (fileUrl) {
-      const ext = fileUrl.split('.').pop().toLowerCase();
-
-      if (['mp4', 'mov', 'avi'].includes(ext)) {
-        filePreview.innerHTML = `
-          <video width="100%" height="auto" controls>
-            <source src="${fileUrl}" type="video/${ext}">
-            Your browser does not support the video tag.
-          </video>`;
-      } else if (ext === 'pdf') {
-        filePreview.innerHTML = `
-          <embed src="${fileUrl}" type="application/pdf" width="100%" height="400px"/>`;
-      } else {
-        filePreview.innerHTML = `<a href="${fileUrl}" target="_blank">Download File</a>`;
-      }
-    }
-
-    modal.style.display = 'block';
   });
 </script>
 @endsection

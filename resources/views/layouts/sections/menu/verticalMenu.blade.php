@@ -1,11 +1,22 @@
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+<!-- image-background -->
+<aside id="layout-menu" class="layout-menu menu-vertical menu"
+  style="background-image: url('{{ asset('assets/img/dswd-bg.png') }}');
+         background-size: cover;
+         background-repeat: no-repeat;
+         color: #fff;">
+
+  <!-- colored-background -->
+  <!-- <aside id="layout-menu" class="layout-menu menu-vertical menu" style="background:#ff3131; color: #fff;"> -->
+
+
 
   <!-- ! Hide app brand if navbar-full -->
-  <div class="app-brand demo">
+  <div class="app-brand demo mt-4">
     <a href="{{url('dashboard')}}" class="app-brand-link">
       <span class="app-brand-logo demo me-1">
 
-        <img src="{{ asset('assets/img/logo-dswd.png') }}" alt="DSWD Logo" height="50" style="background: #fff;" />
+        <img src="{{ asset('assets/img/logo-dswd.png') }}" alt="DSWD Logo" height="68" style="margin: 30px 0 30px 0;" />
+
       </span>
     </a>
 
@@ -74,3 +85,85 @@
   </ul>
 
 </aside>
+<style>
+  /* General menu items and icons */
+  .layout-menu .menu-inner .menu-item a,
+  .layout-menu .menu-inner .menu-header-text,
+  .layout-menu .menu-inner .menu-item i {
+    color: #ffffff !important;
+  }
+
+  .layout-menu .menu-inner .menu-item a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff !important;
+  }
+
+  /* Menu bullets and indicators */
+  .layout-menu .menu-item::before,
+  .layout-menu .menu-item .menu-link::before {
+    color: #ffffff !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Active/open menu item */
+  .layout-menu .menu-item.active,
+  .layout-menu .menu-item.open {
+    border-left: 3px solid #ffffff !important;
+  }
+
+  .layout-menu .menu-item.active::before,
+  .layout-menu .menu-item.open::before {
+    background-color: #ffffff !important;
+  }
+
+  /* ------------------------------
+   Dropdown Arrow (Restore & Style)
+------------------------------- */
+  .layout-menu .menu-toggle::after {
+    content: '\203A';
+    /* Unicode › */
+    float: right;
+    margin-left: auto;
+    transition: transform 0.3s ease;
+    color: #ffffff !important;
+    font-size: 1.4rem;
+  }
+
+  /* Rotate arrow when open */
+  .layout-menu .menu-item.open>.menu-toggle::after {
+    transform: rotate(90deg);
+    /* ▼ */
+  }
+
+  /* ------------------------------
+   Submenu Styles
+------------------------------- */
+  .layout-menu .menu-sub {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.33);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .layout-menu .menu-sub .menu-item a {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 0.9rem;
+    padding-left: 1.5rem;
+  }
+
+  .layout-menu .menu-sub .menu-item a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff !important;
+  }
+
+  .layout-menu .menu-sub .menu-item.active>a {
+    color: #ffffff !important;
+    font-weight: bold;
+    border-left: 3px solid #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .layout-menu .menu-sub .menu-item {
+    margin-bottom: 5px;
+  }
+</style>

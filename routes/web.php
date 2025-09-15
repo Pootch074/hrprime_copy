@@ -54,20 +54,26 @@ use App\Http\Controllers\learning\CalendarController;
 use App\Http\Controllers\learning\EventsController;
 use App\Http\Controllers\learning\ScholarshipController;
 
+//Planning
+use App\Http\Controllers\planning\DashboardController;
 use App\Http\Controllers\planning\ListofEmployee;
 use App\Http\Controllers\planning\RegistrationForm;
 use App\Http\Controllers\planning\ListofPosition;
+use App\Http\Controllers\planning\VacantPositionController;
 use App\Http\Controllers\planning\OfficeLocation;
 use App\Http\Controllers\planning\DivisionController;
 use App\Http\Controllers\planning\UnitController;
 use App\Http\Controllers\planning\SectionController;
 use App\Http\Controllers\Planning\EmploymentStatusController;
 use App\Http\Controllers\Planning\OfficeLocationController;
+use App\Http\Controllers\Planning\QualificationController;
 use App\Http\Controllers\Planning\SalaryGradeController;
-use App\Http\Controllers\Planning\PositionTitleController;
+use App\Http\Controllers\Planning\PositionLevelController;
 use App\Http\Controllers\Planning\ParentheticalTitleController;
 use App\Http\Controllers\Planning\ReportController;
 use App\Http\Controllers\Planning\JoRequestController;
+use App\Http\Controllers\Planning\UserController as PlanningUserController;
+
 //PAS
 use App\Http\Controllers\pas\FundSourceController;
 use App\Http\Controllers\pas\PayrollController;
@@ -89,18 +95,87 @@ Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard-analytics
 // Dashboard (you can protect this later with auth middleware)
 Route::get('/dashboard/dashboards-analytics', [Analytics::class, 'index'])->name('dashboards-analytics');
 
-Route::get('/planning/list-of-employee', [ListofEmployee::class, 'index'])->name('list-of-employee');
-Route::get('/planning/registration-form', [RegistrationForm::class, 'index'])->name('registration-form');
-Route::get('/planning/list-of-position', [ListofPosition::class, 'index'])->name('list-of-position');
-Route::get('/planning/office-location', [OfficeLocation::class, 'index'])->name('office-location');
+//-------------------------------------------------------START OF PLANNING-----------------------------------------------------------
 
-Route::prefix('/planning/division')->group(function () {
-  Route::get('/', [DivisionController::class, 'index'])->name('division.index');
-  Route::post('/store', [DivisionController::class, 'store'])->name('division.store');
-  Route::post('/{id}/update', [DivisionController::class, 'update'])->name('division.update');
-  Route::post('/{id}/delete', [DivisionController::class, 'destroy'])->name('division.delete');
+Route::prefix('planning')->group(function () {
+  Route::get('/list-of-employee', [UserController::class, 'index'])->name('planning.list-of-employee');
+  Route::get('/import-form', [UserController::class, 'showImportForm'])->name('planning.import-form');
+  Route::post('/import', [UserController::class, 'importEmployees'])->name('planning.import');
 });
 
+Route::get('/planning/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Registration Form Routes
+Route::prefix('planning')->group(function () {
+  Route::get('/registration-form', [RegistrationForm::class, 'index'])->name('registration-form.index');
+  Route::post('/list-of-employee', [UserController::class, 'store'])->name('employee.store');
+});
+
+// Show Registration Form (from API\UserController)
+Route::get('/planning/registration-form', [\App\Http\Controllers\Api\UserController::class, 'create'])->name('employee.registration-form');
+Route::get('/planning/section', [UserController::class, 'getSections'])->name('planning.section');
+
+// Employee List & Profile Routes
+Route::get('/planning/list-of-employee', [UserController::class, 'bladeIndex'])->name('employee.view-blade');
+Route::get('/planning/list-of-employee/{id}/view', [UserController::class, 'showEmployeeView'])->name('employee.show-view');
+Route::get('/planning/list-of-employee/{id}', [UserController::class, 'show'])->name('employee.view');
+
+// Filtered Employee Lists
+Route::get('/planning/active-employees', [\App\Http\Controllers\Planning\UserController::class, 'active'])->name('employee.active');
+Route::get('/planning/retired-employees', [\App\Http\Controllers\Planning\UserController::class, 'retired'])->name('employee.retired');
+Route::get('/planning/resigned-employees', [\App\Http\Controllers\Planning\UserController::class, 'resigned'])->name('employee.resigned');
+
+// Import Employees
+Route::prefix('planning')->name('planning.')->group(function () {
+  Route::get('/import-form', [\App\Http\Controllers\Api\UserController::class, 'showImportForm'])->name('import-form');
+  Route::post('/import', [\App\Http\Controllers\Api\UserController::class, 'importEmployees'])->name('import');
+});
+
+// User Profile
+// basic information
+Route::get('/planning/profile/basic-information', [UserController::class, 'showEmpProfile'])
+  ->name('employee.basic-information');
+
+Route::get('/planning/profile/courses_enrolled', [UserController::class, 'showCoursesEnrolled'])
+  ->name('employee.courses_enrolled');
+
+// Show all available courses
+Route::get('/planning/profile/courses_list', [UserController::class, 'showCourses'])
+  ->name('employee.courses_list');
+
+// Enroll in a course
+Route::get('/planning/profile/courses/enroll/{id}', [UserController::class, 'enrollCourse'])
+  ->name('employee.enrollCourse');
+
+Route::get('/planning/profile/courses/view/{id}', [UserController::class, 'viewCourse'])
+  ->name('employee.viewCourse');
+
+Route::middleware(['auth'])->prefix('planning/profile')->group(function () {
+  Route::get('/courses', [UserController::class, 'showCourses'])
+    ->name('employee.courses');
+
+  Route::get('/courses/enroll/{id}', [UserController::class, 'enrollCourse'])
+    ->name('employee.enrollCourse');
+});
+Route::post('/planning/profile/courses/complete/{courseId}', [UserController::class, 'completeCourse'])
+  ->name('user.completeCourse')
+  ->middleware('auth');
+
+// routes/web.php
+Route::get('/courses/take/{id}', [UserController::class, 'takeCourse'])->name('employee.takeCourse');
+Route::post('/courses/submit-assessment/{id}', [UserController::class, 'submitAssessment'])->name('employee.submitAssessment');
+
+// Route::post('/employee/update-basic-info/{id}', [EmployeeController::class, 'updateBasicInfo'])->name('employee.updateBasicInfo');
+
+// Division Management
+Route::prefix('planning/division')->name('division.')->group(function () {
+  Route::get('/', [DivisionController::class, 'index'])->name('index');
+  Route::post('/store', [DivisionController::class, 'store'])->name('store');
+  Route::post('/{id}/update', [DivisionController::class, 'update'])->name('update');
+  Route::post('/{id}/delete', [DivisionController::class, 'destroy'])->name('delete');
+});
+
+//Section Management
 Route::prefix('/planning/section')->group(function () {
   Route::get('/', [SectionController::class, 'index'])->name('section.index');
   Route::post('/store', [SectionController::class, 'store'])->name('section.store');
@@ -108,15 +183,17 @@ Route::prefix('/planning/section')->group(function () {
   Route::post('/{id}/delete', [SectionController::class, 'destroy'])->name('section.delete');
 });
 
-Route::prefix('/planning/unit')->group(function () {
-  Route::get('/', [UnitController::class, 'index'])->name('unit.index');
-  Route::post('/store', [UnitController::class, 'store'])->name('unit.store');
-  Route::post('/{id}/update', [UnitController::class, 'update'])->name('unit.update');
-  Route::post('/{id}/delete', [UnitController::class, 'destroy'])->name('unit.delete');
 
+//Unit Management
+Route::prefix('planning/unit')->name('unit.')->group(function () {
+  Route::get('/', [UnitController::class, 'index'])->name('index');
+  Route::post('/', [UnitController::class, 'store'])->name('store');
+  Route::put('/{id}', [UnitController::class, 'update'])->name('update');
+  Route::delete('/{id}', [UnitController::class, 'destroy'])->name('destroy');
   Route::get('/sections/by-division/{id}', [UnitController::class, 'getSectionsByDivision']);
 });
 
+//Employment Status
 Route::prefix('/planning/employment-status')->group(function () {
   Route::get('/', [EmploymentStatusController::class, 'index'])->name('employment-status.index');
   Route::post('/store', [EmploymentStatusController::class, 'store'])->name('employment-status.store');
@@ -124,6 +201,7 @@ Route::prefix('/planning/employment-status')->group(function () {
   Route::post('/{id}/delete', [EmploymentStatusController::class, 'destroy'])->name('employment-status.delete');
 });
 
+//Office Location
 Route::prefix('/planning/office-location')->group(function () {
   Route::get('/', [OfficeLocationController::class, 'index'])->name('office-location.index');
   Route::post('/store', [OfficeLocationController::class, 'store'])->name('office-location.store');
@@ -131,6 +209,15 @@ Route::prefix('/planning/office-location')->group(function () {
   Route::post('/{id}/delete', [OfficeLocationController::class, 'destroy'])->name('office-location.delete');
 });
 
+//Qualification
+Route::prefix('planning/qualification')->name('qualifications.')->group(function () {
+  Route::get('/', [QualificationController::class, 'index'])->name('index');
+  Route::post('/', [QualificationController::class, 'store'])->name('store');
+  Route::put('/{id}', [QualificationController::class, 'update'])->name('update');
+  Route::delete('/{id}', [QualificationController::class, 'destroy'])->name('destroy');
+});
+
+//Salary Grade
 Route::prefix('/planning/salary-grade')->group(function () {
   Route::get('/', [SalaryGradeController::class, 'index'])->name('salary-grade.index');
   Route::post('/store', [SalaryGradeController::class, 'store'])->name('salary-grade.store');
@@ -138,6 +225,14 @@ Route::prefix('/planning/salary-grade')->group(function () {
   Route::post('/{id}/delete', [SalaryGradeController::class, 'destroy'])->name('salary-grade.delete');
 });
 
+// Employee Management
+Route::prefix('employee')->name('employee.')->group(function () {
+  Route::get('{id}/edit', [UserController::class, 'edit'])->name('edit');
+  Route::put('{id}/update', [UserController::class, 'update'])->name('update');
+  Route::get('sections', [UserController::class, 'getSections'])->name('sections');
+});
+
+//Position
 Route::prefix('planning/position')->group(function () {
   Route::get('/', [App\Http\Controllers\Planning\PositionController::class, 'index'])->name('position.index');
   Route::post('/store', [App\Http\Controllers\Planning\PositionController::class, 'store'])->name('position.store');
@@ -145,14 +240,25 @@ Route::prefix('planning/position')->group(function () {
   Route::post('/{id}/delete', [App\Http\Controllers\Planning\PositionController::class, 'destroy'])->name('position.delete');
 });
 
+// Requirements
+Route::get('planning/position/{id}/requirements', [App\Http\Controllers\Planning\PositionController::class, 'getRequirements']);
+Route::post('planning/position/{id}/requirements/store', [App\Http\Controllers\Planning\PositionController::class, 'storeRequirement']);
+Route::post('planning/requirements/{id}/delete', [App\Http\Controllers\Planning\PositionController::class, 'deleteRequirement']);
 
-Route::prefix('/planning/position-title')->group(function () {
-  Route::get('/', [PositionTitleController::class, 'index'])->name('position-title.index');
-  Route::post('/store', [PositionTitleController::class, 'store'])->name('position-title.store');
-  Route::post('/{id}/update', [PositionTitleController::class, 'update'])->name('position-title.update');
-  Route::post('/{id}/delete', [PositionTitleController::class, 'destroy'])->name('position-title.delete');
+// Qualifications
+Route::get('planning/position/{id}/qualifications', [App\Http\Controllers\Planning\PositionController::class, 'getQualifications']);
+Route::post('planning/position/{id}/qualifications/store', [App\Http\Controllers\Planning\PositionController::class, 'storeQualification']);
+Route::post('planning/qualifications/{id}/delete', [App\Http\Controllers\Planning\PositionController::class, 'deleteQualification']);
+
+//Position Level
+Route::prefix('/planning/position-level')->group(function () {
+  Route::get('/', [PositionLevelController::class, 'index'])->name('position-level.index');
+  Route::post('/store', [PositionLevelController::class, 'store'])->name('position-level.store');
+  Route::post('/{id}/update', [PositionLevelController::class, 'update'])->name('position-level.update');
+  Route::post('/{id}/delete', [PositionLevelController::class, 'destroy'])->name('position-level.delete');
 });
 
+//Parenthetical Title
 Route::prefix('/planning/parenthetical-title')->group(function () {
   Route::get('/', [ParentheticalTitleController::class, 'index'])->name('parenthetical-title.index');
   Route::post('/store', [ParentheticalTitleController::class, 'store'])->name('parenthetical-title.store');
@@ -160,44 +266,26 @@ Route::prefix('/planning/parenthetical-title')->group(function () {
   Route::post('/{id}/delete', [ParentheticalTitleController::class, 'destroy'])->name('parenthetical-title.delete');
 });
 
-Route::prefix('/planning/registration-form')->name('employee.')->group(function () {
-  Route::get('/', [UserController::class, 'create'])->name('registration-form');
-  Route::post('/store', [UserController::class, 'store'])->name('store');
-  Route::get('/get-sections', [UserController::class, 'getSections'])->name('sections');
-});
+//vacant position
+Route::get('/planning/vacant-position', [VacantPositionController::class, 'index'])->name('vacant.position');
+Route::post('/planning/vacant-positions/store', [VacantPositionController::class, 'store'])->name('vacant.positions.store');
 
-
-// ✅ This should be above any wildcard routes like /{id}
-Route::get('/planning/list-of-employee', [UserController::class, 'bladeIndex'])->name('employee.view-blade');
-
-// 👇 Move this BELOW to avoid catching the above route
-Route::get('/planning/list-of-employee/{id}', [UserController::class, 'show'])->name('employee.view');
-
-// For the Blade view
-Route::get('/planning/list-of-employee/{id}/view', [UserController::class, 'showEmployeeView'])
-  ->name('employee.show-view');
-
-// For raw JSON (AJAX/API)
-Route::get('/planning/list-of-employee/{id}', [UserController::class, 'show'])
-  ->name('employee.view');
-
+// Division Sections (used for dynamic dropdowns etc.)
 Route::get('/division/{id}/sections', [DivisionController::class, 'getSections']);
 
-
+// Employee Edit/Update (can be grouped separately if needed)
 Route::get('/employee/{id}/edit', [UserController::class, 'edit'])->name('employee.edit');
 Route::prefix('/planning/list-of-employee')->name('employee.')->group(function () {
   Route::delete('/{id}', [UserController::class, 'destroy'])->name('delete');
 });
 
-//Report Generation
+// Report Generation
 Route::prefix('planning')->group(function () {
-  Route::get('/report', [ReportController::class, 'index'])->name('planning.reports');
+  Route::get('/reports', [ReportController::class, 'index'])->name('planning.reports');
+  Route::get('/reports/export', [ReportController::class, 'export'])->name('planning.reports.export');
 });
-Route::get('/reports/export', [ReportController::class, 'export'])->name('planning.reports.export');
 
-Route::get('/planning/reports', [ReportController::class, 'index'])
-  ->name('planning.reports');
-
+//Jo Requests
 Route::prefix('planning')->name('planning.')->group(function () {
   Route::get('jo-requests', [JoRequestController::class, 'index'])->name('jo-requests.index');
   Route::post('jo-requests', [JoRequestController::class, 'store'])->name('jo-requests.store');
@@ -207,6 +295,8 @@ Route::prefix('planning')->name('planning.')->group(function () {
   Route::patch('jo-requests/{joRequest}/disapprove', [JoRequestController::class, 'disapprove'])->name('jo-requests.disapprove');
   Route::get('jo-requests/{joRequest}/print', [JoRequestController::class, 'print'])->name('jo-requests.print');
 });
+
+//-------------------------------------------------------END OF PLANNING-----------------------------------------------------------
 
 
 //PAS
@@ -299,15 +389,14 @@ Route::get('/form/layouts-horizontal', [HorizontalForm::class, 'index'])->name('
 Route::get('/learning/listofTrainings', [LearningDev::class, 'index'])->name('listofTrainings');
 Route::get('/learning/trainings', [Trainings::class, 'index'])->name('trainings');
 Route::get('/learning/calendar', [CalendarController::class, 'index'])->name('calendar'); // for calendar view
+Route::get('/calendar/events', [CalendarController::class, 'getEvents'])->name('calendar.events'); // JSON for FullCalendar
+Route::get('/calendar/events', [CalendarController::class, 'getEvents'])->name('learning.calendar.events');
 Route::get('/learning/scholarship', [ScholarshipController::class, 'index'])->name('scholarship.index');
 Route::post('/learning/scholarship', [ScholarshipController::class, 'store'])->name('scholarships.store');
 Route::post('/scholarships/{id}/status', [ScholarshipController::class, 'updateStatus'])->name('scholarships.status');
 Route::get('/learning/events', [EventsController::class, 'index'])->name('events');       // for events list page
-Route::get('/calendar/events', [CalendarController::class, 'getEvents'])->name('calendar.events'); // JSON for FullCalendar
-Route::get('/calendar/events', [CalendarController::class, 'getEvents'])->name('learning.calendar.events');
 
-Route::post('/events', [EventsController::class, 'store'])->name('events.store'); // For form submission
-Route::post('/events/store', [EventsController::class, 'store'])->name('events.store');
+Route::post('/events', [EventsController::class, 'store'])->name('events.store');
 Route::post('/events/{id}/status', [EventsController::class, 'updateStatus'])->name('events.updateStatus');
 Route::get('/learning/trainings', [CourseController::class, 'index']);
 Route::post('/courses/store', [CourseController::class, 'store'])->name('courses.store');

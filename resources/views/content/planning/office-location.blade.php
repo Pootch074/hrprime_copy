@@ -11,8 +11,8 @@
 <div class="card">
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4>List of Office Locations</h4>
-      <button id="openModalBtn" class="btn btn-success">+ Add New Office Location</button>
+      <h4 style="color: #1d4bb2;">List of Office Locations</h4>
+      <button id="openModalBtn" class="btn btn-success">Add New Office Location</button>
     </div>
 
     <div class="table-responsive">
@@ -29,8 +29,8 @@
           @foreach($officeLocations as $index => $location)
           <tr data-id="{{ $location->id }}">
             <td>{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</td>
-            <td>{{ $location->name }}</td>
-            <td>{{ $location->abbreviation }}</td>
+            <td>{{ Str::upper($location->name) }}</td>
+            <td>{{ Str::upper($location->abbreviation) }}</td>
             <td>
               <button class="btn btn-sm btn-primary edit-btn"
                 data-id="{{ $location->id }}"
@@ -50,16 +50,19 @@
 <div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <h5 class="modal-title m-3">Add New Office Location</h5>
+      <div class="modal-header">
+          <h5 class="modal-title">Add New Office Location</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
       <form id="locationForm">
         <div class="modal-body">
           <div class="mb-3">
             <label>Location Name</label>
-            <input type="text" name="name" class="form-control" required>
+           <input type="text" name="name" class="form-control text-uppercase" required>
           </div>
-          <div class="mb-3">
+          <div class="mb-3">  
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" class="form-control">
+            <input type="text" name="abbreviation" class="form-control  text-uppercase" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -84,11 +87,11 @@
           <input type="hidden" name="id" id="editLocationId">
           <div class="mb-3">
             <label>Location Name</label>
-            <input type="text" name="name" id="editLocationName" class="form-control" required>
+          <input type="text" name="name" id="editLocationName" class="form-control text-uppercase" required>
           </div>
           <div class="mb-3">
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" id="editLocationAbbreviation" class="form-control">
+            <input type="text" name="abbreviation" id="editLocationAbbreviation" class="form-control text-uppercase">
           </div>
         </div>
         <div class="modal-footer">
@@ -125,7 +128,6 @@
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
   $('#openModalBtn').click(function() {

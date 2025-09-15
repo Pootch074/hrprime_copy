@@ -24,6 +24,10 @@ class SectionController extends Controller
       'abbreviation' => 'required|string|max:50',
     ]);
 
+    // Convert values to uppercase before saving
+    $validated['name'] = strtoupper($validated['name']);
+    $validated['abbreviation'] = strtoupper($validated['abbreviation']);
+
     Section::create($validated);
 
     return response()->json(['success' => true]);
@@ -36,6 +40,10 @@ class SectionController extends Controller
       'name' => 'required|string|max:255',
       'abbreviation' => 'required|string|max:50',
     ]);
+
+    // Convert values to uppercase before updating
+    $validated['name'] = strtoupper($validated['name']);
+    $validated['abbreviation'] = strtoupper($validated['abbreviation']);
 
     $section = Section::findOrFail($id);
     $section->update($validated);

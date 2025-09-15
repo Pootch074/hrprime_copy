@@ -13,64 +13,133 @@
       ]
     },
     {
+      "name": "User Profile",
+      "icon": "menu-icon tf-icons ri-user-2-line",
+      "slug": "profile",
+      "submenu": [
+        {
+          "url": "planning/profile/basic-information",
+          "name": "Basic Information",
+          "slug": "basic"
+        },
+        {
+          "url": "planning/profile/family-background",
+          "name": "Family Background",
+          "slug": "background"
+        },
+        {
+          "url": "planning/profile/education",
+          "name": "Educational",
+          "slug": "education"
+        },
+        {
+          "url": "planning/profile/cs-eligibilty",
+          "name": "CS Eligibility",
+          "slug": "eligibility"
+        },
+        {
+          "url": "planning/profile/experience",
+          "name": "Work Experience",
+          "slug": "experience"
+        },
+        {
+          "url": "planning/profile/voluntary-work",
+          "name": "Voluntary Work",
+          "slug": "voluntary"
+        },
+        {
+          "url": "planning/profile/learning-developmwnt",
+          "name": "Learning and Development",
+          "slug": "landd"
+        },
+        {
+          "url": "planning/profile/reference",
+          "name": "References",
+          "slug": "references"
+        },
+        {
+          "url": "planning/profile/government-id",
+          "name": "Government ID",
+          "slug": "id"
+        },
+        {
+          "url": "planning/profile/non-academic",
+          "name": "Non-academic",
+          "slug": "non-academic"
+        },
+        {
+          "url": "planning/profile/organization",
+          "name": "Organization",
+          "slug": "organization"
+        },
+        {
+          "url": "planning/profile/skills",
+          "name": "Skills",
+          "slug": "skills"
+        },
+        {
+          "url": "planning/profile/courses_list",
+          "name": "List of Courses ",
+          "slug": "courses_list"
+        }
+      ]
+    },
+    {
       "name": "Planning",
       "icon": "menu-icon tf-icons ri-layout-2-line",
       "slug": "planning",
       "submenu": [
         {
-          "url": "planning/list-of-employee",
-          "name": "List of Employee",
-          "slug": "list-of-employee"
+          "url": "planning/dashboard",
+          "name": "Dashboard",
+          "slug": "dashboard"
         },
         {
-          "url": "planning/registration-form",
-          "name": "Registration Form",
-          "slug": "registration-form"
+          "name": "Employment Data",
+          "slug": "employment-data",
+          "submenu": [
+            {
+              "url": "planning/employment-status",
+              "name": "Employment Status",
+              "slug": "employment-status"
+            },
+            {
+              "url": "planning/position",
+              "name": "Position",
+              "slug": "position"
+            },
+            {
+              "url": "planning/section",
+              "name": "Item Number",
+              "slug": "section"
+            }
+          ]
         },
         {
-          "url": "planning/office-location",
-          "name": "Office Location",
-          "slug": "office-location"
-        },
-        {
-          "url": "planning/division",
-          "name": "Division",
-          "slug": "division"
-        },
-        {
-          "url": "planning/section",
-          "name": "Section",
-          "slug": "section"
-        },
-        {
-          "url": "planning/unit",
-          "name": "Unit",
-          "slug": "unit"
-        },
-        {
-          "url": "planning/employment-status",
-          "name": "Employment Status",
-          "slug": "employment-status"
-        },
-        {
-          "url": "planning/salary-grade",
-          "name": "Salary Grade",
-          "slug": "salary-grade"
-        },
-        {
-          "url": "planning/position",
-          "name": "List of Positions",
-          "slug": "position"
-        },
-        {
-          "url": "planning/position-title",
-          "name": "Position Title",
-          "slug": "position-title"
-        },
-        {
-          "url": "planning/parenthetical-title",
-          "name": "Parenthetical Title",
-          "slug": "parenthetical-title"
+          "name": "OBSU",
+          "slug": "OBSU",
+          "submenu": [
+            {
+              "url": "planning/office-location",
+              "name": "Office Locations",
+              "slug": "office-location"
+            },
+            {
+              "url": "planning/division",
+              "name": "Divisions",
+              "slug": "division"
+            },
+            {
+              "url": "planning/section",
+              "name": "Sections",
+              "slug": "section"
+            },
+            {
+              "url": "planning/unit",
+              "name": "Units",
+              "slug": "unit"
+            }
+          ]
         },
         {
           "url": "planning/jo-requests",

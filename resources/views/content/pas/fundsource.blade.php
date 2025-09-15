@@ -18,7 +18,7 @@ $containerNav = 'container-fluid';
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4>List of Fund Source</h4>
-      <button id="openModalBtn" class="btn btn-success">+ Add New Fund Source</button>
+      <button id="openModalBtn" class="btn btn-success">Add New Fund Source</button>
     </div>
 
     <div class="table-responsive">

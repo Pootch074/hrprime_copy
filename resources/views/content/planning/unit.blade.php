@@ -11,43 +11,42 @@
 <div class="card">
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4>List of Units</h4>
-      <button id="openModalBtn" class="btn btn-success">+ Add New Unit</button>
+      <h4 style="color: #1d4bb2;">List of Units</h4>
+      <button id="openModalBtn" class="btn btn-success">Add New Unit</button>
     </div>
 
     <div class="table-responsive">
       <table id="unitTable" class="table">
         <thead class="table-light">
-          <tr>
             <th>No.</th>
             <th>Division</th>
             <th>Section</th>
             <th>Unit Name</th>
             <th>Abbreviation</th>
             <th>Actions</th>
-          </tr>
-        </thead>
         <tbody>
           @foreach($units as $index => $unit)
           <tr>
             <td>{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</td>
             <td>{{ $unit->section->division->name ?? 'N/A' }}</td>
-            <td>{{ $unit->section->name ?? 'N/A' }}</td>
-            <td>{{ $unit->name }}</td>
-            <td>{{ $unit->abbreviation }}</td>
+            <td>{{ strtoupper($unit->section->name ?? 'N/A') }}</td>
+            <td>{{ strtoupper($unit->name) }}</td>
+            <td>{{ strtoupper($unit->abbreviation) }}</td>
             <td>
-              <button class="btn btn-primary btn-sm editBtn"
-                data-id="{{ $unit->id }}"
-                data-division="{{ $unit->section->division_id }}"
-                data-section="{{ $unit->section_id }}"
-                data-name="{{ $unit->name }}"
-                data-abbreviation="{{ $unit->abbreviation }}">
-                Edit
-              </button>
+              <div class="d-flex gap-1">
+                <button class="btn btn-primary btn-sm editBtn"
+                  data-id="{{ $unit->id }}"
+                  data-division="{{ $unit->section->division_id }}"
+                  data-section="{{ $unit->section_id }}"
+                  data-name="{{ $unit->name }}"
+                  data-abbreviation="{{ $unit->abbreviation }}">
+                  Edit
+                </button>
 
-              <button class="btn btn-danger btn-sm deleteBtn" data-id="{{ $unit->id }}">
-                Delete
-              </button>
+                <button class="btn btn-danger btn-sm deleteBtn" data-id="{{ $unit->id }}">
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
           @endforeach
@@ -82,11 +81,11 @@
           </div>
           <div class="mb-3">
             <label>Unit Name</label>
-            <input type="text" name="name" class="form-control" required>
+            <input type="text" name="name" class="form-control text-uppercase" text required>
           </div>
           <div class="mb-3">
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" class="form-control" required>
+            <input type="text" name="abbreviation" class="form-control text-uppercase" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -101,13 +100,13 @@
 <div class="modal fade" id="editUnitModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <h5 class="modal-title m-3">Edit Unit</h5>
+      <h5 class="modal-title m-3 ">Edit Unit</h5>
       <form id="editUnitForm">
         <div class="modal-body">
           <input type="hidden" name="unit_id" id="edit_unit_id">
           <div class="mb-3">
             <label>Division</label>
-            <select name="division_id" id="edit_division_id" class="form-control" required>
+            <select name="division_id" id="edit_division_id" class="form-control text-uppercase" required>
               <option value="">Select Division</option>
               @foreach($divisions as $division)
               <option value="{{ $division->id }}">{{ $division->name }}</option>
@@ -116,17 +115,17 @@
           </div>
           <div class="mb-3">
             <label>Section</label>
-            <select name="section_id" id="edit_section_id" class="form-control" required>
+            <select name="section_id" id="edit_section_id" class="form-control text-uppercase" required>
               <option value="">Select Section</option>
             </select>
           </div>
           <div class="mb-3">
             <label>Unit Name</label>
-            <input type="text" name="name" id="edit_name" class="form-control" required>
+            <input type="text" name="name" id="edit_name" class="form-control text-uppercase" required>
           </div>
           <div class="mb-3">
             <label>Abbreviation</label>
-            <input type="text" name="abbreviation" id="edit_abbreviation" class="form-control" required>
+            <input type="text" name="abbreviation" id="edit_abbreviation" class="form-control text-uppercase" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -145,7 +144,6 @@
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   // Initialize DataTable
   $('#unitTable').DataTable();

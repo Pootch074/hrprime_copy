@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('position_titles', function (Blueprint $table) {
-            //
+        Schema::create('parenthetical_titles', function (Blueprint $table) {
+            $table->id();
+            $table->string('position_name');     // Title name
+            $table->string('abbreviation');      // Short form
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('position_titles', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('parenthetical_titles');
     }
 };

@@ -14,4 +14,11 @@ class Course extends Model
     'date',
     'file_path'
   ];
+
+  public function users()
+  {
+    return $this->belongsToMany(User::class, 'course_enrollments')
+      ->withPivot('status')
+      ->withTimestamps();
+  }
 }

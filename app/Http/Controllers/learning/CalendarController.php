@@ -30,8 +30,8 @@ class CalendarController extends Controller
 
       $formatted[] = [
         'title' => $event->title,
-        'start' => $event->date_from,
-        'end'   => $event->date_to ? date('Y-m-d', strtotime($event->date_to . ' +1 day')) : null,
+        'start' => $event->dateFrom,
+        'end'   => $event->dateTo ? date('Y-m-d', strtotime($event->dateTo . ' +1 day')) : null,
         'color' => $color,
         'type'  => $event->type,
         'status' => $event->status,

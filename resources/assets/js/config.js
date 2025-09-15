@@ -10,12 +10,12 @@
 // JS global variables
 window.config = {
   colors: {
-    primary: '#8c57ff',
+    primary: '#1d4bb2',
     secondary: '#8a8d93',
     success: '#56ca00',
     info: '#16b1ff',
     warning: '#ffb400',
-    danger: '#ff4c51',
+    danger: '#d72c23',
     dark: '#4b4b4b',
     black: '#2e263d',
     white: '#fff',
