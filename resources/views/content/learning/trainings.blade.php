@@ -28,7 +28,6 @@
     display: inline-block;
   }
 
-  //
   .search-input {
     padding: 10px;
     border: 1px solid #ccc;

@@ -147,12 +147,12 @@
 <script>
   $('#positionLevelTable').DataTable();
 
-  $('#openModalBtn').click(function () {
+  $('#openModalBtn').click(function() {
     $('#positionLevelForm')[0].reset();
     new bootstrap.Modal(document.getElementById('positionLevelModal')).show();
   });
 
-  $('#positionLevelForm').submit(function (e) {
+  $('#positionLevelForm').submit(function(e) {
     e.preventDefault();
     $.ajax({
       url: '{{ route("position-level.store") }}',
@@ -161,18 +161,18 @@
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       },
-      success: function (response) {
+      success: function(response) {
         toastr.success('Position Level added successfully!');
         bootstrap.Modal.getInstance(document.getElementById('positionLevelModal')).hide();
         setTimeout(() => location.reload(), 500);
       },
-      error: function (xhr) {
+      error: function(xhr) {
         toastr.error('Error: ' + (xhr.responseJSON.message ?? 'Failed to add.'));
       }
     });
   });
 
-  $(document).on('click', '.edit-btn', function () {
+  $(document).on('click', '.edit-btn', function() {
     const data = $(this).data();
     $('#editPositionLevelId').val(data.id);
     $('#editPositionLevelName').val(data.level_name);
@@ -181,7 +181,7 @@
     new bootstrap.Modal(document.getElementById('editPositionLevelModal')).show();
   });
 
-  $('#editPositionLevelForm').submit(function (e) {
+  $('#editPositionLevelForm').submit(function(e) {
     e.preventDefault();
     const id = $('#editPositionLevelId').val();
     $.ajax({
@@ -191,36 +191,36 @@
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       },
-      success: function (response) {
+      success: function(response) {
         toastr.success('Position Level updated successfully!');
         bootstrap.Modal.getInstance(document.getElementById('editPositionLevelModal')).hide();
         setTimeout(() => location.reload(), 500);
       },
-      error: function (xhr) {
+      error: function(xhr) {
         toastr.error('Error: ' + (xhr.responseJSON.message ?? 'Failed to update.'));
       }
     });
   });
 
   let deleteId = null;
-  $(document).on('click', '.delete-btn', function () {
+  $(document).on('click', '.delete-btn', function() {
     deleteId = $(this).data('id');
     new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
   });
 
-  $('#confirmDeleteBtn').click(function () {
+  $('#confirmDeleteBtn').click(function() {
     $.ajax({
       url: `/planning/position-level/${deleteId}/delete`,
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       },
-      success: function (response) {
+      success: function(response) {
         toastr.success('Position Level deleted successfully!');
         bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
         setTimeout(() => location.reload(), 500);
       },
-      error: function (xhr) {
+      error: function(xhr) {
         toastr.error('Error: ' + (xhr.responseJSON.message ?? 'Failed to delete.'));
       }
     });
