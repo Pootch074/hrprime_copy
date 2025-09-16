@@ -9,6 +9,6 @@ class Trainings extends Controller
 {
   public function index()
   {
-    return view('content.learning.trainings');
+    return view('content.learning.trainings'); //
   }
 }

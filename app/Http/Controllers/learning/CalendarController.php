@@ -10,7 +10,7 @@ class CalendarController extends Controller
 {
   public function index()
   {
-    return view('content.learning.calendar'); // this view must exist!
+    return view('content.learning.calendar'); // this view must exist! //
   }
 
   public function getEvents()

@@ -11,7 +11,7 @@ class ScholarshipController extends Controller
   public function index()
   {
     $scholarships = Scholarship::all();
-    return view('content.learning.scholarship', compact('scholarships'));
+    return view('content.learning.scholarship', compact('scholarships')); //
   }
 
   public function store(Request $request)

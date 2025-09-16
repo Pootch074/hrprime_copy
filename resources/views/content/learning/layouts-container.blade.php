@@ -18,5 +18,5 @@ $containerNav = 'container-xxl';
     <p>Container layout sets a <code>max-width</code> at each responsive breakpoint.</p>
   </div>
 </div>
-<!--/ Layout Demo -->
+<!--/ Layout Demo --> //
 @endsection

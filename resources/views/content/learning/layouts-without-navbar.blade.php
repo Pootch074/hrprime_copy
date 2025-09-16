@@ -18,6 +18,6 @@ $isNavbar = false;
     <p>Layout does not contain Navbar component.</p>
   </div>
 </div>
-<!--/ Layout Demo -->
+<!--/ Layout Demo --> //
 
 @endsection

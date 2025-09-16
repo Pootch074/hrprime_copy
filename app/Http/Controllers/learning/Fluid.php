@@ -12,3 +12,4 @@ class Fluid extends Controller
     return view('content.layouts-example.layouts-fluid');
   }
 }
+//

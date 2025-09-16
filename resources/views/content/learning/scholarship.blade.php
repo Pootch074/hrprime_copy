@@ -211,5 +211,5 @@
       info: true
     });
   });
-</script>
+</script> //
 @endpush

@@ -31,7 +31,7 @@ class EventsController extends Controller
       $event = Event::create([
         'title'      => $validated['title'],
         'type'       => $validated['type'],
-        'dateFrom'  => $validated['dateFrom'], // validated from form
+        'dateFrom'  => $validated['dateFrom'], // validated from form //
         'dateTo'    => $validated['dateTo'],
         'status'     => $validated['status'],
         'addedBy'   => auth()->check() ? auth()->user()->name : $request->input('addedBy', 'System'),

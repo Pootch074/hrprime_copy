@@ -64,7 +64,7 @@ class CourseController extends Controller
       $validated['file_path'] = 'courses/' . $filename;
     }
 
-    $course->update($validated);
+    $course->update($validated); //
 
     return response()->json([
       'message' => 'Course updated successfully.',

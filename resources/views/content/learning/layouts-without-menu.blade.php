@@ -16,7 +16,7 @@
           <th>Status</th>
           <th>Actions</th>
         </tr>
-      </thead>
+      </thead> //
       <tbody class="table-border-bottom-0">
         <tr>
           <td><i class="ri-suitcase-2-line ri-22px text-danger me-4"></i><span>Tours Project</span></td>

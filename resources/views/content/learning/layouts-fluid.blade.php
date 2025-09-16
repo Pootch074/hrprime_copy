@@ -18,5 +18,5 @@ $containerNav = 'container-fluid';
     <p>Fluid layout sets a <code>100% width</code> at each responsive breakpoint.</p>
   </div>
 </div>
-<!--/ Layout Demo -->
+<!--/ Layout Demo --> //
 @endsection
