@@ -57,6 +57,11 @@ use App\Http\Controllers\pas\ImportPayrollController;
 use App\Http\Controllers\pas\LeaveCreditsController;
 
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\RequirementController;
+use App\Http\Controllers\Planning\PositionController;
+use App\Http\Controllers\ItemNumberController;
+use App\Http\Controllers\UnfilledPositionsController;
+
 // Login Page
 // Redirect root URL to login page
 Route::get('/', function () {
@@ -195,6 +200,7 @@ Route::prefix('/planning/parenthetical-title')->group(function () {
 Route::get('/planning/vacant-position', [VacantPositionController::class, 'index'])->name('vacant.position');
 Route::post('/planning/vacant-positions/store', [VacantPositionController::class, 'store'])->name('vacant.positions.store');
 
+
 // Division Sections (used for dynamic dropdowns etc.)
 Route::get('/division/{id}/sections', [DivisionController::class, 'getSections']);
 
@@ -219,6 +225,42 @@ Route::prefix('planning')->name('planning.')->group(function () {
   Route::patch('jo-requests/{joRequest}/approve', [JoRequestController::class, 'approve'])->name('jo-requests.approve');
   Route::patch('jo-requests/{joRequest}/disapprove', [JoRequestController::class, 'disapprove'])->name('jo-requests.disapprove');
   Route::get('jo-requests/{joRequest}/print', [JoRequestController::class, 'print'])->name('jo-requests.print');
+});
+
+
+
+// Positions
+Route::prefix('planning')->group(function () {
+  Route::resource('positions', PositionController::class);
+});
+
+// Requirements
+Route::prefix('requirements')->group(function () {
+  Route::get('/position/{positionId}', [RequirementController::class, 'getByPosition']);
+  Route::post('/store/{positionId}', [RequirementController::class, 'store']);
+  Route::put('/{id}', [RequirementController::class, 'update']);
+  Route::delete('/{id}', [RequirementController::class, 'destroy']);
+});
+
+Route::prefix('planning')->group(function () {
+
+  Route::resource('item-numbers', ItemNumberController::class);
+  Route::get('/item-numbers', [ItemNumberController::class, 'index']);
+  Route::post('/item-numbers', [ItemNumberController::class, 'store']);
+  Route::put('/item-numbers/{id}', [ItemNumberController::class, 'update']);
+  Route::delete('/item-numbers/{id}', [ItemNumberController::class, 'destroy']);
+});
+Route::get('/planning/item-numbers/next/{statusId}/{positionId}', [ItemNumberController::class, 'getNextNumber']);
+Route::get('/planning/item-numbers/data', [ItemNumberController::class, 'getData'])->name('item-numbers.data');
+Route::post('/planning/item-numbers/store', [ItemNumberController::class, 'store'])->name('item-numbers.store');
+Route::get('/planning/item-numbers/next-number', [ItemNumberController::class, 'getNextNumber']);
+
+
+Route::prefix('planning/unfilled-positions')->group(function () {
+  Route::get('/', [UnfilledPositionsController::class, 'index'])->name('unfilled_positions.index');
+  Route::get('/{id}', [UnfilledPositionsController::class, 'show'])->name('unfilled_positions.show');
+  Route::post('/{id}/applicants', [UnfilledPositionsController::class, 'storeApplicant'])
+    ->name('unfilled_positions.applicants.store');
 });
 
 
@@ -295,26 +337,6 @@ Route::get('/portfolio', [Analytics::class, 'index'])->name('portfolio');
 // cards
 Route::get('/cards/basic', [CardBasic::class, 'index'])->name('cards-basic');
 
-// User Interface
-// Route::get('/ui/accordion', [Accordion::class, 'index'])->name('ui-accordion');
-// Route::get('/ui/alerts', [Alerts::class, 'index'])->name('ui-alerts');
-// Route::get('/ui/badges', [Badges::class, 'index'])->name('ui-badges');
-// Route::get('/ui/buttons', [Buttons::class, 'index'])->name('ui-buttons');
-// Route::get('/ui/carousel', [Carousel::class, 'index'])->name('ui-carousel');
-// Route::get('/ui/collapse', [Collapse::class, 'index'])->name('ui-collapse');
-// Route::get('/ui/dropdowns', [Dropdowns::class, 'index'])->name('ui-dropdowns');
-// Route::get('/ui/footer', [Footer::class, 'index'])->name('ui-footer');
-// Route::get('/ui/list-groups', [ListGroups::class, 'index'])->name('ui-list-groups');
-// Route::get('/ui/modals', [Modals::class, 'index'])->name('ui-modals');
-// Route::get('/ui/navbar', [Navbar::class, 'index'])->name('ui-navbar');
-// Route::get('/ui/offcanvas', [Offcanvas::class, 'index'])->name('ui-offcanvas');
-// Route::get('/ui/pagination-breadcrumbs', [PaginationBreadcrumbs::class, 'index'])->name('ui-pagination-breadcrumbs');
-// Route::get('/ui/progress', [Progress::class, 'index'])->name('ui-progress');
-// Route::get('/ui/spinners', [Spinners::class, 'index'])->name('ui-spinners');
-// Route::get('/ui/tabs-pills', [TabsPills::class, 'index'])->name('ui-tabs-pills');
-// Route::get('/ui/toasts', [Toasts::class, 'index'])->name('ui-toasts');
-// Route::get('/ui/tooltips-popovers', [TooltipsPopovers::class, 'index'])->name('ui-tooltips-popovers');
-// Route::get('/ui/typography', [Typography::class, 'index'])->name('ui-typography');
 
 // extended ui
 Route::get('/extended/ui-perfect-scrollbar', [PerfectScrollbar::class, 'index'])->name('extended-ui-perfect-scrollbar');

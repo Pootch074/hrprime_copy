@@ -26,7 +26,7 @@ class RequirementController extends Controller
 
       return response()->json(['success' => true]);
     } catch (\Exception $e) {
-      \Log::error('Requirement store error: ' . $e->getMessage());
+      // \Log::error('Requirement store error: ' . $e->getMessage());
       return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
     }
   }

@@ -22,8 +22,7 @@
             <th>No.</th>
             <th>Item Number</th>
             <th>Position</th>
-            <th>Salary Grade</th>
-            <th>Employment Status</th>
+            <th>Stature</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -34,20 +33,19 @@
             <td>{{ $index + 1 }}</td>
             <td>{{ $item->item_number }}</td>
             <td>{{ $item->position->position_name ?? '-' }}</td>
-            <td>{{ $item->salaryGrade->name ?? '-' }}</td>
-            <td>{{ $item->employmentStatus->name ?? '-' }}</td>
-            <td>{{ ucfirst($item->status ?? 'active') }}</td>
+            <td>{{ ucfirst($item->stature) }}</td>
+            <td>{{ ucfirst($item->status) }}</td>
             <td class="text-nowrap">
               <div class="d-inline-flex gap-1">
+                {{-- Edit button --}}
                 <button class="btn btn-sm btn-primary edit-btn"
                   data-id="{{ $item->id }}"
                   data-item_number="{{ $item->item_number }}"
                   data-position_id="{{ $item->position_id }}"
-                  data-salary_grade_id="{{ $item->salary_grade_id }}"
-                  data-employment_status_id="{{ $item->employment_status_id }}"
                   data-status="{{ $item->status }}">
                   Edit
                 </button>
+                {{-- Delete button --}}
                 <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $item->id }}">
                   Delete
                 </button>
@@ -60,18 +58,28 @@
     </div>
   </div>
 </div>
-
 <!-- Add Modal -->
-<div class="modal fade" id="itemNumberModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="itemNumberModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <h5 class="modal-title m-3">Add New Item Number</h5>
       <form id="itemNumberForm">
         <div class="modal-body">
+          <!-- Employment Status -->
           <div class="mb-3">
-            <label>Item Number</label>
-            <input type="text" name="item_number" class="form-control" required>
+            <label>Employment Status</label>
+            <select id="employmentStatusId" name="employment_status_id" class="form-control">
+              <option value="">-- Select Employment Status --</option>
+              @foreach($employmentStatuses as $status)
+              <option value="{{ $status->id }}" data-abbreviation="{{ $status->abbreviation }}">
+                {{ $status->name }}
+              </option>
+              @endforeach
+            </select>
+
           </div>
+
+          <!-- Position -->
           <div class="mb-3">
             <label>Position</label>
             <select name="position_id" class="form-control" required>
@@ -81,24 +89,24 @@
               @endforeach
             </select>
           </div>
+
+          <!-- Salary Grade -->
           <div class="mb-3">
             <label>Salary Grade</label>
             <select name="salary_grade_id" class="form-control" required>
               <option value="">-- Select Salary Grade --</option>
-              @foreach($salaryGrades as $sg)
-              <option value="{{ $sg->id }}">{{ $sg->name }}</option>
+              @foreach($salaryGrades as $grade)
+              <option value="{{ $grade->id }}">{{ $grade->sg_num }}</option>
               @endforeach
             </select>
           </div>
+
+
           <div class="mb-3">
-            <label>Employment Status</label>
-            <select name="employment_status_id" class="form-control" required>
-              <option value="">-- Select Employment Status --</option>
-              @foreach($employmentStatuses as $es)
-              <option value="{{ $es->id }}">{{ $es->name }}</option>
-              @endforeach
-            </select>
+            <label>Item Number</label>
+            <input type="text" name="item_number" id="itemNumber" class="form-control" readonly required>
           </div>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -109,8 +117,9 @@
   </div>
 </div>
 
+
 <!-- Edit Modal -->
-<div class="modal fade" id="editItemNumberModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="editItemNumberModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <h5 class="modal-title m-3">Edit Item Number</h5>
@@ -118,8 +127,13 @@
         <input type="hidden" name="id" id="editItemNumberId">
         <div class="modal-body">
           <div class="mb-3">
-            <label>Item Number</label>
-            <input type="text" name="item_number" id="editItemNumber" class="form-control" required>
+            <label>Employment Status</label>
+            <select name="employment_status_id" id="editEmploymentStatusId" class="form-control" required>
+              <option value="">-- Select Status --</option>
+              @foreach($employmentStatuses as $status)
+              <option value="{{ $status->id }}">{{ $status->name }}</option>
+              @endforeach
+            </select>
           </div>
           <div class="mb-3">
             <label>Position</label>
@@ -135,18 +149,13 @@
             <select name="salary_grade_id" id="editSalaryGradeId" class="form-control" required>
               <option value="">-- Select Salary Grade --</option>
               @foreach($salaryGrades as $sg)
-              <option value="{{ $sg->id }}">{{ $sg->name }}</option>
+              <option value="{{ $sg->id }}">{{ $sg->sg_num }}</option>
               @endforeach
             </select>
           </div>
           <div class="mb-3">
-            <label>Employment Status</label>
-            <select name="employment_status_id" id="editEmploymentStatusId" class="form-control" required>
-              <option value="">-- Select Employment Status --</option>
-              @foreach($employmentStatuses as $es)
-              <option value="{{ $es->id }}">{{ $es->name }}</option>
-              @endforeach
-            </select>
+            <label>Item Number</label>
+            <input type="text" name="item_number" id="editItemNumber" class="form-control" readonly required>
           </div>
           <div class="mb-3">
             <label>Status</label>
@@ -165,16 +174,81 @@
   </div>
 </div>
 
+
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
   $(document).ready(function() {
-    $('#itemNumberTable').DataTable();
+    function updateItemNumber() {
+      let statusId = $('#employmentStatusId').val();
+      let abbr = $('#employmentStatusId option:selected').data('abbreviation'); // ✅ use abbreviation
+      let positionId = $('select[name="position_id"]').val();
+      let positionText = $('select[name="position_id"] option:selected').text();
+
+      if (!statusId) {
+        $('#itemNumber').val('');
+        return;
+      }
+
+      // Build preview first: ABBR-POSITION
+      let preview = abbr ? abbr : '';
+      if (positionId) {
+        preview += '-' + positionText;
+      }
+      $('#itemNumber').val(preview);
+
+      // If both are selected, request next number
+      if (statusId && positionId) {
+        $.get(`/planning/item-numbers/next/${statusId}/${positionId}`, function(data) {
+          // Example backend returns { item_number: "FO XI-CASUAL-ADMINISTRATIVE AIDE IV-000002" }
+          $('#itemNumber').val(data.item_number);
+        });
+      }
+    }
+
+    // Triggers
+    $('#employmentStatusId').change(updateItemNumber);
+    $('select[name="position_id"]').change(updateItemNumber);
+  });
+</script>
+
+
+
+<script>
+  $(function() {
+
+
+    // ✅ Bootstrap Modals
+    const addModal = new bootstrap.Modal('#itemNumberModal');
+    const editModal = new bootstrap.Modal('#editItemNumberModal');
+
+    // ✅ Reusable AJAX helper
+    function ajaxRequest(url, method, data, onSuccess) {
+      $.ajax({
+        url,
+        method,
+        data,
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res) {
+          toastr.success(res.message || "Success");
+          if (onSuccess) onSuccess(res);
+        },
+        error: function(xhr) {
+          if (xhr.responseJSON?.errors) {
+            Object.values(xhr.responseJSON.errors).forEach(msg => toastr.error(msg));
+          } else {
+            toastr.error(xhr.responseJSON?.message || "An error occurred");
+          }
+        }
+      });
+    }
 
     $.ajaxSetup({
       headers: {
@@ -182,87 +256,99 @@
       }
     });
 
-    // Open Add Modal
-    $('#openModalBtn').click(function() {
-      $('#itemNumberForm')[0].reset();
-      $('#itemNumberModal').modal('show');
-      alert('dsdds');
-    });
-
-    // Add Item Number
-    $('#itemNumberForm').submit(function(e) {
+    $('#itemNumberForm').on('submit', function(e) {
       e.preventDefault();
+
       $.ajax({
         url: '/planning/item-numbers',
-        type: 'POST',
+        method: 'POST',
         data: $(this).serialize(),
-        success: function(data) {
-          if (data.success) {
-            toastr.success(data.message);
-            $('#itemNumberModal').modal('hide');
-            location.reload();
-          }
+        success: function(res) {
+          toastr.success(res.message);
+
+
+          // Reset form
+          $('#itemNumberForm')[0].reset();
+
+          // Close modal
+          addModal.hide();
+          // 🔄 Refresh DataTable WITHOUT full page reload
+          location.reload();
         },
         error: function(xhr) {
-          let errors = xhr.responseJSON.errors;
-          if (errors) {
-            Object.values(errors).forEach(msg => toastr.error(msg));
+          if (xhr.status === 422) {
+            $.each(xhr.responseJSON.errors, function(field, messages) {
+              toastr.error(messages[0]);
+            });
+          } else {
+            toastr.error("Something went wrong.");
           }
+          console.log(xhr.responseJSON);
         }
       });
     });
 
-    // Open Edit Modal
-    $(document).on('click', '.edit-btn', function() {
-      let btn = $(this);
-      $('#editItemNumberId').val(btn.data('id'));
-      $('#editItemNumber').val(btn.data('item_number'));
-      $('#editPositionId').val(btn.data('position_id'));
-      $('#editSalaryGradeId').val(btn.data('salary_grade_id'));
-      $('#editEmploymentStatusId').val(btn.data('employment_status_id'));
-      $('#editStatus').val(btn.data('status'));
-      $('#editItemNumberModal').modal('show');
-    });
 
-    // Update Item Number
-    $('#editItemNumberForm').submit(function(e) {
-      e.preventDefault();
-      let id = $('#editItemNumberId').val();
-      $.ajax({
-        url: '/planning/item-numbers/' + id,
-        type: 'PUT',
-        data: $(this).serialize(),
-        success: function(data) {
-          if (data.success) {
-            toastr.success(data.message);
-            $('#editItemNumberModal').modal('hide');
-            location.reload();
-          }
-        },
-        error: function(xhr) {
-          let errors = xhr.responseJSON.errors;
-          if (errors) {
-            Object.values(errors).forEach(msg => toastr.error(msg));
-          }
-        }
-      });
-    });
 
-    // Delete Item Number
-    $(document).on('click', '.delete-btn', function() {
-      if (!confirm('Are you sure you want to delete this item number?')) return;
-      let id = $(this).data('id');
-      $.ajax({
-        url: '/planning/item-numbers/' + id,
-        type: 'DELETE',
-        success: function(data) {
-          if (data.success) {
-            toastr.success(data.message);
-            location.reload();
-          }
-        }
+    // ✅ Open Add Modal
+    $('#openModalBtn').on('click', function() {
+      $('#itemNumberForm')[0].reset();
+      addModal.show();
+    });
+  });
+  $('#itemNumberTable').DataTable();
+</script>
+<script>
+  $(document).on('click', '.edit-btn', function() {
+    $('#editItemNumberId').val($(this).data('id'));
+    $('#editItemNumber').val($(this).data('item_number'));
+    $('#editEmploymentStatusId').val($(this).data('id'));
+    $('#editPositionId').val($(this).data('position_id'));
+    $('#editSalaryGradeId').val($(this).data('id'));
+    $('#editStatus').val($(this).data('status'));
+
+    $('#editItemNumberModal').modal('show');
+  });
+
+
+  $('#editEmploymentStatusId, #editPositionId').on('change', function() {
+    let statusId = $('#editEmploymentStatusId').val();
+    let positionId = $('#editPositionId').val();
+
+    if (statusId && positionId) {
+      $.get('/planning/item-numbers/next-number', {
+        employment_status_id: statusId,
+        position_id: positionId
+      }, function(res) {
+        $('#editItemNumber').val(res.item_number);
       });
+    }
+  });
+
+  $('#editItemNumberForm').on('submit', function(e) {
+    e.preventDefault();
+
+    let id = $('#editItemNumberId').val();
+
+    $.ajax({
+      url: '/planning/item-numbers/' + id,
+      method: 'PUT',
+      data: $(this).serialize(),
+      success: function(res) {
+        toastr.success(res.message);
+        $('#editItemNumberModal').modal('hide');
+        $('#itemNumberTable').DataTable().ajax.reload(null, false);
+      },
+      error: function(xhr) {
+        if (xhr.status === 422) {
+          toastr.error("Validation failed.");
+          console.log(xhr.responseJSON.errors);
+        } else {
+          toastr.error("Something went wrong.");
+        }
+      }
     });
   });
 </script>
-@endsection
+
+@endpush

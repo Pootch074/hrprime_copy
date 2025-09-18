@@ -14,7 +14,7 @@ class ItemNumber extends Model
     'position_id',
     'salary_grade_id',
     'employment_status_id',
-    'status',
+    'stature',
   ];
 
   public function position()
@@ -30,5 +30,10 @@ class ItemNumber extends Model
   public function employmentStatus()
   {
     return $this->belongsTo(EmploymentStatus::class);
+  }
+
+  public function applicants()
+  {
+    return $this->hasMany(Applicant::class, 'item_number_id');
   }
 }

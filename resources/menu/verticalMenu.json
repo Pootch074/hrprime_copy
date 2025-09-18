@@ -109,9 +109,9 @@
               "slug": "position"
             },
             {
-              "url": "planning/item-number",
+              "url": "planning/item-numbers",
               "name": "Item Number",
-              "slug": "item-number"
+              "slug": "item-numbers"
             }
           ]
         },
@@ -140,6 +140,11 @@
               "slug": "unit"
             }
           ]
+        },
+        {
+          "url": "planning/unfilled-positions",
+          "name": "Unfilled Positions",
+          "slug": "unfilled-positions"
         },
         {
           "url": "planning/jo-requests",
