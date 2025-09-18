@@ -94,6 +94,15 @@ Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard-analytics
 Route::get('/dashboard/dashboards-analytics', [Analytics::class, 'index'])->name('dashboards-analytics');
 
 //-------------------------------------------------------START OF PLANNING-----------------------------------------------------------
+Route::prefix('planning/applicants')->name('applicants.')->group(function () {
+    Route::get('/', [ApplicantController::class, 'index'])->name('index');
+    Route::post('/store', [ApplicantController::class, 'store'])->name('store');
+    Route::post('/{id}/update', [ApplicantController::class, 'update'])->name('update');
+    Route::post('/{id}/archive', [ApplicantController::class, 'archive'])
+    ->name('archive');
+    Route::get('/next-number', [ApplicantController::class, 'nextApplicantNumber']);
+
+});
 
 Route::prefix('planning')->group(function () {
   Route::get('/list-of-employee', [UserController::class, 'index'])->name('planning.list-of-employee');
@@ -108,8 +117,6 @@ Route::prefix('planning')->group(function () {
     Route::get('/registration-form', [RegistrationForm::class, 'index'])->name('registration-form.index');
     Route::post('/planning/list-of-employee', [UserController::class, 'store'])->name('employee.store');});
 Route::get('/planning/registration-form', [\App\Http\Controllers\Api\UserController::class, 'create'])->name('employee.registration-form');
-
-
 
     
 Route::get('/planning/list-of-employee', [UserController::class, 'bladeIndex'])->name('employee.view-blade');

@@ -101,7 +101,12 @@
           </div>
           <div class="col-md-6 mb-3">
             <label>Applicant No.</label>
-            <input type="text" name="applicant_no" class="form-control" required>
+           <input type="text"
+              class="form-control"
+              name="applicant_no"
+              value="{{ old('applicant_no', $generatedApplicantNo) }}"
+              readonly required
+              style="text-transform: uppercase; background-color: #e9ecef; cursor: not-allowed;">
           </div>
           <div class="col-md-6 mb-3">
             <label>First Name</label>

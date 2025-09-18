@@ -116,14 +116,13 @@
           "url": "planning/resigned-employees",
           "name": "Resigned Employees",
           "slug": "resigned-employees"
-        },
-        {
-         "url": "planning/import-form",
-          "name": "Import Employees",
-          "slug": "import-form"
         }
       ]
     },
+     {
+      "name": "OBSU",
+      "slug": "OBSU",
+      "submenu": [
     {
       "url": "planning/office-location",
       "name": "Office Locations",
@@ -143,6 +142,15 @@
       "url": "planning/unit",
       "name": "Units",
       "slug": "unit"
+    }]},
+     {
+      "name": "Recruitment",
+      "slug": "recruitment",
+      "submenu": [
+    {
+      "url": "planning/applicants",
+      "name": "Applicants",
+      "slug": "applicants"
     },
     {
       "url": "planning/qualification",
@@ -159,6 +167,11 @@
       "name": "Salary Grade",
       "slug": "salary-grade"
     },
+        {
+          "url": "planning/vacant-position",
+          "name": "Vacant Positions",
+          "slug": "vacant-position"
+        }]},
     {
       "name": "Positions",
       "slug": "position",
@@ -177,34 +190,9 @@
           "url": "planning/parenthetical-title",
           "name": "Parenthetical Titles",
           "slug": "parenthetical-title"
-        },
-        {
-          "url": "planning/vacant-position",
-          "name": "Vacant Positions",
-          "slug": "vacant-position"
         }
       ]
-    },
-    {
-      "url": "planning/jo-requests",
-      "name": "Requests",
-      "slug": "jo_requests"
-    },
-    {
-      "url": "planning/report",
-      "name": "Reports",
-      "slug": "report"
-    },
-    {
-      "name": "Settings",
-      "slug": "settings",
-      "submenu": [
-        {
-          "url": "planning/SG Management",
-          "name": "SG-Management",
-          "slug": "sg-management"
-        }
-      ]}
+    }
     
   ]
 },
