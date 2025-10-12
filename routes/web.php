@@ -29,6 +29,12 @@ use App\Http\Controllers\learning\CalendarController;
 use App\Http\Controllers\learning\EventsController;
 use App\Http\Controllers\learning\ScholarshipController;
 
+
+//Profile
+use App\Http\Controllers\Profile\BasicInformationController;
+use App\Http\Controllers\Profile\LocationController;
+
+
 //Planning
 use App\Http\Controllers\planning\DashboardController;
 use App\Http\Controllers\planning\ListofEmployee;
@@ -47,6 +53,9 @@ use App\Http\Controllers\Planning\PositionLevelController;
 use App\Http\Controllers\Planning\ParentheticalTitleController;
 use App\Http\Controllers\Planning\ReportController;
 use App\Http\Controllers\Planning\JoRequestController;
+
+
+
 //PAS
 use App\Http\Controllers\pas\FundSourceController;
 use App\Http\Controllers\pas\PayrollController;
@@ -62,6 +71,9 @@ use App\Http\Controllers\Planning\PositionController;
 use App\Http\Controllers\ItemNumberController;
 use App\Http\Controllers\UnfilledPositionsController;
 use App\Http\Controllers\ApplicantController;
+
+
+use App\Http\Controllers\AddressController;
 
 
 // Login Page
@@ -85,6 +97,24 @@ Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard-analytics
 // Dashboard (you can protect this later with auth middleware)
 Route::get('/dashboard/dashboards-analytics', [Analytics::class, 'index'])->name('dashboards-analytics');
 
+//-------------------------------------------------------START OF PROFILE-----------------------------------------------------------
+
+Route::get('/regions', [AddressController::class, 'getRegions']);
+Route::get('/provinces/{region_psgc}', [AddressController::class, 'getProvinces']);
+Route::get('/cities/{province_psgc}', [AddressController::class, 'getCities']);
+Route::get('/barangays/{city_psgc}', [AddressController::class, 'getBarangays']);
+
+
+Route::prefix('profile')->group(function () {
+  Route::get('basic-information', [BasicInformationController::class, 'index'])
+    ->name('profile.basic-info.index');
+
+  Route::post('basic-information/update', [BasicInformationController::class, 'update'])
+    ->name('profile.basic-info.update');
+});
+
+
+//Address
 //-------------------------------------------------------START OF PLANNING-----------------------------------------------------------
 
 Route::prefix('planning')->group(function () {
@@ -93,26 +123,13 @@ Route::prefix('planning')->group(function () {
   Route::post('/import', [UserController::class, 'importEmployees'])->name('planning.import');
 });
 
-// Users list
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/planning/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Show user profile
-Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
-
-// Edit user (optional separate page)
-Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-
-// Update user (from modal form)
-Route::put('/users/{user}/employment', [UserController::class, 'updateEmployment'])->name('users.updateEmployment');
-
-// Assign role
-Route::put('/users/{user}/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
-
-// // Registration Form Routes
-// Route::prefix('planning')->group(function () {
-//   Route::get('/registration-form', [RegistrationForm::class, 'index'])->name('registration-form.index');
-//   Route::post('/list-of-employee', [UserController::class, 'store'])->name('employee.store');
-// });
+// Registration Form Routes
+Route::prefix('planning')->group(function () {
+  Route::get('/registration-form', [RegistrationForm::class, 'index'])->name('registration-form.index');
+  Route::post('/list-of-employee', [UserController::class, 'store'])->name('employee.store');
+});
 
 // // Show Registration Form (from API\UserController)
 // Route::get('/planning/registration-form', [\App\Http\Controllers\Api\UserController::class, 'create'])->name('employee.registration-form');

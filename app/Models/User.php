@@ -71,4 +71,5 @@ class User extends Authenticatable
 
     // ... rest of logic
   }
+  
 }
