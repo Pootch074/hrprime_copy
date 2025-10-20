@@ -8,6 +8,18 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
+<style>
+  /* Make table text uppercase */
+  #workTable td, #workTable th {
+      text-transform: uppercase;
+  }
+
+  /* Make input and select text uppercase visually */
+  input.uppercase, select.uppercase {
+      text-transform: uppercase;
+  }
+</style>
+
 <div class="card">
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -19,28 +31,28 @@
       <table id="workTable" class="table">
         <thead class="table-light text-center">
           <tr>
-            <th>From</th>
-            <th>To</th>
             <th>Position Title</th>
             <th>Department/Agency</th>
             <th>Salary</th>
             <th>Salary Grade</th>
             <th>Status</th>
             <th>Government Service</th>
+            <th>From</th>
+            <th>To</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($experiences as $exp)
           <tr data-id="{{ $exp->id }}">
-            <td>{{ $exp->date_from }}</td>
-            <td>{{ $exp->date_to }}</td>
             <td>{{ $exp->position_title }}</td>
             <td>{{ $exp->department_agency }}</td>
             <td>{{ $exp->monthly_salary }}</td>
             <td>{{ $exp->salary_grade }}</td>
             <td>{{ $exp->status_of_appointment }}</td>
             <td>{{ $exp->govt_service }}</td>
+                        <td>{{ $exp->date_from }}</td>
+            <td>{{ $exp->date_to }}</td>
             <td>
               <button class="btn btn-sm btn-primary edit-work-btn"
                 data-id="{{ $exp->id }}"
@@ -80,38 +92,38 @@
             <div class="row mb-3">
             <div class="col-md-6">
             <label>FROM</label>
-            <input type="date" name="date_from" class="form-control" required>
+            <input type="date" name="date_from" class="form-control uppercase" required>
           </div>
           <div class="col-md-6">
             <label>TO</label>
-            <input type="date" name="date_to" class="form-control" required>
+            <input type="date" name="date_to" class="form-control uppercase" required>
           </div>
         </div>
           <div class="mb-3">
             <label>POSITION TITLE</label>
-            <input type="text" name="position_title" class="form-control" required>
+            <input type="text" name="position_title" class="form-control uppercase" required>
           </div>
           <div class="mb-3">
             <label>DEPARTMENT/AGENCY/BUSINESS</label>
-            <input type="text" name="department_agency" class="form-control">
+            <input type="text" name="department_agency" class="form-control uppercase">
           </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
                 <label for="monthly_salary">MONTHLY SALARY</label>
-                <input type="number" name="monthly_salary" class="form-control" step="0.01" min="0">
+                <input type="number" name="monthly_salary" class="form-control uppercase" step="0.01" min="0">
                 </div>
                 <div class="col-md-6 mb-3">
                 <label for="salary_grade">SALARY GRADE</label>
-                <input type="number" name="salary_grade" class="form-control" min="0">
+                <input type="number" name="salary_grade" class="form-control uppercase" min="0">
                 </div>
             </div>
           <div class="mb-3">
             <label>STATUS OF APPOINTMENT</label>
-            <input type="text" name="status_of_appointment" class="form-control">
+            <input type="text" name="status_of_appointment" class="form-control uppercase">
           </div>
           <div class="mb-3">
             <label>GOVERNMENT SERVICE</label>
-              <select name="govt_service" class="form-select" required>
+              <select name="govt_service" class="form-select uppercase" required>
                 <option value="">Select</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
@@ -140,17 +152,17 @@
         </div>
         <div class="modal-body">
           <div class="row mb-3">
-          <div class="col-md-6"><label>From</label><input type="date" name="date_from" id="editFrom" class="form-control" required></div>
-          <div class="col-md-6"><label>To</label><input type="date" name="date_to" id="editTo" class="form-control" required></div>
+          <div class="col-md-6"><label>FROM</label><input type="date" name="date_from" id="editFrom" class="form-control uppercase" required></div>
+          <div class="col-md-6"><label>TO</label><input type="date" name="date_to" id="editTo" class="form-control uppercase" required></div>
           </div>
-          <div class="mb-3"><label>Position Title</label><input type="text" name="position_title" id="editPosition" class="form-control" required></div>
-          <div class="mb-3"><label>Department/Agency</label><input type="text" name="department_agency" id="editDept" class="form-control"></div>
+          <div class="mb-3"><label>POSITION TITLE</label><input type="text" name="position_title" id="editPosition" class="form-control uppercase" required></div>
+          <div class="mb-3"><label>DEPATMENT/AGENCY</label><input type="text" name="department_agency" id="editDept" class="form-control uppercase"></div>
           <div class="row mb-3">
-          <div class="col-md-6"><label>Monthly Salary</label><input type="text" name="monthly_salary" id="editSalary" class="form-control"></div>
-          <div class="col-md-6"><label>Salary Grade</label><input type="text" name="salary_grade" id="editGrade" class="form-control"></div>
+          <div class="col-md-6"><label>MONTHLY SALARY</label><input type="text" name="monthly_salary" id="editSalary" class="form-control uppercase"></div>
+          <div class="col-md-6"><label>SALARY GRADE</label><input type="text" name="salary_grade" id="editGrade" class="form-control uppercase"></div>
         </div>
-          <div class="mb-3"><label>Status of Appointment</label><input type="text" name="status_of_appointment" id="editStatus" class="form-control"></div>
-          <div class="mb-3"><label>Govt Service</label><input type="text" name="govt_service" id="editGovt" class="form-control"></div>
+          <div class="mb-3"><label>STATUS OF APPOINTMENT</label><input type="text" name="status_of_appointment" id="editStatus" class="form-control uppercase"></div>
+          <div class="mb-3"><label>GOVERNMENT SERVICE</label><input type="text" name="govt_service" id="editGovt" class="form-control uppercase"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -211,6 +223,12 @@ $(document).on('click', '.edit-work-btn', function() {
     // Open the **Edit Modal**, NOT the Add modal
     new bootstrap.Modal(document.getElementById('editWorkModal')).show();
 });
+$('#workForm, #editWorkForm').on('submit', function() {
+    $(this).find('input[type="text"], select').each(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+});
+
 
 // Submit Form (Add/Edit)
 $('#workForm').submit(function(e) {

@@ -54,42 +54,42 @@
           "slug": "work-experience"
         },
         {
-          "url": "planning/profile/voluntary-work",
+          "url": "profile/voluntary-work",
           "name": "Voluntary Work",
-          "slug": "voluntary"
+          "slug": "voluntary-work"
         },
         {
-          "url": "planning/profile/learning-developmwnt",
+          "url": "profile/learning-development",
           "name": "Learning and Development",
           "slug": "landd"
         },
         {
-          "url": "planning/profile/reference",
+          "url": "profile/references",
           "name": "References",
           "slug": "references"
         },
         {
-          "url": "planning/profile/government-id",
+          "url": "profile/government-ids",
           "name": "Government ID",
           "slug": "id"
         },
         {
-          "url": "planning/profile/non-academic",
+          "url": "profile/non-academic",
           "name": "Non-academic",
           "slug": "non-academic"
         },
         {
-          "url": "planning/profile/organization",
+          "url": "profile/organization",
           "name": "Organization",
           "slug": "organization"
         },
         {
-          "url": "planning/profile/skills",
+          "url": "profile/skills",
           "name": "Skills",
           "slug": "skills"
         },
         {
-          "url": "planning/profile/other-information",
+          "url": "profile/other-information",
           "name": "Other Information",
           "slug": "other-information"
         }
