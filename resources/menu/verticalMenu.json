@@ -27,6 +27,12 @@
     {
       "name": "User Profile",
       "slug": "profile",
+      "roles": [
+        "HR-Planning",
+        "HR-Welfare",
+        "HR-PAS",
+        "HR-L&D"
+      ],
       "submenu": [
         {
           "url": "profile/basic-information",

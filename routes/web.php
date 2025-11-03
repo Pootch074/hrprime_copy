@@ -41,6 +41,8 @@ use App\Http\Controllers\Profile\GovernmentIdController;
 use App\Http\Controllers\Profile\NonAcademicController;
 use App\Http\Controllers\Profile\OrganizationController;
 use App\Http\Controllers\Profile\SkillController;
+use App\Http\Controllers\Profile\OtherInformationController;
+use App\Http\Controllers\Profile\PdsController;
 
 //Planning
 use App\Http\Controllers\planning\DashboardController;
@@ -199,6 +201,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('profile/skills/{id}', [SkillController::class, 'update'])->name('profile.skills.update');
     Route::delete('profile/skills/{id}', [SkillController::class, 'destroy'])->name('profile.skills.destroy');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('profile/other-information', [OtherInformationController::class, 'index'])->name('profile.other-information.index');
+    Route::post('profile/other-information', [OtherInformationController::class, 'store'])->name('profile.other-information.store');
+});
+
+Route::get('/pds/print', [PdsController::class, 'generate'])->name('pds.print');
+
 //Address
 //-------------------------------------------------------START OF PLANNING-----------------------------------------------------------
 

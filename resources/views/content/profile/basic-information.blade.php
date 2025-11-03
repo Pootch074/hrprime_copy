@@ -3,6 +3,13 @@
 @section('title', 'Basic Information')
 
 @section('content')
+
+<style>
+.uppercase {
+  text-transform: uppercase;
+}
+</style>
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
@@ -72,7 +79,6 @@
                 <option value="Female" {{ $employee->gender == 'Female' ? 'selected' : '' }}>Female</option>
               </select>
             </div>
-
             <div class="col-md-4">
               <label class="form-label fw-bold">Civil Status</label>
               <select name="civil_status" class="form-select">
@@ -83,7 +89,6 @@
                 <option value="Separated" {{ $employee->civil_status == 'Separated' ? 'selected' : '' }}>Separated</option>
               </select>
             </div>
-
             <div class="col-md-4">
               <label class="form-label fw-bold">Height(M)</label>
               <input type="number" step="0.01" name="height" class="form-control" value="{{ $employee->height }}">
