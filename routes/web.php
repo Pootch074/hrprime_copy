@@ -68,6 +68,7 @@ use App\Http\Controllers\EthnicityController;
 use App\Http\Controllers\MedicalController;
 use App\Http\Controllers\SoloParentController;
 use App\Http\Controllers\TravelController;
+use App\Http\Controllers\SpecialController;
 
 
 
@@ -283,45 +284,70 @@ Route::prefix('forms')->group(function () {
   Route::post('/forms/solo_parent', [SoloParentController::class, 'store'])->name('forms.solo_parent.store');
 });
 
-
 Route::prefix('forms/travel')->name('forms.travel.')->group(function () {
+
   // List all travel orders
   Route::get('/', [TravelController::class, 'index'])->name('index');
 
-  // Show create form
+  // Create / Store
   Route::get('/create', [TravelController::class, 'create'])->name('create');
-
-  // Save new travel order
   Route::post('/store', [TravelController::class, 'store'])->name('store');
 
-  // Edit travel order
+  // Edit / Update
   Route::get('/{id}/edit', [TravelController::class, 'edit'])->name('edit');
-
-  // Update travel order
   Route::put('/{id}', [TravelController::class, 'update'])->name('update');
 
-  // Delete travel order
+  // Delete
   Route::delete('/{id}', [TravelController::class, 'destroy'])->name('destroy');
 
   // Print travel order
-  Route::get('/{id}/print', [TravelController::class, 'print'])->name('print');
+  Route::get('/{ref}/print', [TravelController::class, 'print'])->name('print');
 
-  Route::post('/{travelReferenceNumber}/wet-sign', [TravelController::class, 'wetSign'])->name('wetSign');
-  Route::post('/{travelReferenceNumber}/electronic-sign', [TravelController::class, 'electronicSignImage'])->name('electronicSignImage');
+  // Electronic signature
+  Route::post('/{ref}/electronic-sign', [TravelController::class, 'electronicSignImage'])->name('electronicSignImage');
+
+  // Digital signature
+  Route::post('/{ref}/digitalSignImage', [TravelController::class, 'digitalSignImage'])->name('digitalSignImage');
+
+  // Prepare signature (optional helper)
+  Route::get('/{ref}/prepare-sign', [TravelController::class, 'prepareSign'])->name('prepareSign');
+
+  // Download signed PDF
+  Route::get('/{ref}/download', [TravelController::class, 'downloadPdf'])->name('download');
 });
 
-Route::get('/forms/travel/{ref}/prepare-sign', [TravelController::class, 'prepareSign'])
-  ->name('forms.travel.prepareSign');
 
-// Define route
-Route::get('/forms/travel/{ref}/download', [TravelController::class, 'downloadPdf'])
-  ->name('travel.download');
+Route::prefix('forms/special')->name('forms.special.')->group(function () {
 
-Route::post('/forms/travel/{ref}/digitalSignImage', [TravelController::class, 'digitalSignImage'])
-  ->name('forms.travel.digitalSignImage');
+  // List all travel orders
+  Route::get('/', [SpecialController::class, 'index'])->name('index');
 
-Route::get('/forms/travel/{ref}/print', [TravelController::class, 'print'])
-  ->name('forms.travel.print');
+  // Create / Store
+  Route::get('/create', [SpecialController::class, 'create'])->name('create');
+  Route::post('/store', [SpecialController::class, 'store'])->name('store');
+
+  // Edit / Update
+  Route::get('/{id}/edit', [SpecialController::class, 'edit'])->name('edit');
+  Route::put('/{id}', [SpecialController::class, 'update'])->name('update');
+
+  // Delete
+  Route::delete('/{id}', [SpecialController::class, 'destroy'])->name('destroy');
+
+  // Print travel order
+  Route::get('/{ref}/print', [SpecialController::class, 'print'])->name('print');
+
+  // Electronic signature
+  Route::post('/{ref}/electronic-sign', [SpecialController::class, 'electronicSignImage'])->name('electronicSignImage');
+
+  // Digital signature
+  Route::post('/{ref}/digitalSignImage', [SpecialController::class, 'digitalSignImage'])->name('digitalSignImage');
+
+  // Prepare signature (optional helper)
+  Route::get('/{ref}/prepare-sign', [SpecialController::class, 'prepareSign'])->name('prepareSign');
+
+  // Download signed PDF
+  Route::get('/{ref}/download', [SpecialController::class, 'downloadPdf'])->name('download');
+});
 
 
 // Filtered Employee Lists

@@ -167,7 +167,21 @@ class TravelController extends Controller
         $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
         $pdf->useTemplate($tplId);
       }
-      $certFullname = "teddygardo";
+
+      // Fetch the travel order with employee details
+      $travel = Travel::with('employee')
+        ->where('travel_reference_number', $ref)
+        ->first();
+
+      if (!$travel) {
+        return back()->with('error', "Travel order {$ref} not found.");
+      }
+
+      // Construct full name
+      $employee = $travel->employee;
+      $certFullname = "{$employee->first_name} {$employee->middle_name} {$employee->last_name}";
+
+
       // Signature metadata
       $info = [
         'Name'        => $certFullname,

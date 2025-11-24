@@ -3,58 +3,60 @@
 @section('title', 'Travel Order')
 
 @section('content')
-<div class="container py-4">
-  <h3>Create Travel Order</h3>
-  <hr>
+<div class="card p-4" style="max-width: 1200px; margin:auto;">
+  <div class="container py-4">
+    <h3>Create Travel Order</h3>
+    <hr>
 
-  <form method="POST" action="{{ route('forms.travel.store') }}">
-    @csrf
+    <form method="POST" action="{{ route('forms.travel.store') }}">
+      @csrf
 
-    <div id="travelRows">
-      <div class="travel-row row mb-3">
-        {{-- Employee --}}
-        <div class="col-md-3">
-          <label class="form-label">Employee</label>
-          <select name="empid[]" class="form-select" required>
-            <option value="" disabled selected>Select employee</option>
-            @foreach($employees as $employee)
-            <option value="{{ $employee->employee_id }}">
-              {{ $employee->first_name }} ({{ $employee->employee_id }})
-            </option>
-            @endforeach
-          </select>
-        </div>
+      <div id="travelRows">
+        <div class="travel-row row mb-3">
+          {{-- Employee --}}
+          <div class="col-md-3">
+            <label class="form-label">Employee</label>
+            <select name="empid[]" class="form-select" required>
+              <option value="" disabled selected>Select employee</option>
+              @foreach($employees as $employee)
+              <option value="{{ $employee->employee_id }}">
+                {{ $employee->first_name }} ({{ $employee->employee_id }})
+              </option>
+              @endforeach
+            </select>
+          </div>
 
-        {{-- Travel Date --}}
-        <div class="col-md-3">
-          <label class="form-label">Travel Date</label>
-          <input type="date" name="travel_date[]" class="form-control" required>
-        </div>
+          {{-- Travel Date --}}
+          <div class="col-md-3">
+            <label class="form-label">Travel Date</label>
+            <input type="date" name="travel_date[]" class="form-control" required>
+          </div>
 
-        {{-- Purpose --}}
-        <div class="col-md-3">
-          <label class="form-label">Purpose</label>
-          <input type="text" name="travel_purpose[]" class="form-control" required>
-        </div>
+          {{-- Purpose --}}
+          <div class="col-md-3">
+            <label class="form-label">Purpose</label>
+            <input type="text" name="travel_purpose[]" class="form-control" required>
+          </div>
 
-        {{-- Destination --}}
-        <div class="col-md-2">
-          <label class="form-label">Destination</label>
-          <input type="text" name="travel_destination[]" class="form-control" required>
-        </div>
+          {{-- Destination --}}
+          <div class="col-md-2">
+            <label class="form-label">Destination</label>
+            <input type="text" name="travel_destination[]" class="form-control" required>
+          </div>
 
-        <div class="col-md-1 d-flex align-items-end">
-          <button type="button" class="btn btn-danger remove-row">-</button>
+          <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-danger remove-row">-</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <button type="button" class="btn btn-secondary mb-3" id="addRow">Add Employee</button>
+      <button type="button" class="btn btn-secondary mb-3" id="addRow">Add Employee</button>
 
-    <div class="text-center">
-      <button type="submit" class="btn btn-primary">Save Travel Order</button>
-    </div>
-  </form>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Save Travel Order</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>

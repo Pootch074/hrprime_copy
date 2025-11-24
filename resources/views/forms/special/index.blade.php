@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Travel Orders')
+@section('title', 'Special Orders')
 
 @section('content')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -9,12 +9,12 @@
 
   <!-- Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="text-primary">Travel Orders</h4>
-    <a href="{{ route('forms.travel.create') }}" class="btn btn-primary">New Travel Order</a>
+    <h4 class="text-primary">Special Orders</h4>
+    <a href="{{ route('forms.special.create') }}" class="btn btn-primary">New special Order</a>
   </div>
 
-  <!-- Travel Orders Table -->
-  <table id="travelTable" class="table table-bordered">
+  <!-- special Orders Table -->
+  <table id="specialTable" class="table table-bordered">
     <thead>
       <tr>
         <th>Reference No</th>
@@ -28,10 +28,10 @@
     </thead>
     <tbody>
       @php
-      $groupedTravels = $travels->groupBy('travel_reference_number');
+      $groupedSpecialls = $specials->groupBy('special_reference_number');
       @endphp
 
-      @foreach($groupedTravels as $ref => $batch)
+      @foreach($groupedSpecialls as $ref => $batch)
       <tr>
         <td>{{ $ref }}</td>
         <td>
@@ -49,7 +49,7 @@
 
         <td>
           @php
-          $purposes = $batch->pluck('travel_purpose')->filter()->all();
+          $purposes = $batch->pluck('special_purpose')->filter()->all();
           $firstPurpose = $purposes[0] ?? 'N/A';
           @endphp
           {{ $firstPurpose }}
@@ -58,7 +58,7 @@
 
         <td>
           @php
-          $destinations = $batch->pluck('travel_destination')->filter()->all();
+          $destinations = $batch->pluck('special_destination')->filter()->all();
           $firstDestination = $destinations[0] ?? 'N/A';
           @endphp
           {{ $firstDestination }}
@@ -72,13 +72,13 @@
           <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#signatureTypeModal_{{ $ref }}">
             Sign
           </button>
-          <a href="{{ route('forms.travel.edit', $ref) }}" class="btn btn-warning btn-sm">Edit</a>
-          <form action="{{ route('forms.travel.destroy', $ref) }}" method="POST" class="d-inline">
+          <a href="{{ route('forms.special.edit', $ref) }}" class="btn btn-warning btn-sm">Edit</a>
+          <form action="{{ route('forms.special.destroy', $ref) }}" method="POST" class="d-inline">
             @csrf
             @method('DELETE')
-            <button class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this travel batch?')">Delete</button>
+            <button class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this special batch?')">Delete</button>
           </form>
-          <a href="{{ route('forms.travel.print', $ref) }}" class="btn btn-primary btn-sm" target="_blank">Print</a>
+          <a href="{{ route('forms.special.print', $ref) }}" class="btn btn-primary btn-sm" target="_blank">Print</a>
         </td>
       </tr>
 
@@ -122,7 +122,7 @@
 
 <script>
   $(function() {
-    $('#travelTable').DataTable({
+    $('#specialTable').DataTable({
       paging: true,
       searching: true,
       info: true

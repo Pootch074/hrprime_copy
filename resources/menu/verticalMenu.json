@@ -183,9 +183,9 @@
           ]
         },
         {
-          "url": "profile/references",
+          "url": "forms/special/index",
           "name": "Special Order",
-          "slug": "references"
+          "slug": "special-order"
         },
         {
           "url": "profile/government-ids",
