@@ -12,6 +12,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+<<<<<<< HEAD
     protected $fillable = [
         'employee_id',
         'first_name',
@@ -45,6 +46,46 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
+=======
+  protected $fillable = [
+    'employee_id',
+    'item_number_id',
+    'first_name',
+    'middle_name',
+    'last_name',
+    'extension_name',
+    'employment_status_id',
+    'division_id',
+    'section_id',
+    'username',
+    'email',
+    'password',
+    'gender',
+    'role', // ✅ add this line
+  ];
+
+  protected $hidden = [
+    'password',
+  ];
+  public function division()
+  {
+    return $this->belongsTo(Division::class, 'division_id');
+  }
+
+  public function section()
+  {
+    return $this->belongsTo(Section::class, 'section_id');
+  }
+
+  public function position()
+  {
+    return $this->belongsTo(Position::class, 'position_id');
+  }
+
+  public function getSections(Request $request)
+  {
+    $divisionId = $request->division_id;
+>>>>>>> bf0251197533e5c0a2f7d041bd46ee2e8142b8c1
 
     public function division()
     {
@@ -178,4 +219,25 @@ class User extends Authenticatable
 
 
 
+<<<<<<< HEAD
+=======
+    // ... rest of logic
+  }
+  public function getFullNameAttribute()
+  {
+    $names = [
+      $this->first_name,
+      $this->middle_name,
+      $this->last_name,
+      $this->extension_name
+    ];
+
+    // Filter out null or empty values and join with spaces
+    return implode(' ', array_filter($names));
+  }
+  public function itemNumber()
+  {
+    return $this->belongsTo(ItemNumber::class);
+  }
+>>>>>>> bf0251197533e5c0a2f7d041bd46ee2e8142b8c1
 }

@@ -103,6 +103,168 @@
       ]
     },
     {
+      "name": "Forms",
+      "slug": "profile",
+      "roles": [
+        "HR-Planning",
+        "HR-Welfare",
+        "HR-PAS",
+        "HR-L&D"
+      ],
+      "submenu": [
+        {
+          "url": "forms/outslips",
+          "name": "Out Slip",
+          "slug": "outslips",
+          "children": [
+            {
+              "url": "forms/outslips",
+              "name": "List",
+              "slug": "outslips-list"
+            },
+            {
+              "url": "forms/outslip/form",
+              "name": "Form",
+              "slug": "outslip-form"
+            }
+          ]
+        },
+        {
+          "url": "forms/leaves",
+          "name": "Leave",
+          "slug": "leaves",
+          "children": [
+            {
+              "url": "forms/leaves",
+              "name": "List",
+              "slug": "leave-list"
+            },
+            {
+              "url": "forms/leaves/form",
+              "name": "Form",
+              "slug": "leave-form"
+            }
+          ]
+        },
+        {
+          "url": "forms/gad_profile/create",
+          "name": "GAD Profile",
+          "slug": "gad_profile"
+        },
+        {
+          "url": "forms/ethnicity/create",
+          "name": "Ethnicity",
+          "slug": "ethnicity"
+        },
+        {
+          "url": "forms/medical/create",
+          "name": "Medical health",
+          "slug": "medical"
+        },
+        {
+          "url": "forms/solo_parent/create",
+          "name": "Solo Parent",
+          "slug": "solo_parent"
+        },
+        {
+          "url": "forms/travel",
+          "name": "Travel Order",
+          "slug": "travel",
+          "children": [
+            {
+              "url": "forms/travel",
+              "name": "List",
+              "slug": "travel-list"
+            },
+            {
+              "url": "forms/travel/create",
+              "name": "Form",
+              "slug": "travel-form"
+            }
+          ]
+        },
+        {
+          "url": "forms/special/index",
+          "name": "Special Order",
+          "slug": "special-order"
+        },
+        {
+          "url": "profile/government-ids",
+          "name": "Request Form Application",
+          "slug": "id"
+        }
+      ]
+    },
+    {
+      "name": "SALN",
+      "slug": "profile",
+      "roles": [
+        "HR-Planning",
+        "HR-Welfare",
+        "HR-PAS",
+        "HR-L&D"
+      ],
+      "submenu": [
+        {
+          "url": "profile/basic-information",
+          "name": "Real Properties",
+          "slug": "basic"
+        },
+        {
+          "url": "profile/family-background",
+          "name": "Personal Properties",
+          "slug": "family-background"
+        },
+        {
+          "url": "profile/education",
+          "name": "Creditors",
+          "slug": "education"
+        },
+        {
+          "url": "profile/cs-eligibility",
+          "name": "Business Interest and Financial Connections",
+          "slug": "cs-eligibility"
+        },
+        {
+          "url": "profile/work-experience",
+          "name": "Relatove in the Government Service",
+          "slug": "work-experience"
+        },
+        {
+          "url": "profile/voluntary-work",
+          "name": "Print SALN",
+          "slug": "voluntary-work"
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "slug": "profile",
+      "roles": [
+        "HR-Planning",
+        "HR-Welfare",
+        "HR-PAS",
+        "HR-L&D"
+      ],
+      "submenu": [
+        {
+          "url": "outslip/form",
+          "name": "Outslip",
+          "slug": "family-background"
+        },
+        {
+          "url": "profile/education",
+          "name": "Leave",
+          "slug": "education"
+        },
+        {
+          "url": "profile/cs-eligibility",
+          "name": "Forms Requested",
+          "slug": "cs-eligibility"
+        }
+      ]
+    },
+    {
       "name": "Planning",
       "icon": "menu-icon tf-icons ri-layout-2-line",
       "slug": "planning",
@@ -204,22 +366,6 @@
           "url": "planning/unfilled-positions",
           "name": "Unfilled Positions",
           "slug": "unfilled-positions",
-          "roles": [
-            "HR-Planning"
-          ]
-        },
-        {
-          "url": "planning/jo-requests",
-          "name": "Requests",
-          "slug": "jo_requests",
-          "roles": [
-            "HR-Planning"
-          ]
-        },
-        {
-          "url": "planning/report",
-          "name": "Reports",
-          "slug": "report",
           "roles": [
             "HR-Planning"
           ]

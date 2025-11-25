@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\EmploymentStatus;
 use App\Models\Division;
 use App\Models\Section;
+use App\Models\ItemNumber;
 
 class UserController extends Controller
 {
@@ -122,15 +123,17 @@ class UserController extends Controller
     $employee = User::with(['division', 'section', 'employmentStatus'])->findOrFail($id);
     return view('content.planning.employee-view', compact('employee'));
   }
-  public function edit($id)
+  public function edits($id)
   {
     $employee = User::findOrFail($id);
-    $divisions = Division::all();
+    $divisiosns = Division::all();
     $sections = Section::where('division_id', $employee->division_id)->get();
     $employmentStatuses = EmploymentStatus::all();
+    $itemNumbers = ItemNumber::all(); // <-- provide this to view
 
-    return view('content.planning.employee-edit', compact('employee', 'divisions', 'sections', 'employmentStatuses'));
+    return view('content.planning.employee-edit', compact('employee', 'divisions', 'sections', 'employmentStatuses', 'itemNumbers'));
   }
+
   public function update(Request $request, $id)
   {
     $employee = User::findOrFail($id);

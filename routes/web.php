@@ -47,6 +47,7 @@ use App\Http\Controllers\Profile\PdsController;
 //Planning
 use App\Http\Controllers\planning\DashboardController;
 use App\Http\Controllers\planning\ListofEmployee;
+use App\Http\Controllers\Planning\ApplicantController;
 use App\Http\Controllers\planning\RegistrationForm;
 use App\Http\Controllers\planning\ListofPosition;
 use App\Http\Controllers\planning\VacantPositionController;
@@ -62,6 +63,12 @@ use App\Http\Controllers\Planning\PositionLevelController;
 use App\Http\Controllers\Planning\ParentheticalTitleController;
 use App\Http\Controllers\Planning\ReportController;
 use App\Http\Controllers\Planning\JoRequestController;
+use App\Http\Controllers\GadResponseController;
+use App\Http\Controllers\EthnicityController;
+use App\Http\Controllers\MedicalController;
+use App\Http\Controllers\SoloParentController;
+use App\Http\Controllers\TravelController;
+use App\Http\Controllers\SpecialController;
 
 
 
@@ -79,10 +86,9 @@ use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\Planning\PositionController;
 use App\Http\Controllers\ItemNumberController;
 use App\Http\Controllers\UnfilledPositionsController;
-use App\Http\Controllers\ApplicantController;
-
-
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\OutSlipController;
+use App\Http\Controllers\LeaveController;
 
 
 // Login Page
@@ -122,91 +128,91 @@ Route::prefix('profile')->group(function () {
     ->name('profile.basic-info.update');
 });
 
-Route::middleware(['auth'])->group(function() {
-    Route::get('/profile/family-background', [FamilyBackgroundController::class, 'edit'])->name('profile.family-background.edit');
-    Route::post('/profile/family-background', [FamilyBackgroundController::class, 'update'])->name('profile.family-background.update');
+Route::middleware(['auth'])->group(function () {
+  Route::get('/profile/family-background', [FamilyBackgroundController::class, 'edit'])->name('profile.family-background.edit');
+  Route::post('/profile/family-background', [FamilyBackgroundController::class, 'update'])->name('profile.family-background.update');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/education', [EducationController::class, 'index'])->name('profile.education.index');
-    Route::post('profile/education/save', [EducationController::class, 'save'])->name('profile.education.save');
-    Route::get('profile/education/{id}', [EducationController::class, 'show']);
-    Route::put('profile/education/{id}/update', [EducationController::class, 'update'])->name('profile.education.update');
-    Route::delete('profile/education/delete/{id}', [EducationController::class, 'delete']);
+  Route::get('profile/education', [EducationController::class, 'index'])->name('profile.education.index');
+  Route::post('profile/education/save', [EducationController::class, 'save'])->name('profile.education.save');
+  Route::get('profile/education/{id}', [EducationController::class, 'show']);
+  Route::put('profile/education/{id}/update', [EducationController::class, 'update'])->name('profile.education.update');
+  Route::delete('profile/education/delete/{id}', [EducationController::class, 'delete']);
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/cs-eligibility', [CsEligibilityController::class, 'index'])->name('profile.cs-eligibility.index');
-    Route::post('profile/cs-eligibility/store', [CsEligibilityController::class, 'store'])->name('profile.cs-eligibility.store');
-    Route::put('profile/cs-eligibility/{id}', [CsEligibilityController::class, 'update'])->name('profile.cs-eligibility.update');
-    Route::delete('profile/cs-eligibility/{id}', [CsEligibilityController::class, 'destroy'])->name('profile.cs-eligibility.destroy');
+  Route::get('profile/cs-eligibility', [CsEligibilityController::class, 'index'])->name('profile.cs-eligibility.index');
+  Route::post('profile/cs-eligibility/store', [CsEligibilityController::class, 'store'])->name('profile.cs-eligibility.store');
+  Route::put('profile/cs-eligibility/{id}', [CsEligibilityController::class, 'update'])->name('profile.cs-eligibility.update');
+  Route::delete('profile/cs-eligibility/{id}', [CsEligibilityController::class, 'destroy'])->name('profile.cs-eligibility.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/work-experience', [WorkExperienceController::class, 'index'])->name('profile.work-experience.index');
-    Route::post('profile/work-experience/store', [WorkExperienceController::class, 'store'])->name('profile.work-experience.store');
-    Route::put('profile/work-experience/{id}', [WorkExperienceController::class, 'update'])->name('profile.work-experience.update');
-    Route::delete('profile/work-experience/{id}', [WorkExperienceController::class, 'destroy'])->name('profile.work-experience.destroy');
+  Route::get('profile/work-experience', [WorkExperienceController::class, 'index'])->name('profile.work-experience.index');
+  Route::post('profile/work-experience/store', [WorkExperienceController::class, 'store'])->name('profile.work-experience.store');
+  Route::put('profile/work-experience/{id}', [WorkExperienceController::class, 'update'])->name('profile.work-experience.update');
+  Route::delete('profile/work-experience/{id}', [WorkExperienceController::class, 'destroy'])->name('profile.work-experience.destroy');
 });
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/voluntary-work', [VoluntaryWorkController::class, 'index'])->name('profile.voluntary-work.index');
-    Route::post('profile/voluntary-work/store', [VoluntaryWorkController::class, 'store'])->name('profile.voluntary-work.store');
-    Route::put('profile/voluntary-work/{id}', [VoluntaryWorkController::class, 'update'])->name('profile.voluntary-work.update');
-    Route::delete('profile/voluntary-work/{id}', [VoluntaryWorkController::class, 'destroy'])->name('profile.voluntary-work.destroy');
+  Route::get('profile/voluntary-work', [VoluntaryWorkController::class, 'index'])->name('profile.voluntary-work.index');
+  Route::post('profile/voluntary-work/store', [VoluntaryWorkController::class, 'store'])->name('profile.voluntary-work.store');
+  Route::put('profile/voluntary-work/{id}', [VoluntaryWorkController::class, 'update'])->name('profile.voluntary-work.update');
+  Route::delete('profile/voluntary-work/{id}', [VoluntaryWorkController::class, 'destroy'])->name('profile.voluntary-work.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/learning-development', [LearningAndDevelopmentController::class, 'index'])->name('profile.ld.index');
-    Route::post('profile/learning-development/store', [LearningAndDevelopmentController::class, 'store'])->name('profile.ld.store');
-    Route::put('profile/learning-development/{id}', [LearningAndDevelopmentController::class, 'update'])->name('profile.ld.update');
-    Route::delete('profile/learning-development/{id}', [LearningAndDevelopmentController::class, 'destroy'])->name('profile.ld.destroy');
+  Route::get('profile/learning-development', [LearningAndDevelopmentController::class, 'index'])->name('profile.ld.index');
+  Route::post('profile/learning-development/store', [LearningAndDevelopmentController::class, 'store'])->name('profile.ld.store');
+  Route::put('profile/learning-development/{id}', [LearningAndDevelopmentController::class, 'update'])->name('profile.ld.update');
+  Route::delete('profile/learning-development/{id}', [LearningAndDevelopmentController::class, 'destroy'])->name('profile.ld.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/references', [ReferenceController::class, 'index'])->name('profile.references.index');
-    Route::post('profile/references/store', [ReferenceController::class, 'store'])->name('profile.references.store');
-    Route::put('profile/references/{id}', [ReferenceController::class, 'update'])->name('profile.references.update');
-    Route::delete('profile/references/{id}', [ReferenceController::class, 'destroy'])->name('profile.references.destroy');
+  Route::get('profile/references', [ReferenceController::class, 'index'])->name('profile.references.index');
+  Route::post('profile/references/store', [ReferenceController::class, 'store'])->name('profile.references.store');
+  Route::put('profile/references/{id}', [ReferenceController::class, 'update'])->name('profile.references.update');
+  Route::delete('profile/references/{id}', [ReferenceController::class, 'destroy'])->name('profile.references.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::post('profile/government-ids/update-all', [GovernmentIdController::class, 'updateAll'])->name('profile.government-ids.update-all');
     Route::get('profile/government-ids', [GovernmentIdController::class, 'index'])->name('profile.government-ids.index');
     Route::post('profile/government-ids/store', [GovernmentIdController::class, 'store'])->name('profile.government-ids.store');
     Route::put('profile/government-ids/{id}', [GovernmentIdController::class, 'update'])->name('profile.government-ids.update');
     Route::delete('profile/government-ids/{id}', [GovernmentIdController::class, 'destroy'])->name('profile.government-ids.destroy');
-    Route::post('profile/government-ids/update-all', [GovernmentIdController::class, 'updateAll'])->name('profile.government-ids.update-all');
 });
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/non-academic', [NonAcademicController::class, 'index'])->name('profile.non-academic.index');
-    Route::post('profile/non-academic', [NonAcademicController::class, 'store'])->name('profile.non-academic.store');
-    Route::get('profile/non-academic/{id}', [NonAcademicController::class, 'show'])->name('profile.non-academic.show');  // 👈 for edit modal
-    Route::put('profile/non-academic/{id}', [NonAcademicController::class, 'update'])->name('profile.non-academic.update');
-    Route::delete('profile/non-academic/{id}', [NonAcademicController::class, 'destroy'])->name('profile.non-academic.destroy');
+  Route::get('profile/non-academic', [NonAcademicController::class, 'index'])->name('profile.non-academic.index');
+  Route::post('profile/non-academic', [NonAcademicController::class, 'store'])->name('profile.non-academic.store');
+  Route::get('profile/non-academic/{id}', [NonAcademicController::class, 'show'])->name('profile.non-academic.show');  // 👈 for edit modal
+  Route::put('profile/non-academic/{id}', [NonAcademicController::class, 'update'])->name('profile.non-academic.update');
+  Route::delete('profile/non-academic/{id}', [NonAcademicController::class, 'destroy'])->name('profile.non-academic.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/organization', [OrganizationController::class, 'index'])->name('profile.organization.index');
-    Route::post('profile/organization', [OrganizationController::class, 'store'])->name('profile.organization.store');
-    Route::get('profile/organization/{id}', [OrganizationController::class, 'show'])->name('profile.organization.show');
-    Route::put('profile/organization/{id}', [OrganizationController::class, 'update'])->name('profile.organization.update');
-    Route::delete('profile/organization/{id}', [OrganizationController::class, 'destroy'])->name('profile.organization.destroy');
+  Route::get('profile/organization', [OrganizationController::class, 'index'])->name('profile.organization.index');
+  Route::post('profile/organization', [OrganizationController::class, 'store'])->name('profile.organization.store');
+  Route::get('profile/organization/{id}', [OrganizationController::class, 'show'])->name('profile.organization.show');
+  Route::put('profile/organization/{id}', [OrganizationController::class, 'update'])->name('profile.organization.update');
+  Route::delete('profile/organization/{id}', [OrganizationController::class, 'destroy'])->name('profile.organization.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/skills', [SkillController::class, 'index'])->name('profile.skills.index');
-    Route::post('profile/skills', [SkillController::class, 'store'])->name('profile.skills.store');
-    Route::get('profile/skills/{id}', [SkillController::class, 'show'])->name('profile.skills.show');
-    Route::put('profile/skills/{id}', [SkillController::class, 'update'])->name('profile.skills.update');
-    Route::delete('profile/skills/{id}', [SkillController::class, 'destroy'])->name('profile.skills.destroy');
+  Route::get('profile/skills', [SkillController::class, 'index'])->name('profile.skills.index');
+  Route::post('profile/skills', [SkillController::class, 'store'])->name('profile.skills.store');
+  Route::get('profile/skills/{id}', [SkillController::class, 'show'])->name('profile.skills.show');
+  Route::put('profile/skills/{id}', [SkillController::class, 'update'])->name('profile.skills.update');
+  Route::delete('profile/skills/{id}', [SkillController::class, 'destroy'])->name('profile.skills.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('profile/other-information', [OtherInformationController::class, 'index'])->name('profile.other-information.index');
-    Route::post('profile/other-information', [OtherInformationController::class, 'store'])->name('profile.other-information.store');
+  Route::get('profile/other-information', [OtherInformationController::class, 'index'])->name('profile.other-information.index');
+  Route::post('profile/other-information', [OtherInformationController::class, 'store'])->name('profile.other-information.store');
 });
 
 Route::middleware('auth')->get('/pds/fill', [PdsController::class, 'fillPdf'])->name('pds.fill');
@@ -215,6 +221,14 @@ Route::middleware('auth')->get('/pds/fill', [PdsController::class, 'fillPdf'])->
 
 //Address
 //-------------------------------------------------------START OF PLANNING-----------------------------------------------------------
+Route::prefix('planning/applicants')->name('applicants.')->group(function () {
+  Route::get('/', [ApplicantController::class, 'index'])->name('index');
+  Route::post('/store', [ApplicantController::class, 'store'])->name('store');
+  Route::post('/{id}/update', [ApplicantController::class, 'update'])->name('update');
+  Route::post('/{id}/archive', [ApplicantController::class, 'archive'])
+    ->name('archive');
+  Route::get('/next-number', [ApplicantController::class, 'nextApplicantNumber']);
+});
 
 Route::prefix('planning')->group(function () {
   Route::get('/list-of-employee', [UserController::class, 'index'])->name('planning.list-of-employee');
@@ -222,23 +236,123 @@ Route::prefix('planning')->group(function () {
   Route::post('/import', [UserController::class, 'importEmployees'])->name('planning.import');
 });
 
+
 Route::get('/planning/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// // Registration Form Routes
-// Route::prefix('planning')->group(function () {
-//   Route::get('/registration-form', [RegistrationForm::class, 'index'])->name('registration-form.index');
-//   Route::post('/list-of-employee', [UserController::class, 'store'])->name('employee.store');
-// });
+// Registration Form Routes
+Route::prefix('planning')->group(function () {
+  Route::get('/registration-form', [RegistrationForm::class, 'index'])->name('registration-form.index');
+  Route::post('/planning/list-of-employee', [UserController::class, 'store'])->name('employee.store');
+});
+Route::get('/planning/registration-form', [\App\Http\Controllers\Api\UserController::class, 'create'])->name('employee.registration-form');
 
-// // Show Registration Form (from API\UserController)
-// Route::get('/planning/registration-form', [\App\Http\Controllers\Api\UserController::class, 'create'])->name('employee.registration-form');
-// Route::get('/planning/section', [UserController::class, 'getSections'])->name('planning.section');
 
-// Employee List & Profile Routes
 Route::get('/planning/list-of-employee', [UserController::class, 'bladeIndex'])->name('employee.view-blade');
-
-Route::get('/planning/list-of-employee/{id}/view', [UserController::class, 'showEmployeeView'])->name('employee.show-view');
+// Edit employee form
+Route::get('/planning/list-of-employee/{id}/edit', [UserController::class, 'edit'])
+  ->name('employee.edit');
+// Delete employee
+Route::delete('/planning/list-of-employee/{id}', [UserController::class, 'destroy'])
+  ->name('employee.delete');
+Route::get('/planning/list-of-employee/{id}/view', [UserController::class, 'show'])->name('employee.show-view');
 Route::get('/planning/list-of-employee/{id}', [UserController::class, 'show'])->name('employee.view');
+Route::get('planning/list-of-employee/{id}/edit', [UserController::class, 'edit'])->name('employees.edit');
+Route::put('planning/list-of-employee/{id}', [UserController::class, 'update'])->name('employees.update');
+
+Route::prefix('forms')->name('forms.')->group(function () {
+  Route::get('/gad_profile', [GadResponseController::class, 'index'])->name('gad_profile.forms');
+  Route::get('/gad_profile/create', [GadResponseController::class, 'create'])->name('gad_profile.create');
+  Route::post('/gad_profile', [GadResponseController::class, 'store'])->name('gad_profile.store');
+  Route::get('/gad_profile/{id}', [GadResponseController::class, 'show'])->name('gad_profile.show');
+  Route::get('/gad_profile/{id}/edit', [GadResponseController::class, 'edit'])->name('gad_profile.edit');
+  Route::put('/gad_profile/{id}', [GadResponseController::class, 'update'])->name('gad_profile.update');
+  Route::delete('/gad_profile/{id}', [GadResponseController::class, 'destroy'])->name('gad_profile.destroy');
+  Route::get('/gad_profile/{id}/print', [GadResponseController::class, 'print'])->name('gad_profile.print');
+});
+
+Route::prefix('forms')->name('forms.')->group(function () {
+  Route::get('/ethnicity/create', [EthnicityController::class, 'create'])->name('ethnicity.create');
+  Route::post('/ethnicity', [EthnicityController::class, 'store'])->name('ethnicity.store');
+  Route::post('/forms/ethnicity', [EthnicityController::class, 'store'])->name('forms.ethnicity.store');
+});
+
+Route::prefix('forms')->group(function () {
+  Route::get('/medical/create', [MedicalController::class, 'create'])->name('forms.medical.create');
+  Route::post('/medical', [MedicalController::class, 'store'])->name('forms.medical.store');
+  Route::post('/forms/medical', [MedicalController::class, 'store'])->name('forms.medical.store');
+});
+
+Route::prefix('forms')->group(function () {
+  Route::get('/solo_parent/create', [SoloParentController::class, 'create'])->name('forms.solo_parent.create');
+  Route::post('/solo_parent', [SoloParentController::class, 'store'])->name('forms.solo_parent.store');
+  Route::post('/forms/solo_parent', [SoloParentController::class, 'store'])->name('forms.solo_parent.store');
+});
+
+Route::prefix('forms/travel')->name('forms.travel.')->group(function () {
+
+  // List all travel orders
+  Route::get('/', [TravelController::class, 'index'])->name('index');
+
+  // Create / Store
+  Route::get('/create', [TravelController::class, 'create'])->name('create');
+  Route::post('/store', [TravelController::class, 'store'])->name('store');
+
+  // Edit / Update
+  Route::get('/{id}/edit', [TravelController::class, 'edit'])->name('edit');
+  Route::put('/{id}', [TravelController::class, 'update'])->name('update');
+
+  // Delete
+  Route::delete('/{id}', [TravelController::class, 'destroy'])->name('destroy');
+
+  // Print travel order
+  Route::get('/{ref}/print', [TravelController::class, 'print'])->name('print');
+
+  // Electronic signature
+  Route::post('/{ref}/electronic-sign', [TravelController::class, 'electronicSignImage'])->name('electronicSignImage');
+
+  // Digital signature
+  Route::post('/{ref}/digitalSignImage', [TravelController::class, 'digitalSignImage'])->name('digitalSignImage');
+
+  // Prepare signature (optional helper)
+  Route::get('/{ref}/prepare-sign', [TravelController::class, 'prepareSign'])->name('prepareSign');
+
+  // Download signed PDF
+  Route::get('/{ref}/download', [TravelController::class, 'downloadPdf'])->name('download');
+});
+
+
+Route::prefix('forms/special')->name('forms.special.')->group(function () {
+
+  // List all travel orders
+  Route::get('/', [SpecialController::class, 'index'])->name('index');
+
+  // Create / Store
+  Route::get('/create', [SpecialController::class, 'create'])->name('create');
+  Route::post('/store', [SpecialController::class, 'store'])->name('store');
+
+  // Edit / Update
+  Route::get('/{id}/edit', [SpecialController::class, 'edit'])->name('edit');
+  Route::put('/{id}', [SpecialController::class, 'update'])->name('update');
+
+  // Delete
+  Route::delete('/{id}', [SpecialController::class, 'destroy'])->name('destroy');
+
+  // Print travel order
+  Route::get('/{ref}/print', [SpecialController::class, 'print'])->name('print');
+
+  // Electronic signature
+  Route::post('/{ref}/electronic-sign', [SpecialController::class, 'electronicSignImage'])->name('electronicSignImage');
+
+  // Digital signature
+  Route::post('/{ref}/digitalSignImage', [SpecialController::class, 'digitalSignImage'])->name('digitalSignImage');
+
+  // Prepare signature (optional helper)
+  Route::get('/{ref}/prepare-sign', [SpecialController::class, 'prepareSign'])->name('prepareSign');
+
+  // Download signed PDF
+  Route::get('/{ref}/download', [SpecialController::class, 'downloadPdf'])->name('download');
+});
+
 
 // Filtered Employee Lists
 Route::get('/planning/active-employees', [\App\Http\Controllers\Api\UserController::class, 'active'])->name('employee.active');
@@ -249,7 +363,7 @@ Route::put('/employee/{id}/assign-role', [UserController::class, 'assignRole'])-
 
 // //import
 // Route::prefix('planning')->group(function () {
-//   Route::get('/import-form', [\App\Http\Controllers\Api\UserController::class, 'showImportForm'])->name('planning.import-form');
+Route::get('/import-form', [\App\Http\Controllers\Api\UserController::class, 'showImportForm'])->name('planning.import-form');
 //   Route::post('/import', [\App\Http\Controllers\Api\UserController::class, 'importEmployees'])->name('planning.import');
 // });
 
@@ -455,6 +569,37 @@ Route::resource('/pas/importpayroll', ImportPayrollController::class);
 
 Route::get('/employee/sections', [SectionController::class, 'getByDivision'])
   ->name('employee.sections');
+
+// Out Slip list/dashboard
+Route::get('/forms/outslips', [OutSlipController::class, 'index'])->name('outslips.index');
+// Out Slip form page
+Route::get('/forms/outslip/form', [OutSlipController::class, 'create'])->name('outslips.create');
+// Store Out Slip submission
+Route::post('/forms/outslips', [OutSlipController::class, 'store'])->name('outslips.store');
+// Approve / Reject actions
+Route::post('/forms/outslips/{id}/approve', [OutSlipController::class, 'approve'])->name('outslips.approve');
+Route::post('/forms/outslips/{id}/reject', [OutSlipController::class, 'reject'])->name('outslips.reject');
+Route::get('/forms/outslips/{id}/print', [OutSlipController::class, 'print'])->name('outslips.print');
+
+
+// Leaveform page
+Route::get('/forms/leaves/form', [LeaveController::class, 'create'])->name('leaves.create');
+// Store Leave submission
+Route::post('/forms/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+// Approve / Reject actions
+Route::post('/forms/leaves/{id}/approve', [LeaveController::class, 'approve'])->name('leaves.approve');
+Route::post('/forms/leaves/{id}/reject', [LeaveController::class, 'reject'])->name('leaves.reject');
+Route::get('/forms/leaves/{id}/print', [LeaveController::class, 'print'])->name('leaves.print');
+
+Route::get('/forms/leaves/{id}', [LeaveController::class, 'show'])->name('leaves.show');
+// Edit leave form
+Route::get('/forms/leaves/{id}/edit', [LeaveController::class, 'edit'])->name('leaves.edit');
+// Delete a leave
+Route::delete('/forms/leaves/{id}', [LeaveController::class, 'destroy'])->name('leaves.destroy'); // Update leave
+Route::put('/forms/leaves/{id}', [LeaveController::class, 'update'])->name('leaves.update');
+Route::get('/forms/leaves', [LeaveController::class, 'index'])->name('forms.leaves.index');
+// Route to print leave slip
+Route::get('/leaves/print/{id}', [App\Http\Controllers\LeaveController::class, 'print'])->name('leaves.print');
 
 
 

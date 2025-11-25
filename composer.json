@@ -10,12 +10,14 @@
   "require": {
     "php": "^8.2",
     "barryvdh/laravel-dompdf": "^3.1",
+    "dompdf/dompdf": "^3.1",
     "laravel/framework": "^11.0",
     "laravel/tinker": "^2.9",
     "maatwebsite/excel": "^3.1",
     "setasign/fpdf": "^1.8",
     "setasign/fpdi": "^2.6",
-    "setasign/tfpdf": "^1.33",
+    "spatie/laravel-tail": "^4.5",
+    "tecnickcom/tcpdf": "^6.10",
     "yajra/laravel-datatables-oracle": "^11.1"
   },
   "require-dev": {

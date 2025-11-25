@@ -56,13 +56,16 @@
             </select>
           </div>
           <div class="col-md-4">
-            <label>Employment Status</label>
-            <select class="form-select" name="employment_status" required>
-              <option value="" disabled>Choose...</option>
-              @foreach($employmentStatuses as $status)
-              <option value="{{ $status->id }}" {{ old('employment_status', $employee->employment_status_id) == $status->id ? 'selected' : '' }}>{{ $status->name }}</option>
+            <label>Item Number</label>
+            <select class="form-select" name="item_number_id" required>
+              <option value="" disabled {{ old('item_number_id', $employee->item_number_id) ? '' : 'selected' }}>Choose...</option>
+              @foreach($itemNumbers as $item)
+              <option value="{{ $item->id }}" {{ old('item_number_id', $employee->item_number_id ?? '') == $item->id ? 'selected' : '' }}>
+                {{ $item->item_number }}
+              </option>
               @endforeach
             </select>
+
           </div>
         </div>
 

@@ -11,6 +11,7 @@ use App\Models\Division;
 use App\Models\Section;
 use App\Models\SalaryGrade;
 use App\Models\Position;
+use App\Models\ItemNumber;
 
 class UserController extends Controller
 {
@@ -137,8 +138,9 @@ class UserController extends Controller
     $divisions = Division::all();
     $sections = Section::where('division_id', $employee->division_id)->get();
     $employmentStatuses = EmploymentStatus::all();
+    $itemNumbers = ItemNumber::all(); // <-- provide this to view
 
-    return view('content.planning.employee-edit', compact('employee', 'divisions', 'sections', 'employmentStatuses'));
+    return view('content.planning.employee-edit', compact('employee', 'divisions', 'sections', 'employmentStatuses', 'itemNumbers'));
   }
 
   public function update(Request $request, $id)
