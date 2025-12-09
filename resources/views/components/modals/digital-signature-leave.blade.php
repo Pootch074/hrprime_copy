@@ -3,7 +3,7 @@
 <div class="modal fade" id="digitalSignatureModal_{{ $ref }}" tabindex="-1" aria-labelledby="digitalSignatureLabel_{{ $ref }}" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form action="{{ route('forms.travel.digitalSignImage', $ref) }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('forms.leaves.digitalSignImage', $ref) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal-header">
           <h5 class="modal-title" id="digitalSignatureLabel_{{ $ref }}">Digital Signature</h5>

@@ -113,7 +113,7 @@
       "submenu": [
         {
           "url": "forms/outslips",
-          "name": "Out Slip",
+          "name": "Outslip",
           "slug": "outslips",
           "children": [
             {
@@ -183,14 +183,22 @@
           ]
         },
         {
-          "url": "forms/special/index",
+          "url": "forms/special",
           "name": "Special Order",
           "slug": "special-order"
         },
         {
-          "url": "profile/government-ids",
+          "url": "forms/request_forms",
           "name": "Request Form Application",
-          "slug": "id"
+          "slug": "request_forms"
+        },
+        {
+          "url": "forms/cpr/employee",
+          "name": "CPR Employee",
+          "slug": "cpremployee",
+          "roles": [
+            "HR-Planning"
+          ]
         }
       ]
     },
@@ -233,33 +241,6 @@
           "url": "profile/voluntary-work",
           "name": "Print SALN",
           "slug": "voluntary-work"
-        }
-      ]
-    },
-    {
-      "name": "History",
-      "slug": "profile",
-      "roles": [
-        "HR-Planning",
-        "HR-Welfare",
-        "HR-PAS",
-        "HR-L&D"
-      ],
-      "submenu": [
-        {
-          "url": "outslip/form",
-          "name": "Outslip",
-          "slug": "family-background"
-        },
-        {
-          "url": "profile/education",
-          "name": "Leave",
-          "slug": "education"
-        },
-        {
-          "url": "profile/cs-eligibility",
-          "name": "Forms Requested",
-          "slug": "cs-eligibility"
         }
       ]
     },
@@ -368,6 +349,14 @@
           "roles": [
             "HR-Planning"
           ]
+        },
+        {
+          "url": "forms/cpr",
+          "name": "CPR",
+          "slug": "cpr",
+          "roles": [
+            "HR-Planning"
+          ]
         }
       ]
     },
@@ -395,6 +384,14 @@
             "HR-PAS"
           ],
           "submenu": [
+            {
+              "url": "pas/dtr",
+              "name": "Upload DTR",
+              "slug": "DTR",
+              "roles": [
+                "HR-PAS"
+              ]
+            },
             {
               "url": "pas/importpayroll",
               "name": "Import Payroll",
@@ -462,41 +459,33 @@
           ]
         },
         {
-          "url": "layouts/without-menu",
+          "url": "#",
           "name": "Requests",
-          "slug": "without-menu",
+          "slug": "requests",
           "roles": [
             "HR-PAS"
           ],
           "submenu": [
             {
-              "url": "layouts/without-menu",
+              "url": "/requests/leave",
               "name": "Leave",
-              "slug": "without-menu",
+              "slug": "leave",
               "roles": [
                 "HR-PAS"
               ]
             },
             {
-              "url": "layouts/without-menu",
+              "url": "/requests/outslip",
               "name": "Outslip",
-              "slug": "without-menu",
+              "slug": "outslip",
               "roles": [
                 "HR-PAS"
               ]
             },
             {
-              "url": "layouts/without-menu",
-              "name": "Payslip",
-              "slug": "without-menu",
-              "roles": [
-                "HR-PAS"
-              ]
-            },
-            {
-              "url": "layouts/without-menu",
-              "name": "Certificates",
-              "slug": "without-menu",
+              "url": "/requests/request_forms",
+              "name": "Request Forms",
+              "slug": "request_forms",
               "roles": [
                 "HR-PAS"
               ]

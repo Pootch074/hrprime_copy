@@ -8,9 +8,8 @@
 <div class="card p-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="text-primary">Leave List</h4>
-    <!-- New Out Slip Button -->
-    <a href="{{ url('forms/leaves/form') }}" class="btn btn-primary">Apply Leave</a>
   </div>
+
 
   <table id="leaveTable" class="table table-bordered">
     <thead>
@@ -34,41 +33,32 @@
         <td>{{ $leave->to_date }}</td>
         <td>{{ $leave->status }}</td>
         <td>
-          <!-- Edit button -->
-          <a href="{{ route('leaves.edit', $leave->leave_no) }}"
-            class="btn btn-warning btn-sm"
-            @if($leave->status === 'Approved')
-            onclick="return false;" style="pointer-events: none; opacity: 0.6;"
-            @endif>
-            Edit
-          </a>
+          <!-- Approve button triggers signature modal -->
+          <button class="btn btn-success btn-sm approve-btn"
+            data-ref="{{ $leave->leave_no }}"
+            data-bs-toggle="modal"
+            data-bs-target="#signatureTypeModal_{{ $leave->leave_no }}"
+            @if($leave->status === 'Approved') disabled @endif>
+            Approve
+          </button>
 
-          <!-- Delete button -->
-          <form action="{{ route('leaves.destroy', $leave->leave_no) }}" method="POST" style="display:inline"
-            @if($leave->status === 'Approved')
-            onsubmit="return false;" style="pointer-events: none; opacity: 0.6;"
-            @endif>
+          <form action="{{ route('leaves.destroy', $leave->leave_no) }}" method="POST" style="display:inline">
             @csrf
             @method('DELETE')
-            <button class="btn btn-danger btn-sm"
-              @if($leave->status === 'Approved') disabled @endif
-              onclick="return confirm('Are you sure?')">
-              Delete
-            </button>
+            <button class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
           </form>
 
-          <!-- Print button (always enabled) -->
-          <a href="{{ route('leaves.print', $leave->leave_no) }}" target="_blank" class="btn btn-primary">
-            Print
-          </a>
         </td>
-
       </tr>
+
+      <!-- Signature Modals -->
+      <x-modals.signature-type-leave :ref="$leave->leave_no" />
+      <x-modals.digital-signature-leave :ref="$leave->leave_no" />
+      <x-modals.electronic-signature-leave :ref="$leave->leave_no" />
       @endforeach
     </tbody>
   </table>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -85,7 +75,7 @@
       }
 
       // AJAX request to reject the out slip
-      $.post('/forms/outslips/' + id + '/reject', {
+      $.post('/forms/leaves/' + id + '/reject', {
         _token: '{{ csrf_token() }}'
       }, function(res) {
         toastr.error(res.message);
@@ -101,7 +91,7 @@
         return; // Stop if user clicks "Cancel"
       }
 
-      $.post('/forms/outslips/' + id + '/approve', {
+      $.post('/forms/leaves/' + id + '/approve', {
         _token: '{{ csrf_token() }}'
       }, function(res) {
         toastr.success(res.message);
@@ -116,7 +106,7 @@
   $(document).ready(function() {
     $('.approve').click(function() {
       const id = $(this).data('id');
-      $.post('/forms/outslips/' + id + '/approve', {
+      $.post('/forms/leaves/' + id + '/approve', {
         _token: '{{ csrf_token() }}'
       }, function(res) {
         toastr.success(res.message);

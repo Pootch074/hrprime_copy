@@ -7,50 +7,37 @@ use Illuminate\Database\Eloquent\Model;
 
 class FamilyBackground extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-<<<<<<< HEAD
-    protected $table = 'family_backgrounds'; // Table name
+  protected $table = 'family_backgrounds';
 
-    protected $fillable = [
-        // Spouse
-        'spouse_surname', 'spouse_first_name', 'spouse_middle_name', 'spouse_extension_name',
-        'spouse_occupation', 'spouse_employer', 'spouse_employer_address',
+  protected $fillable = [
+    // spouse
+    's_lname',
+    's_fname',
+    's_mname',
+    's_ext',
+    's_occ',
+    's_emp',
+    's_addr',
 
-        // Father
-        'father_surname', 'father_first_name', 'father_middle_name', 'father_extension_name',
+    // father
+    'f_lname',
+    'f_fname',
+    'f_mname',
+    'f_ext',
 
-        // Mother
-        'mother_surname', 'mother_first_name', 'mother_middle_name', 'mother_extension_name',
+    // mother
+    'm_lname',
+    'm_fname',
+    'm_mname',
+    'm_ext',
 
-        // Reference to employee
-        'employee_id',
-    ];
-    
-    public function children()
-{
-    return $this->hasMany(Child::class);
-}
-=======
-    protected $table = 'family_backgrounds';
+    // children
+    'children',
+  ];
 
-    protected $fillable = [
-        // spouse
-        's_lname', 's_fname', 's_mname', 's_ext',
-        's_occ', 's_emp', 's_addr',
-
-        // father
-        'f_lname', 'f_fname', 'f_mname', 'f_ext',
-
-        // mother
-        'm_lname', 'm_fname', 'm_mname', 'm_ext',
-
-        // children
-        'children',
-    ];
-
-    protected $casts = [
-        'children' => 'array', // automatically JSON encode/decode
-    ];
->>>>>>> dc4e45e32fbe22834c7fa85287e2e37c57d782bc
+  protected $casts = [
+    'children' => 'array', // automatically JSON encode/decode
+  ];
 }

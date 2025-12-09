@@ -1,74 +1,74 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Leave List')
+@section('title', 'OutSlip List')
 
 @section('content')
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <div class="card p-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="text-primary">Leave List</h4>
+    <h4 class="text-primary">Outslip List</h4>
     <!-- New Out Slip Button -->
-    <a href="{{ url('forms/leaves/form') }}" class="btn btn-primary">Apply Leave</a>
+    <a href="{{ url('forms/outslip/form') }}" class="btn btn-primary">Apply Outslip</a>
   </div>
 
-  <table id="leaveTable" class="table table-bordered">
+  <table id="outslipTable" class="table table-bordered">
     <thead>
       <tr>
-        <th>Leave No</th>
-        <th>Employee</th>
+        <th>Date</th>
+        <th>Employee ID</th>
+        <th>Destination</th>
         <th>Type</th>
-        <th>From</th>
-        <th>To</th>
+        <th>Purpose</th>
         <th>Status</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      @foreach($leaves as $leave)
+      @foreach($outSlips as $slip)
       <tr>
-        <td>{{ $leave->leave_no }}</td>
-        <td>{{ $leave->employee->full_name ?? 'N/A' }}</td>
-        <td>{{ $leave->leave_type }}</td>
-        <td>{{ $leave->from_date }}</td>
-        <td>{{ $leave->to_date }}</td>
-        <td>{{ $leave->status }}</td>
+        <td>{{ $slip->date }}</td>
+        <td>{{ $slip->empid }}</td>
+        <td>{{ $slip->destination }}</td>
+        <td>{{ $slip->type_of_slip }}</td>
+        <td>{{ $slip->purpose }}</td>
+        <td>{{ $slip->status }}</td>
         <td>
-          <!-- Edit button -->
-          <a href="{{ route('leaves.edit', $leave->leave_no) }}"
-            class="btn btn-warning btn-sm"
-            @if($leave->status === 'Approved')
-            onclick="return false;" style="pointer-events: none; opacity: 0.6;"
-            @endif>
-            Edit
-          </a>
+          <!-- Approve button -->
+          <button class="btn btn-success btn-sm approve-btn"
+            data-ref="{{ $slip->id }}"
+            data-bs-toggle="modal"
+            data-bs-target="#signatureTypeModal_{{ $slip->id }}"
+            @if($slip->status === 'Approved') disabled @endif>
+            Approve
+          </button>
 
-          <!-- Delete button -->
-          <form action="{{ route('leaves.destroy', $leave->leave_no) }}" method="POST" style="display:inline"
-            @if($leave->status === 'Approved')
-            onsubmit="return false;" style="pointer-events: none; opacity: 0.6;"
-            @endif>
-            @csrf
-            @method('DELETE')
-            <button class="btn btn-danger btn-sm"
-              @if($leave->status === 'Approved') disabled @endif
-              onclick="return confirm('Are you sure?')">
-              Delete
-            </button>
-          </form>
+          <!-- Reject button -->
+          <button class="btn btn-danger btn-sm reject-btn"
+            data-id="{{ $slip->id }}"
+            @if($slip->status === 'Approved') disabled @endif>
+            Reject
+          </button>
 
           <!-- Print button (always enabled) -->
-          <a href="{{ route('leaves.print', $leave->leave_no) }}" target="_blank" class="btn btn-primary">
+          <a href="{{ url('forms/outslips/'.$slip->id.'/print') }}"
+            target="_blank" class="btn btn-secondary btn-sm">
             Print
           </a>
         </td>
 
+
       </tr>
+
+      <!-- Signature Modals -->
+      <x-modals.signature-type :ref="$slip->id" />
+      <x-modals.digital-signature-outslip :ref="$slip->id" />
+      <x-modals.electronic-signature-outslip :ref="$slip->id" />
       @endforeach
     </tbody>
   </table>
-</div>
 
+</div>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -137,7 +137,7 @@
 
   // DataTable Init
   jQuery(function($) {
-    $('#leaveTable').DataTable({
+    $('#outslipTable').DataTable({
       paging: true,
       searching: true,
       info: true
