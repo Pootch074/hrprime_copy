@@ -7,7 +7,6 @@
 
   <div class="d-flex justify-content-between mb-3">
     <h4 class="fw-bold">CPR – Employee Ratings</h4>
-
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCprEmployeeModal">
       <i class="bx bx-plus"></i> Add Employee Rating
     </button>
@@ -34,7 +33,7 @@
           <td>{{ $ce->cpr_id }}</td>
           <td>{{ $ce->created_at->format('Y-m-d') }}</td>
           <td>
-            <form action="{{ route('cpremployee.destroy', $ce->id) }}" method="POST">
+            <form action="{{ route('employee.destroy', $ce->id) }}" method="POST">
               @csrf
               @method('DELETE')
               <button class="btn btn-sm btn-danger">Delete</button>
@@ -51,29 +50,25 @@
 <!-- Modal Add CPR Employee -->
 <div class="modal fade" id="addCprEmployeeModal" tabindex="-1">
   <div class="modal-dialog">
-    <form action="{{ route('cpremployee.store') }}" method="POST" class="modal-content">
+    <form action="{{ route('employee.store') }}" method="POST" class="modal-content">
       @csrf
       <div class="modal-header">
         <h5 class="modal-title">Add CPR Employee</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-
         <div class="mb-3">
           <label class="form-label">Employee ID</label>
           <input type="text" name="employee_id" class="form-control" required>
         </div>
-
         <div class="mb-3">
           <label class="form-label">CPR ID</label>
           <input type="number" name="cpr_id" class="form-control" required>
         </div>
-
         <div class="mb-3">
           <label class="form-label">Rating</label>
           <input type="number" name="rating" class="form-control" min="1" max="5" required>
         </div>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -82,6 +77,7 @@
     </form>
   </div>
 </div>
+
 @endsection
 
 @section('page-script')

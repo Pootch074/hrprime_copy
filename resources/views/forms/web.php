@@ -606,18 +606,11 @@ Route::prefix('forms')->name('forms.')->group(function () {
   Route::resource('cpr', CprController::class);
 });
 
-// CPR Employee list/dashboard
-Route::get('/forms/cpremployee', [CprEmployeeController::class, 'index'])->name('employee.index');
-
-// CPR Employee add form page (optional, if you want a separate page)
-Route::get('/forms/cpremployee/form', [CprEmployeeController::class, 'create'])->name('employee.create');
-
-// Store CPR Employee submission
-Route::post('/forms/cpremployee', [CprEmployeeController::class, 'store'])->name('employee.store');
-
-// Delete CPR Employee record
-Route::delete('/forms/cpremployee/{id}', [CprEmployeeController::class, 'destroy'])->name('employee.destroy');
-
+Route::prefix('forms/cpr/employee')->name('employee.')->group(function () {
+  Route::get('/', [CprEmployeeController::class, 'index'])->name('index');
+  Route::post('/', [CprEmployeeController::class, 'store'])->name('store');
+  Route::delete('/{id}', [CprEmployeeController::class, 'destroy'])->name('destroy');
+});
 
 //PAS
 Route::prefix('/pas/fundsource')->group(function () {

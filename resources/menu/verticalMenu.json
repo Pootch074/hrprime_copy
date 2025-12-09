@@ -193,7 +193,7 @@
           "slug": "request_forms"
         },
         {
-          "url": "forms/cpr/employee",
+          "url": "forms/cpremployee",
           "name": "CPR Employee",
           "slug": "cpremployee",
           "roles": [

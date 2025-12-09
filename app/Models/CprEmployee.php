@@ -12,6 +12,7 @@ class CprEmployee extends Model
     'rating',
   ];
 
+  // Optional relationships
   public function employee()
   {
     return $this->belongsTo(User::class, 'employee_id');
