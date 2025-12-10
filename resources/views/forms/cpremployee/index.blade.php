@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'OutSlip List')
+@section('title', 'CPR List')
 
 @section('content')
 
@@ -8,9 +8,6 @@
 <div class="card p-4">
   <div class="d-flex justify-content-between mb-3">
     <h4 class="fw-bold">CPR – Employee Ratings</h4>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCprEmployeeModal">
-      <i class="bx bx-plus"></i> Add Employee Rating
-    </button>
   </div>
 
   <table id="outslipTable" class="table table-bordered">
@@ -21,78 +18,117 @@
         <th>Rating</th>
         <th>CPR ID</th>
         <th>Date Created</th>
-        <th width="120">Action</th>
+        <th>Status</th>
+        <th width="250">Action</th>
       </tr>
     </thead>
     <tbody>
-      @foreach ($cprEmployees as $ce)
+      @foreach($cprs as $cpr)
       <tr>
-        <td>{{ $ce->id }}</td>
-        <td>{{ $ce->employee_id }}</td>
-        <td>{{ $ce->rating }}</td>
-        <td>{{ $ce->cpr_id }}</td>
-        <td>{{ $ce->created_at->format('Y-m-d') }}</td>
+        <td>{{ $cpr->id }}</td>
+
+        <!-- Employees IDs -->
         <td>
-          <form action="{{ route('employee.destroy', $ce->id) }}" method="POST">
-            @csrf
-            @method('DELETE')
-            <button class="btn btn-sm btn-danger">Delete</button>
-          </form>
+          @if($cpr->employees->count())
+          @foreach($cpr->employees as $emp)
+          {{ $emp->employee_id }}<br>
+          @endforeach
+          @else
+          N/A
+          @endif
         </td>
+
+        <!-- Ratings -->
+        <td>
+          @if($cpr->employees->count())
+          @foreach($cpr->employees as $emp)
+          {{ $emp->rating }}<br>
+          @endforeach
+          @else
+          N/A
+          @endif
+        </td>
+
+        <td>{{ $cpr->id }}</td>
+        <td>{{ $cpr->created_at->format('Y-m-d') }}</td>
+        <td>
+          <!-- Status badge -->
+          @if($cpr->status == 'Active')
+          <span class="badge bg-success">Active</span>
+          @endif
+        </td>
+
+        <!-- Edit button -->
+        @php
+        $isActive = trim(strtolower($cpr->status)) === 'active';
+        $firstEmployee = $cpr->employees->first();
+        $userId = \Illuminate\Support\Facades\Auth::id(); // logged-in user
+        @endphp
+
+        <td>
+          <!-- Update button -->
+          @if($isActive)
+          <button class="btn btn-sm btn-primary updateCprBtn"
+            data-cpr-id="{{ $cpr->id }}"
+            data-employee-id="{{ $userId }}"
+            data-rating="{{ $firstEmployee ? $firstEmployee->rating : '' }}">
+            Update
+          </button>
+          @endif
+
+          <!-- Request Activation -->
+          @if(!$isActive)
+          <button class="btn btn-sm btn-warning requestActivationBtn"
+            data-cpr-id="{{ $cpr->id }}">
+            Request Activation
+          </button>
+          @endif
+
+        </td>
+
       </tr>
       @endforeach
+
     </tbody>
 
   </table>
 </div>
-
-<!-- Modal Add CPR Employee -->
-<div class="modal fade" id="addCprEmployeeModal" tabindex="-1">
+<!-- Modal Update CPR Employee -->
+<div class="modal fade" id="updateCprEmployeeModal" tabindex="-1">
   <div class="modal-dialog">
-    <form action="{{ route('employee.store') }}" method="POST" class="modal-content">
+    <form id="updateCprEmployeeForm" method="POST" class="modal-content">
       @csrf
+      @method('PUT')
+
       <div class="modal-header">
-        <h5 class="modal-title">Add CPR Employee</h5>
+        <h5 class="modal-title">Update CPR Employee Rating</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
+        <input type="hidden" name="cpr_id" id="update_cpr_id">
 
-        <!-- Employee ID (auto-filled, hidden) -->
-        <input type="hidden" name="employee_id" value="{{ $userId }}">
-
-        <!-- Show Employee ID as read-only -->
+        <!-- Employee ID (read-only) -->
         <div class="mb-3">
           <label class="form-label">Employee ID</label>
-          <input type="text" class="form-control" value="{{ $userId }}" readonly>
-        </div>
-
-        <!-- CPR selection -->
-        <div class="mb-3">
-          <label class="form-label">CPR</label>
-          <select name="cpr_id" class="form-select" required>
-            <option value="" disabled selected>Select CPR</option>
-            @foreach($cprs as $cpr)
-            <option value="{{ $cpr->id }}">
-              {{ $cpr->semester }} ({{ \Carbon\Carbon::parse($cpr->rating_period_start)->format('M Y') }})
-            </option>
-            @endforeach
-          </select>
+          <input type="text" class="form-control" id="update_employee_id" name="employee_id" readonly>
         </div>
 
         <!-- Rating -->
         <div class="mb-3">
           <label class="form-label">Rating</label>
-          <input type="number" name="rating" class="form-control" min="0" max="100" step="0.01" required>
+          <input type="number" name="rating" id="update_rating" class="form-control" min="0" max="100" step="0.01" required>
         </div>
-
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-success">Update</button>
       </div>
     </form>
   </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -168,4 +204,81 @@
     });
   });
 </script>
+<script>
+  $(document).ready(function() {
+    $('.requestActivationBtn').click(function() {
+      const cprId = $(this).data('cpr-id');
+
+      if (!confirm('Send request to HR to activate this rating period?')) return;
+
+      $.post("{{ route('cpr.requestActivation') }}", {
+        _token: '{{ csrf_token() }}',
+        cpr_id: cprId
+      }, function(res) {
+        toastr.success(res.message);
+        location.reload();
+      });
+    });
+  });
+
+  $('.requestActivationBtn').click(function() {
+    const cprId = $(this).data('cpr-id');
+
+    if (!confirm('Send request to HR to activate this rating period?')) return;
+
+    $.post("{{ route('cpr.requestActivation') }}", {
+      _token: '{{ csrf_token() }}',
+      cpr_id: cprId
+    }, function(res) {
+      toastr.success(res.message);
+      location.reload();
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('.updateCprBtn').click(function() {
+      let cprId = $(this).data('cpr-id');
+      let employeeId = $(this).data('employee-id');
+      let rating = $(this).data('rating');
+
+      $('#update_cpr_id').val(cprId);
+      $('#update_employee_id').val(employeeId);
+      $('#update_rating').val(rating);
+
+      $('#updateCprEmployeeModal').modal('show');
+    });
+
+    // Handle form submission
+    $('#updateCprEmployeeForm').submit(function(e) {
+      e.preventDefault();
+
+      let cprId = $('#update_cpr_id').val();
+      let employeeId = $('#update_employee_id').val();
+      let rating = $('#update_rating').val();
+      let token = $('input[name="_token"]').val();
+
+      $.ajax({
+        url: '/employee/' + cprId + '/update',
+        type: 'PUT',
+        data: {
+          _token: token,
+          employee_id: employeeId,
+          rating: rating
+        },
+        success: function(res) {
+          alert('Rating updated successfully!');
+          location.reload(); // refresh table
+        },
+        error: function(err) {
+          alert('Error updating rating.');
+          console.log(err);
+        }
+      });
+    });
+  });
+</script>
+
+
 @endsection

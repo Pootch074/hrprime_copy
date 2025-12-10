@@ -617,7 +617,12 @@ Route::post('/forms/cpremployee', [CprEmployeeController::class, 'store'])->name
 
 // Delete CPR Employee record
 Route::delete('/forms/cpremployee/{id}', [CprEmployeeController::class, 'destroy'])->name('employee.destroy');
+Route::put('/forms/cpr/{id}', [CprController::class, 'update'])->name('forms.cpr.update');
 
+Route::post('/forms/request-activation', [CprEmployeeController::class, 'requestActivation'])
+  ->name('cpr.requestActivation');
+
+Route::put('/employee/{cpr}/update', [CprEmployeeController::class, 'update'])->name('employee.update');
 
 //PAS
 Route::prefix('/pas/fundsource')->group(function () {
