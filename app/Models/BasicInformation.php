@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BasicInformation extends Model
 {
+    // basic information
     protected $fillable = [
     'username', 'employee_id', 'first_name', 'middle_name', 'last_name', 'extension_name',
     'birthday', 'place_of_birth', 'gender', 'civil_status', 'height', 'weight', 'age', 'blood_type',

@@ -114,14 +114,12 @@ Route::get('/provinces/{region_psgc}', [AddressController::class, 'getProvinces'
 Route::get('/cities/{province_psgc}', [AddressController::class, 'getCities']);
 Route::get('/barangays/{city_psgc}', [AddressController::class, 'getBarangays']);
 
-
+// Basic Information
 Route::prefix('profile')->group(function () {
-  Route::get('basic-information', [BasicInformationController::class, 'index'])
-    ->name('profile.basic-info.index');
-
-  Route::post('basic-information/update', [BasicInformationController::class, 'update'])
-    ->name('profile.basic-info.update');
+  Route::get('basic-information', [BasicInformationController::class, 'index'])->name('profile.basic-info.index');
+  Route::post('basic-information/update', [BasicInformationController::class, 'update'])->name('profile.basic-info.update');
 });
+
 
 Route::middleware(['auth'])->group(function () {
   Route::get('/profile/family-background', [FamilyBackgroundController::class, 'edit'])->name('profile.family-background.edit');

@@ -18,7 +18,7 @@
 
 <link rel="stylesheet" href="{{ asset('assets/css/custom-override.css') }}">
 
-
+<!-- Basic Information -->
 <div class="card shadow-sm">
   <div class="card-body">
     <form id="employeeForm" method="POST" action="{{ route('profile.basic-info.update') }}" enctype="multipart/form-data">

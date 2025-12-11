@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class BasicInformationController extends Controller
 {
+    // Basic Information
     public function index()
     {
         $employee = User::with([

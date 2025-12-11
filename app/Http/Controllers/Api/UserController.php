@@ -241,6 +241,7 @@ class UserController extends Controller
 
     return redirect()->back()->with('success', 'User details updated successfully!');
   }
+
   public function showImportForm()
 {
     return view('content.planning.import-form'); // adjust the view name as needed
