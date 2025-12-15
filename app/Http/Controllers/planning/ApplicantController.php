@@ -100,8 +100,6 @@ class ApplicantController extends Controller
     $applicant->remarks = $request->remarks ?? $applicant->remarks;
 
     if ($request->status === 'Hired') {
-      // $applicant->division_id = $request->division_id;
-      // $applicant->section_id = $request->section_id;
       $applicant->date_of_assumption = $request->date_of_assumption; // save date of assumption
     }
 
