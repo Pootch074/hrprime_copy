@@ -112,6 +112,11 @@
       ],
       "submenu": [
         {
+          "url": "forms/arta",
+          "name": "ARTA ID",
+          "slug": "arta"
+        },
+        {
           "url": "forms/outslips",
           "name": "Outslip",
           "slug": "outslips",

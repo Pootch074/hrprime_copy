@@ -73,8 +73,7 @@ use App\Http\Controllers\SpecialController;
 use App\Http\Controllers\RequestFormController;
 use App\Http\Controllers\CprController;
 use App\Http\Controllers\CprEmployeeController;
-
-
+use App\Http\Controllers\ArtaController;
 
 //PAS
 use App\Http\Controllers\pas\FundSourceController;
@@ -623,6 +622,13 @@ Route::post('/forms/request-activation', [CprEmployeeController::class, 'request
   ->name('cpr.requestActivation');
 
 Route::put('/employee/{cpr}/update', [CprEmployeeController::class, 'update'])->name('employee.update');
+
+Route::middleware(['auth'])->group(function () {
+  Route::get('forms/arta', [ArtaController::class, 'index'])->name('arta.index');
+  Route::put('forms/arta/{arta}', [ArtaController::class, 'update'])->name('arta.update');
+  Route::post('forms/arta', [ArtaController::class, 'store'])->name('arta.store'); // <-- add this
+
+});
 
 //PAS
 Route::prefix('/pas/fundsource')->group(function () {
