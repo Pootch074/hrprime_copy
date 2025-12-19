@@ -32,15 +32,15 @@
       <table id="workTable" class="table">
         <thead class="table-light text-center">
           <tr>
-            <th>Position Title</th>
-            <th>Department/Agency</th>
-            <th>Salary</th>
-            <th>Salary Grade</th>
-            <th>Status</th>
-            <th>Government Service</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Action</th>
+            <th style="width: 10%;">Position Title</th>
+            <th style="width: 20%;">Department/Agency</th>
+            <th style="width: 8%;">Salary</th>
+            <th style="width: 8%;">Salary Grade</th>
+            <th style="width: 8%;">Status</th>
+            <th style="width: 10%;">Government Service</th>
+            <th style="width: 8%;">From</th>
+            <th style="width: 8%;">To</th>
+            <th style="width: 15%;">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -106,21 +106,21 @@
           </div>
           <div class="mb-3">
             <label>DEPARTMENT/AGENCY/BUSINESS</label>
-            <input type="text" name="department_agency" class="form-control uppercase">
+            <input type="text" name="department_agency" class="form-control uppercase" required>
           </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
                 <label for="monthly_salary">MONTHLY SALARY</label>
-                <input type="number" name="monthly_salary" class="form-control uppercase" step="0.01" min="0">
+                <input type="number" name="monthly_salary" class="form-control uppercase" step="0.01" min="0" required>
                 </div>
                 <div class="col-md-6 mb-3">
                 <label for="salary_grade">SALARY GRADE</label>
-                <input type="number" name="salary_grade" class="form-control uppercase" min="0">
+                <input type="number" name="salary_grade" class="form-control uppercase" min="0" required>
                 </div>
             </div>
           <div class="mb-3">
             <label>STATUS OF APPOINTMENT</label>
-            <input type="text" name="status_of_appointment" class="form-control uppercase">
+            <input type="text" name="status_of_appointment" class="form-control uppercase" required>
           </div>
           <div class="mb-3">
             <label>GOVERNMENT SERVICE</label>

@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Spatie\Permission\Traits\HasRoles; // ✅ Add this
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -48,6 +49,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
+    
+      protected $dates = [
+        'birthday', // make sure birthday is cast to date
+    ];
+
+    // Accessor for age
+    public function getAgeAttribute()
+    {
+        return $this->birthday ? Carbon::parse($this->birthday)->age : null;
+    }
 
     /* ================================================
      |  RELATIONSHIPS
