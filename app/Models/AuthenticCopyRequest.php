@@ -26,4 +26,8 @@ class AuthenticCopyRequest extends Model
   {
     return $this->belongsTo(\App\Models\User::class, 'user_id');
   }
+  public function items()
+  {
+    return $this->hasMany(AuthenticCopyRequestItem::class);
+  }
 }

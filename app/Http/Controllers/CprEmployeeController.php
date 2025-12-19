@@ -6,6 +6,7 @@ use App\Models\CprEmployee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cpr;
+use App\Models\AuthenticCopyRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CprActivationRequestMail;
@@ -23,6 +24,15 @@ class CprEmployeeController extends Controller
   }
 
 
+  public function getMyRequests()
+  {
+    $requests = AuthenticCopyRequest::with('items.cpr')
+      ->where('user_id', auth()->id())
+      ->orderBy('created_at', 'desc')
+      ->get();
+
+    return response()->json($requests);
+  }
   public function store(Request $request)
   {
     $validated = $request->validate([
