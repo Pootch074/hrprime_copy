@@ -125,8 +125,7 @@ use Illuminate\Support\Facades\Storage;
           @forelse($cpr->employees as $emp)
           @switch($emp->status ?? 'Pending')
           @case('Validated')
-          <button
-            class="btn btn-sm btn-primary updateCprBtn" disabled
+          <button class="btn btn-sm btn-primary updateCprBtn" disabled
             data-cpr-id="{{ $cpr->id }}"
             data-employee-id="{{ $userId }}"
             data-rating="{{ $firstEmployee?->rating }}"
@@ -135,8 +134,7 @@ use Illuminate\Support\Facades\Storage;
           </button>
           @break
           @case('Pending')
-          <button
-            class="btn btn-sm btn-primary updateCprBtn"
+          <button class="btn btn-sm btn-primary updateCprBtn"
             data-cpr-id="{{ $cpr->id }}"
             data-employee-id="{{ $userId }}"
             data-rating="{{ $firstEmployee?->rating }}"
@@ -156,22 +154,24 @@ use Illuminate\Support\Facades\Storage;
           <small class="text-muted d-block mt-1">Already validated</small>
           @endif
 
-          <!-- Download Signed PDF Button -->
-          <a href="{{ route('authentic-copy.wetSign', $cpr->id) }}"
-            class="btn btn-sm btn-success mt-1">
+          {{-- ✅ Only show download if signed PDF exists --}}
+          @if($signedPath && Storage::disk('public')->exists($signedPath))
+          <a href="{{ asset('storage/' . $signedPath) }}"
+            class="btn btn-sm btn-success mt-1"
+            target="_blank">
             <i class="bi bi-download"></i> Download Signed PDF
           </a>
+          @else
+          <span class="text-muted d-block mt-1">No signed PDF</span>
+          @endif
 
           @else
-          <button
-            class="btn btn-sm btn-warning requestActivationBtn"
+          <button class="btn btn-sm btn-warning requestActivationBtn"
             data-cpr-id="{{ $cpr->id }}">
             Request Activation
           </button>
           @endif
         </td>
-
-
       </tr>
       @endforeach
     </tbody>
