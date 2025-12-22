@@ -4,79 +4,87 @@ namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Education;
 use Illuminate\Support\Facades\Auth;
 
 class EducationController extends Controller
 {
-    // Show the Educational Background page
+    /**
+     * Display educational background of logged-in user
+     */
     public function index()
     {
         $educations = Education::where('user_id', Auth::id())->get();
+
         return view('content.profile.education', compact('educations'));
     }
 
-    // Save or Update Education
-    public function save(Request $request)
+    /**
+     * Validation rules
+     */
+    private function rules()
     {
-        $request->validate([
-            'level_of_education' => 'required|string|max:255',
-            'school_name' => 'required|string|max:255',
-        ]);
-
-        $data = $request->only([
-            'level_of_education',
-            'school_name',
-            'degree_course',
-            'from',
-            'to',
-            'highest_level_earned',
-            'year_graduated',
-            'scholarship_honors',
-        ]);
-
-        $data['user_id'] = Auth::id();
-
-        // Update or create
-        Education::updateOrCreate(
-            ['id' => $request->education_id, 'user_id' => Auth::id()],
-            $data
-        );
-
-        return response()->json(['success' => true, 'message' => 'Education saved successfully.']);
+        return [
+            'level_of_education'   => 'required|string|max:255',
+            'school_name'          => 'required|string|max:255',
+            'degree_course'        => 'nullable|string|max:255',
+            'from'                 => 'required|date',
+            'to'                   => 'nullable|date|after_or_equal:from',
+            'highest_level_earned' => 'nullable|string|max:255',
+            'year_graduated'       => 'nullable|digits:4|integer|min:1900|max:' . date('Y'),
+            'scholarship_honors'   => 'nullable|string|max:255',
+        ];
     }
 
-    // Show single education record for editing
+    /**
+     * Store or update education
+     */
+    public function save(Request $request)
+    {
+        $validated = $request->validate($this->rules());
+
+        $validated['user_id'] = Auth::id();
+
+        Education::updateOrCreate(
+            [
+                'id' => $request->education_id,
+                'user_id' => Auth::id(),
+            ],
+            $validated
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Education saved successfully.'
+        ]);
+    }
+
+    /**
+     * Show education record for editing
+     */
     public function show($id)
     {
-        $education = Education::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $education = Education::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
         return response()->json($education);
     }
 
-    // Delete education
+    /**
+     * Delete education record
+     */
     public function delete($id)
     {
-        $education = \App\Models\Education::findOrFail($id);
+        $education = Education::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
         $education->delete();
 
-        return response()->json(['message' => 'Education deleted successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Education deleted successfully.'
+        ]);
     }
-    public function update(Request $request, $id)
-{
-    $education = \App\Models\Education::findOrFail($id);
-
-    $education->update([
-        'level_of_education' => $request->level_of_education,
-        'school_name' => $request->school_name,
-        'degree_course' => $request->degree_course,
-        'from' => $request->from,
-        'to' => $request->to,
-        'highest_level_earned' => $request->highest_level_earned,
-        'year_graduated' => $request->year_graduated,
-        'scholarship_honors' => $request->scholarship_honors,
-    ]);
-
-    return response()->json(['success' => true]);
-}
 }
