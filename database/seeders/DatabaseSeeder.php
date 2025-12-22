@@ -12,23 +12,47 @@ class DatabaseSeeder extends Seeder
    */
   public function run(): void
   {
-    // Create a test user
-    User::factory()->create([
-      'name' => 'Test User',
-      'email' => 'test@example.com',
-    ]);
 
-    // Call individual seeders
-   $this->call([
-    RegionSeeder::class,
-    ProvinceSeeder::class,
-    Barangayb2Seeder::class,
-    Barangayb3Seeder::class,
-    Barangayb4Seeder::class,
-    Barangayb5Seeder::class,
-    CitiesSeeder::class,
-    UsersTableSeeder::class,
-    ModulePermissionSeeder::class,
-]);
+
+    // Call seeders in correct dependency order
+    $this->call([
+
+      /*
+            |--------------------------------------------------------------------------
+            | Location / Geography
+            |--------------------------------------------------------------------------
+            */
+      RegionSeeder::class,
+      ProvinceSeeder::class,
+      CitiesSeeder::class,
+      Barangayb2Seeder::class,
+      Barangayb3Seeder::class,
+      Barangayb4Seeder::class,
+      Barangayb5Seeder::class,
+      BarangaysSeeder::class,
+
+      /*
+            |--------------------------------------------------------------------------
+            | Organizational Structure
+            |--------------------------------------------------------------------------
+            */
+      DivisionSeeder::class,
+      SectionSeeder::class,
+      OfficeLocationSeeder::class,
+
+      /*
+            |--------------------------------------------------------------------------
+            | Employment / HR
+            |--------------------------------------------------------------------------
+            */
+      EmploymentStatusSeeder::class,
+
+      /*
+            |--------------------------------------------------------------------------
+            | Users
+            |--------------------------------------------------------------------------
+            */
+      UserSeeder::class,
+    ]);
   }
 }
