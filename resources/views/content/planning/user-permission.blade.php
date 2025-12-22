@@ -18,33 +18,43 @@
 
     {{-- Permissions Table --}}
     <div class="table-responsive" id="permissionsContainer" style="display:none;">
-
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Module</th>
-                    @foreach(['view', 'create', 'edit'] as $action)
+                    @foreach($actions as $action)
                         <th>{{ ucfirst($action) }}</th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
                 @foreach($modules as $module)
-                <tr>
-                    <td>{{ $module->name }}</td>
-                    @foreach(['view', 'create', 'edit'] as $action)
-                        @php $permissionName = $module->slug . '.' . $action; @endphp
-                        <td class="text-center">
-                            <input type="checkbox" class="permission-checkbox" data-permission-name="{{ $permissionName }}">
-                        </td>
-                    @endforeach
-                </tr>
+                    <tr>
+                        <td>{{ $module->name }}</td>
+                        @foreach($actions as $action)
+                            @php
+                                $permissionName = $module->slug . '.' . $action;
+                                $isDisabled = !in_array($permissionName, $assignablePermissions) || !auth()->user()->hasRole('HR-PLANNING');
+                            @endphp
+                            <td class="text-center">
+                                <input type="checkbox" class="permission-checkbox"
+                                       data-permission-name="{{ $permissionName }}"
+                                       {{ $isDisabled ? 'disabled' : '' }}
+                                       title="{{ $isDisabled ? 'You cannot assign this permission' : '' }}">
+                            </td>
+                        @endforeach
+                    </tr>
                 @endforeach
             </tbody>
         </table>
-            <div class="mb-3 d-flex justify-content-end mt-3">
-                <button id="updatePermissionsBtn" class="btn btn-primary" disabled>Update Permissions</button>
-            </div>
+
+        {{-- Update Permissions Button --}}
+        <div class="mb-3 d-flex justify-content-end mt-3">
+        <button id="updatePermissionsBtn mb-3 d-flex justify-content-end mt-3"  class="btn btn-primary"
+                {{ auth()->user()->section !== 'HR-PLANNING' ? 'disabled' : '' }}>
+            Update Permissions
+        </button>
+        </div>
     </div>
 </div>
 
@@ -68,22 +78,21 @@
 <script>
 $(document).ready(function() {
     let userId = null;
-    let pendingPermissions = [];
 
-    // User selection
     $('#selectUser').change(function() {
         userId = $(this).val();
-        if(!userId) {
-            $('#permissionsContainer').hide();
-            $('#updatePermissionsBtn').prop('disabled', true);
-            return;
-        }
+        $('#permissionsContainer').toggle(!!userId);
 
-        $('#permissionsContainer').show();
-        $('#updatePermissionsBtn').prop('disabled', false);
+        // Enable/disable update button based on user selection and section
+        const canAssign = userId && "{{ auth()->user()->section }}" === 'HR-PLANNING';
+        $('#updatePermissionsBtn').prop('disabled', !canAssign);
+
+        if (!userId) return;
+
+        // Reset checkboxes
         $('.permission-checkbox').prop('checked', false);
 
-        // Load existing permissions
+        // Load current user permissions
         $.get(`/planning/user-permission/${userId}`, function(userPermissions){
             $('.permission-checkbox').each(function(){
                 const permName = $(this).data('permission-name');
@@ -92,40 +101,36 @@ $(document).ready(function() {
         });
     });
 
-    // Update button click -> show confirmation modal
     $('#updatePermissionsBtn').click(function() {
-        pendingPermissions = [];
-        $('.permission-checkbox:checked').each(function() {
-            pendingPermissions.push($(this).data('permission-name'));
-        });
-
-        $('#permissionConfirmText').text(`Are you sure you want to update permissions for the selected user?`);
+        $('#permissionConfirmText').text('Are you sure you want to update permissions for this user?');
         new bootstrap.Modal(document.getElementById('permissionConfirmModal')).show();
     });
 
-    // Confirm button click -> send AJAX
     $('#confirmPermissionBtn').click(function() {
-        if(!userId) return;
+        const permissions = [];
+        $('.permission-checkbox:checked').each(function() {
+            permissions.push($(this).data('permission-name'));
+        });
 
         $.ajax({
             url: "{{ route('user-permission.update') }}",
-            method: "POST",
+            method: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
                 user_id: userId,
-                permissions: pendingPermissions
+                permissions: permissions
             },
             success: function(res) {
-                toastr.success(res.success || 'Permissions updated!');
+                toastr.success(res.success);
                 bootstrap.Modal.getInstance(document.getElementById('permissionConfirmModal')).hide();
             },
-            error: function(xhr) {
-                console.log(xhr.responseText);
+            error: function(err) {
                 toastr.error('Failed to update permissions');
+                console.log(err.responseText);
             }
         });
     });
 });
-</script>
 
+</script>
 @endsection
