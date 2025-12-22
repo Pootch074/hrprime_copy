@@ -9,29 +9,80 @@ use Illuminate\Support\Facades\Auth;
 
 class VoluntaryWorkController extends Controller
 {
+    /**
+     * Display voluntary works of logged-in user
+     */
     public function index()
     {
         $voluntaryWorks = VoluntaryWork::where('user_id', Auth::id())->get();
+
         return view('content.profile.voluntary-work', compact('voluntaryWorks'));
     }
 
+    /**
+     * Validation rules
+     */
+    private function rules()
+    {
+        return [
+            'organization_name'        => 'required|string|max:255',
+            'date_from'                => 'required|date',
+            'date_to'                  => 'nullable|date|after_or_equal:date_from',
+            'number_of_hours'          => 'nullable|integer|min:1|max:100000',
+            'position_nature_of_work'  => 'nullable|string|max:500',
+        ];
+    }
+
+    /**
+     * Store voluntary work
+     */
     public function store(Request $request)
     {
-        // If you have a validation rule, use $request->validate([...])
-        VoluntaryWork::create($request->all() + ['user_id' => Auth::id()]);
-        return response()->json(['message' => 'Voluntary work added successfully']);
+        $validated = $request->validate($this->rules());
+
+        $validated['user_id'] = Auth::id();
+
+        VoluntaryWork::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Voluntary work added successfully.'
+        ]);
     }
 
+    /**
+     * Update voluntary work
+     */
     public function update(Request $request, $id)
     {
-        $work = VoluntaryWork::findOrFail($id);
-        $work->update($request->all());
-        return response()->json(['message' => 'Voluntary work updated successfully']);
+        $validated = $request->validate($this->rules());
+
+        $work = VoluntaryWork::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $work->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Voluntary work updated successfully.'
+        ]);
     }
 
+    /**
+     * Delete voluntary work
+     */
     public function destroy($id)
     {
-        VoluntaryWork::findOrFail($id)->delete();
-        return response()->json(['message' => 'Voluntary work deleted successfully']);
+        $work = VoluntaryWork::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $work->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Voluntary work deleted successfully.'
+        ]);
     }
 }
