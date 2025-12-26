@@ -29,20 +29,20 @@
 
 
   //Profile
-  use App\Http\Controllers\Profile\BasicInformationController;
-  use App\Http\Controllers\Profile\FamilyBackgroundController;
-  use App\Http\Controllers\Profile\EducationController;
-  use App\Http\Controllers\Profile\CsEligibilityController;
-  use App\Http\Controllers\Profile\WorkExperienceController;
-  use App\Http\Controllers\Profile\VoluntaryWorkController;
-  use App\Http\Controllers\Profile\LearningAndDevelopmentController;
-  use App\Http\Controllers\Profile\ReferenceController;
-  use App\Http\Controllers\Profile\GovernmentIdController;
-  use App\Http\Controllers\Profile\NonAcademicController;
-  use App\Http\Controllers\Profile\OrganizationController;
-  use App\Http\Controllers\Profile\SkillController;
-  use App\Http\Controllers\Profile\OtherInformationController;
-  use App\Http\Controllers\Profile\PdsController;
+  use App\Http\Controllers\profile\BasicInformationController;
+  use App\Http\Controllers\profile\FamilyBackgroundController;
+  use App\Http\Controllers\profile\EducationController;
+  use App\Http\Controllers\profile\CsEligibilityController;
+  use App\Http\Controllers\profile\WorkExperienceController;
+  use App\Http\Controllers\profile\VoluntaryWorkController;
+  use App\Http\Controllers\profile\LearningAndDevelopmentController;
+  use App\Http\Controllers\profile\ReferenceController;
+  use App\Http\Controllers\profile\GovernmentIdController;
+  use App\Http\Controllers\profile\NonAcademicController;
+  use App\Http\Controllers\profile\OrganizationController;
+  use App\Http\Controllers\profile\SkillController;
+  use App\Http\Controllers\profile\OtherInformationController;
+  use App\Http\Controllers\profile\PdsController;
   use App\Http\Controllers\RequestsController;
   use App\Http\Controllers\AuthenticCopyController;
   use App\Http\Controllers\AuthenticCopyRequestController;
@@ -283,14 +283,15 @@ Route::get('/planning/user-management/sections/{division}', [UserManagementContr
     
   });
 
-Route::middleware(['auth'])->group(function() {
-    Route::get('planning/user-permission', [UserPermissionController::class, 'index'])->name('user-permission.index');
-    Route::get('planning/user-permission/{user_id}', [UserPermissionController::class, 'getUserPermissions']);
-    Route::post('planning/user-permission/update', [UserPermissionController::class, 'update'])->name('user-permission.update');
-});
+  Route::middleware(['auth'])->group(function () {
+      Route::get('planning/user-permission', [UserPermissionController::class, 'index'])->name('user-permission.index');
+      Route::get('planning/user-permission/{user_id}', [UserPermissionController::class, 'getUserPermissions'])->name('user-permission.show');
+      Route::post('planning/user-permission/update', [UserPermissionController::class, 'update'])->name('user-permission.update');
+  });
 
-  Route::get('/planning/dashboard', [Analytics::class, 'index'])
-    ->name('content.planning.dashboard');
+  Route::get('/planning/dashboard', [Analytics::class, 'index'])->name('content.planning.dashboard');
+  Route::get('planning/dashboard/filter', [DashboardController::class, 'filter'])->name('planning.dashboard.filter');
+
 
   // Registration Form Routes
   Route::prefix('planning')->group(function () {

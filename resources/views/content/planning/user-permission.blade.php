@@ -50,10 +50,10 @@
 
         {{-- Update Permissions Button --}}
         <div class="mb-3 d-flex justify-content-end mt-3">
-        <button id="updatePermissionsBtn mb-3 d-flex justify-content-end mt-3"  class="btn btn-primary"
-                {{ auth()->user()->section !== 'HR-PLANNING' ? 'disabled' : '' }}>
-            Update Permissions
-        </button>
+            <button id="updatePermissionsBtn" class="btn btn-primary"
+                    {{ !auth()->user()->hasRole('HR-PLANNING') ? 'disabled' : '' }}>
+                Update Permissions
+            </button>
         </div>
     </div>
 </div>
@@ -64,7 +64,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Confirm Permission Update</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" id="permissionConfirmText"></div>
       <div class="modal-footer">
@@ -82,10 +82,7 @@ $(document).ready(function() {
     $('#selectUser').change(function() {
         userId = $(this).val();
         $('#permissionsContainer').toggle(!!userId);
-
-        // Enable/disable update button based on user selection and section
-        const canAssign = userId && "{{ auth()->user()->section }}" === 'HR-PLANNING';
-        $('#updatePermissionsBtn').prop('disabled', !canAssign);
+        $('#updatePermissionsBtn').prop('disabled', !userId || !{{ auth()->user()->hasRole('HR-PLANNING') ? 'true' : 'false' }});
 
         if (!userId) return;
 
@@ -107,10 +104,9 @@ $(document).ready(function() {
     });
 
     $('#confirmPermissionBtn').click(function() {
-        const permissions = [];
-        $('.permission-checkbox:checked').each(function() {
-            permissions.push($(this).data('permission-name'));
-        });
+        const permissions = $('.permission-checkbox:checked').map(function() {
+            return $(this).data('permission-name');
+        }).get();
 
         $.ajax({
             url: "{{ route('user-permission.update') }}",
@@ -131,6 +127,5 @@ $(document).ready(function() {
         });
     });
 });
-
 </script>
 @endsection

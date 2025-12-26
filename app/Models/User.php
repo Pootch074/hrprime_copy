@@ -191,5 +191,16 @@ class User extends Authenticatable
     {
         return $this->belongsTo(OtherInformation::class, 'user_id', 'id');
     }    
-    
+    protected static function booted()
+    {
+        static::saved(function ($user) {
+            if ($user->role) {
+                // Sync the user's role with Spatie roles
+                $user->syncRoles([$user->role]);
+            } else {
+                // If role is null, remove all roles
+                $user->syncRoles([]);
+            }
+        });
+    }
 }

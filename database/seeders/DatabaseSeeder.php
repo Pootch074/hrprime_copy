@@ -36,23 +36,23 @@ class DatabaseSeeder extends Seeder
             | Organizational Structure
             |--------------------------------------------------------------------------
             */
-      DivisionSeeder::class,
-      SectionSeeder::class,
-      OfficeLocationSeeder::class,
+      // DivisionSeeder::class,
+      // SectionSeeder::class,
+      // OfficeLocationSeeder::class,
 
       /*
             |--------------------------------------------------------------------------
             | Employment / HR
             |--------------------------------------------------------------------------
-            */
-      EmploymentStatusSeeder::class,
+      //       */
+      // EmploymentStatusSeeder::class,
 
       /*
             |--------------------------------------------------------------------------
             | Users
             |--------------------------------------------------------------------------
             */
-      UserSeeder::class,
+      // UserSeeder::class,
     ]);
   }
 }
