@@ -48,11 +48,11 @@
   use App\Http\Controllers\AuthenticCopyRequestController;
 
   //Planning
-  use App\Http\Controllers\Planning\UserPermissionController;
-  use App\Http\Controllers\Planning\UserManagementController;
+  use App\Http\Controllers\planning\UserPermissionController;
+  use App\Http\Controllers\planning\UserManagementController;
   use App\Http\Controllers\planning\DashboardController;
   use App\Http\Controllers\planning\ListofEmployee;
-  use App\Http\Controllers\Planning\ApplicantController;
+  use App\Http\Controllers\planning\ApplicantController;
   use App\Http\Controllers\planning\RegistrationForm;
   use App\Http\Controllers\planning\ListofPosition;
   use App\Http\Controllers\planning\VacantPositionController;
@@ -60,14 +60,14 @@
   use App\Http\Controllers\planning\DivisionController;
   use App\Http\Controllers\planning\UnitController;
   use App\Http\Controllers\planning\SectionController;
-  use App\Http\Controllers\Planning\EmploymentStatusController;
-  use App\Http\Controllers\Planning\OfficeLocationController;
-  use App\Http\Controllers\Planning\QualificationController;
-  use App\Http\Controllers\Planning\SalaryGradeController;
-  use App\Http\Controllers\Planning\PositionLevelController;
-  use App\Http\Controllers\Planning\ParentheticalTitleController;
-  use App\Http\Controllers\Planning\ReportController;
-  use App\Http\Controllers\Planning\JoRequestController;
+  use App\Http\Controllers\planning\EmploymentStatusController;
+  use App\Http\Controllers\planning\OfficeLocationController;
+  use App\Http\Controllers\planning\QualificationController;
+  use App\Http\Controllers\planning\SalaryGradeController;
+  use App\Http\Controllers\planning\PositionLevelController;
+  use App\Http\Controllers\planning\ParentheticalTitleController;
+  use App\Http\Controllers\planning\ReportController;
+  use App\Http\Controllers\planning\JoRequestController;
   use App\Http\Controllers\GadResponseController;
   use App\Http\Controllers\EthnicityController;
   use App\Http\Controllers\MedicalController;

@@ -54,6 +54,14 @@
           ]
         },
         {
+          "url": "planning/unfilled-positions",
+          "name": "Unfilled Positions",
+          "slug": "unfilled-positions",
+          "roles": [
+            "HR-PLANNING"
+          ]
+        },
+        {
           "name": "OBSU",
           "slug": "OBSU",
           "roles": [
@@ -92,14 +100,6 @@
                 "HR-PLANNING"
               ]
             }
-          ]
-        },
-        {
-          "url": "planning/unfilled-positions",
-          "name": "Unfilled Positions",
-          "slug": "unfilled-positions",
-          "roles": [
-            "HR-PLANNING"
           ]
         },
         {

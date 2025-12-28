@@ -120,10 +120,6 @@
               <input type="number" step="0.1" name="weight" class="form-control" value="{{ $employee->weight }}">
             </div>
             <div class="col-md-3">
-              <label class="form-label fw-bold">Age</label>
-              <input type="number" step="0.1" name="age" class="form-control" value="{{ $employee->age }}">
-            </div>
-            <div class="col-md-3">
               <label class="form-label fw-bold">Tel No.</label>
               <input type="text" name="tel_no" class="form-control" value="{{ $employee->tel_no }}">
             </div>
@@ -261,8 +257,10 @@ $(document).ready(function() {
             </div>
           </div>
 
-          <script>
+<script>
 $(document).ready(function() {
+
+    // Handle form submission via AJAX
     $('#employeeForm').submit(function(e) {
         e.preventDefault();
 
@@ -281,24 +279,33 @@ $(document).ready(function() {
                 'Accept': 'application/json'
             },
             success: function(response) {
-                toastr.success('Basic Information updated successfully!');
+                // Use the message from the backend
+                toastr.success(response.message || 'Basic Information updated successfully!');
+                // Optionally reload after a short delay
                 setTimeout(() => location.reload(), 500);
             },
             error: function(xhr) {
-                if(xhr.responseJSON && xhr.responseJSON.errors){
+                let msg = 'Failed to update Basic Information.';
+
+                // Validation errors
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    msg = '';
                     let errors = xhr.responseJSON.errors;
-                    let msg = '';
-                    for(let key in errors){
-                        msg += errors[key].join(', ') + '\n';
+                    for (let key in errors) {
+                        msg += errors[key].join(', ') + '<br>';
                     }
-                    toastr.error(msg);
-                } else {
-                    toastr.error('Failed to update Basic Information.');
                 }
+                // Other JSON messages
+                else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+
+                toastr.error(msg);
                 console.log(xhr.responseText);
             }
         });
     });
+
 });
 </script>
           <script>
@@ -580,39 +587,40 @@ $(document).ready(function() {
         </div>
 
         {{-- Right Column: Profile Picture --}}
-        <div class="col-md-3 text-center d-flex flex-column align-items-center justify-content-start mt-4">
-          <div class="position-relative mb-3" style="width: 180px; height: 180px;">
-          <img id="preview-image"
-              src="{{ $employee->profile_image && file_exists(storage_path('app/public/' . $employee->profile_image)) 
-                    ? asset('storage/' . $employee->profile_image) 
-                    : asset('default-avatar.png') }}"
-              class="rounded-circle border border-3 border-secondary shadow-sm"
-              style="width: 180px; height: 180px; object-fit: cover;">
-          </div>
+          <div class="col-md-3 text-center d-flex flex-column align-items-center justify-content-start mt-4">
+            <div class="position-relative mb-3" style="width: 180px; height: 180px;">
+                <img id="preview-image"
+                    src="{{ $employee->profile_image 
+                          ? asset('storage/' . $employee->profile_image) 
+                          : asset('default-avatar.png') }}"
+                    class="rounded-circle border border-3 border-secondary shadow-sm"
+                    style="width: 180px; height: 180px; object-fit: cover;">
+            </div>
 
-          {{-- Upload Button --}}
-          <label for="profile_image" class="btn btn-outline-primary btn-sm">Change Photo</label>
-          <input type="file" name="profile_image" id="profile_image" class="d-none" accept="image/*">
+            {{-- Upload Button --}}
+            <label for="profile_image" class="btn btn-outline-primary btn-sm">Change Photo</label>
+            <input type="file" name="profile_image" id="profile_image" class="d-none" accept="image/*">
 
-          <div class="fw-bold mt-2">{{ $employee->first_name }} {{ $employee->last_name }}</div>
-          <small class="text-muted">Employee</small>
+            {{-- Employee Name & Role --}}
+            <div class="fw-bold mt-2">{{ $employee->first_name }} {{ $employee->last_name }}</div>
+            <small class="text-muted">Employee</small>
         </div>
 
-        {{-- Add this JS script below your form --}}
+        {{-- Live Preview Script --}}
         @push('scripts')
         <script>
-          document.getElementById('profile_image').addEventListener('change', function(e) {
+        document.getElementById('profile_image').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = function(event) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
                 document.getElementById('preview-image').src = event.target.result;
-              }
-              reader.readAsDataURL(file);
             }
-          });
+            reader.readAsDataURL(file);
+        });
         </script>
-        @endpush
+        @endpush                          
+
 
       </div>
 
