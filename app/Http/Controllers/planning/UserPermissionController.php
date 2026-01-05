@@ -16,31 +16,51 @@ class UserPermissionController extends Controller
         $modules = Module::all();
         $actions = ['view', 'create', 'edit'];
 
-        // Example: restrict assignable permissions if needed
-        $assignablePermissions = Permission::pluck('name')->toArray();
-
-        return view('content.planning.user-permission', compact('users', 'modules', 'actions', 'assignablePermissions'));
+        return view('content.planning.user-permission', compact('users', 'modules', 'actions'));
     }
 
+    // Get permissions of a specific user
     public function getUserPermissions($user_id)
     {
         $user = User::findOrFail($user_id);
         return response()->json($user->getPermissionNames()->toArray());
     }
 
+    // Update permissions
     public function update(Request $request)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'permissions' => 'array',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'string',
         ]);
 
-        $user = User::findOrFail($request->user_id);
+        $loggedInUser = auth()->user();
 
-        // Sync all permissions at once
+        // Only allow users with 'edit user-permissions' to update
+        if (!$loggedInUser->can('edit user-permissions')) {
+            return response()->json([
+                'error' => 'You are not allowed to update permissions.'
+            ], 403);
+        }
+
+        $user = User::findOrFail($request->user_id);
         $permissions = $request->permissions ?? [];
+
+        // Auto-create missing permissions
+        foreach ($permissions as $perm) {
+            Permission::firstOrCreate([
+                'name' => $perm,
+                'guard_name' => 'web'
+            ]);
+        }
+
+        // Assign permissions
         $user->syncPermissions($permissions);
 
-        return response()->json(['success' => 'Permissions updated successfully']);
+        return response()->json([
+            'success' => 'Permissions updated successfully!',
+            'synced_permissions' => $permissions,
+        ]);
     }
 }

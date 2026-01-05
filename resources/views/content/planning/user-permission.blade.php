@@ -1,5 +1,5 @@
 @extends('layouts/contentNavbarLayout')
-@section('title', 'Assigned Permissions')
+@section('title', 'User Permissions')
 
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -32,15 +32,10 @@
                     <tr>
                         <td>{{ $module->name }}</td>
                         @foreach($actions as $action)
-                            @php
-                                $permissionName = $module->slug . '.' . $action;
-                                $isDisabled = !in_array($permissionName, $assignablePermissions) || !auth()->user()->hasRole('HR-PLANNING');
-                            @endphp
+                            @php $permissionName = $module->slug . '.' . $action; @endphp
                             <td class="text-center">
                                 <input type="checkbox" class="permission-checkbox"
-                                       data-permission-name="{{ $permissionName }}"
-                                       {{ $isDisabled ? 'disabled' : '' }}
-                                       title="{{ $isDisabled ? 'You cannot assign this permission' : '' }}">
+                                       data-permission-name="{{ $permissionName }}">
                             </td>
                         @endforeach
                     </tr>
@@ -48,12 +43,9 @@
             </tbody>
         </table>
 
-        {{-- Update Permissions Button --}}
+        {{-- Update Button --}}
         <div class="mb-3 d-flex justify-content-end mt-3">
-            <button id="updatePermissionsBtn" class="btn btn-primary"
-                    {{ !auth()->user()->hasRole('HR-PLANNING') ? 'disabled' : '' }}>
-                Update Permissions
-            </button>
+            <button id="updatePermissionsBtn" class="btn btn-primary">Update Permissions</button>
         </div>
     </div>
 </div>
@@ -76,56 +68,67 @@
 </div>
 
 <script>
-$(document).ready(function() {
-    let userId = null;
+$(function() {
 
-    $('#selectUser').change(function() {
+    let userId = null;
+    const modalEl = document.getElementById('permissionConfirmModal');
+    const permissionModal = new bootstrap.Modal(modalEl);
+
+    // CSRF setup
+    $.ajaxSetup({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+    });
+
+    // Load user permissions when a user is selected
+    $('#selectUser').on('change', function() {
         userId = $(this).val();
         $('#permissionsContainer').toggle(!!userId);
-        $('#updatePermissionsBtn').prop('disabled', !userId || !{{ auth()->user()->hasRole('HR-PLANNING') ? 'true' : 'false' }});
 
-        if (!userId) return;
-
-        // Reset checkboxes
         $('.permission-checkbox').prop('checked', false);
 
-        // Load current user permissions
-        $.get(`/planning/user-permission/${userId}`, function(userPermissions){
-            $('.permission-checkbox').each(function(){
-                const permName = $(this).data('permission-name');
-                $(this).prop('checked', userPermissions.includes(permName));
+        if(!userId) return;
+
+        $.get(`/planning/user-permission/${userId}`, function(userPermissions) {
+            $('.permission-checkbox').each(function() {
+                const perm = $(this).data('permission-name');
+                $(this).prop('checked', userPermissions.includes(perm));
             });
         });
     });
 
-    $('#updatePermissionsBtn').click(function() {
+    // Show confirmation modal
+    $('#updatePermissionsBtn').on('click', function() {
+        if(!userId) return toastr.error('Please select a user first!');
         $('#permissionConfirmText').text('Are you sure you want to update permissions for this user?');
-        new bootstrap.Modal(document.getElementById('permissionConfirmModal')).show();
+        permissionModal.show();
     });
 
-    $('#confirmPermissionBtn').click(function() {
+    // Confirm and save permissions
+    $('#confirmPermissionBtn').on('click', function() {
+        if(!userId) return toastr.error('No user selected!');
+
         const permissions = $('.permission-checkbox:checked').map(function() {
             return $(this).data('permission-name');
         }).get();
 
-        $.ajax({
-            url: "{{ route('user-permission.update') }}",
-            method: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                user_id: userId,
-                permissions: permissions
-            },
-            success: function(res) {
-                toastr.success(res.success);
-                bootstrap.Modal.getInstance(document.getElementById('permissionConfirmModal')).hide();
-            },
-            error: function(err) {
-                toastr.error('Failed to update permissions');
-                console.log(err.responseText);
-            }
-        });
+        console.log('Sending permissions:', permissions); // Debug
+
+        $(this).prop('disabled', true);
+
+        $.post("{{ route('user-permission.update') }}", { user_id: userId, permissions })
+            .done(function(res) {
+                toastr.success(`${res.synced_permissions.length} permissions updated successfully!`);
+                permissionModal.hide();
+            })
+            .fail(function(err) {
+                toastr.error(err.responseJSON?.error || 'Failed to update permissions');
+                console.error(err);
+            })
+            .always(function() {
+                $('#confirmPermissionBtn').prop('disabled', false);
+            });
     });
+
 });
 </script>
 @endsection

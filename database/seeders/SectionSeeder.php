@@ -47,7 +47,7 @@ class SectionSeeder extends Seeder
       [10, 'Procurement Section', 'Procurement'],
       [10, 'Records and Archives Management Section', 'RAMS'],
       [10, 'General Services Section', 'GSS'],
-      [11, 'Human Resource Planning and Performance Management Section', 'HRPPM'],
+      [11, 'Human Resource Planning and Performance Management Section', 'HRPPMS'],
       [11, 'Personnel Administration Section', 'HR-PAS'],
       [11, 'Learning Development Section', 'HR-LDS'],
       [11, 'Welfare Section', 'HR-Welfare'],

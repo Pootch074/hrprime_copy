@@ -6,10 +6,7 @@
       "slug": "dashboard",
       "icon": "menu-icon tf-icons ri-dashboard-line",
       "roles": [
-        "HR-PLANNING",
-        "HR-Welfare",
-        "HR-PAS",
-        "HR-L&D"
+        "HR-PLANNING"
       ]
     },
     {
@@ -178,7 +175,8 @@
         "HR-PLANNING",
         "HR-Welfare",
         "HR-PAS",
-        "HR-L&D"
+        "HR-L&D",
+        "EMPLOYEE"
       ],
       "submenu": [
         {
@@ -256,7 +254,8 @@
         "HR-PLANNING",
         "HR-Welfare",
         "HR-PAS",
-        "HR-L&D"
+        "HR-L&D",
+        "EMPLOYEE"
       ],
       "submenu": [
         {
@@ -360,7 +359,8 @@
         "HR-PLANNING",
         "HR-Welfare",
         "HR-PAS",
-        "HR-L&D"
+        "HR-L&D",
+        "EMPLOYEE"
       ],
       "submenu": [
         {
@@ -403,7 +403,8 @@
         "HR-PLANNING",
         "HR-Welfare",
         "HR-PAS",
-        "HR-L&D"
+        "HR-L&D",
+        "EMPLOYEE"
       ],
       "submenu": [
         {
