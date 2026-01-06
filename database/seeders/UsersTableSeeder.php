@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class UsersTableSeeder extends Seeder
 {
@@ -142,7 +142,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-[
+            [
                 'item_number_id' => null,
                 'username' => 'YVVILLAMIL',
                 'employee_id' => '11-7843',
@@ -164,6 +164,38 @@ class UsersTableSeeder extends Seeder
                 'division_id' => 1,
                 'section_id' => 1,
                 'email' => 'yvvillamil@dswd.gov.ph',
+                'role' => 'HR-PLANNING',
+                'profile_image' => null,
+                'status' => 'active',
+                'email_verified_at' => Carbon::now(),
+                'password' => Hash::make('password'),
+                'remember_token' => null,
+                'qualification_id' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'item_number_id' => null,
+                'username' => 'MRTSARABIA',
+                'employee_id' => '11-7844',
+                'first_name' => 'MARK REZZEL',
+                'middle_name' => 'T',
+                'last_name' => 'SARABIA',
+                'extension_name' => null,
+                'gender' => 'MALE',
+                'civil_status' => 'SINGLE',
+                'height' => '1.75',
+                'weight' => '60',
+                'blood_type' => 'B+',
+                'tel_no' => null,
+                'mobile_no' => '09091427864',
+                'citizenship' => 'Filipino',
+                'birthday' => '1993-11-12',
+                'place_of_birth' => 'DAVAO CITY',
+                'employment_status_id' => 1,
+                'division_id' => 1,
+                'section_id' => 1,
+                'email' => 'mrtsarabia@dswd.gov.ph',
                 'role' => 'HR-PLANNING',
                 'profile_image' => null,
                 'status' => 'active',
