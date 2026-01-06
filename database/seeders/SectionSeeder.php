@@ -50,7 +50,7 @@ class SectionSeeder extends Seeder
       [11, 'Human Resource Planning and Performance Management Section', 'HRPPMS'],
       [11, 'Personnel Administration Section', 'HR-PAS'],
       [11, 'Learning Development Section', 'HR-LDS'],
-      [11, 'Welfare Section', 'HR-Welfare'],
+      [11, 'Welfare Section', 'HR-WELFARE'],
       [12, 'Accounting Section', 'Accounting'],
       [12, 'Budget Section', 'Budget'],
       [12, 'Cash Section', 'Cash'],

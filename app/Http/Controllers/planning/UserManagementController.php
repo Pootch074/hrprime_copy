@@ -85,9 +85,11 @@ class UserManagementController extends Controller
 
     $section = $user->section;
 
-    $user->role = $section && isset($rolesMap[strtoupper($section->abbreviation)])
-                  ? $rolesMap[strtoupper($section->abbreviation)]
-                  : null; // default or clear role
+    // Assign role based on section, default to EMPLOYEE
+    $user->role = ($section && isset($rolesMap[strtoupper($section->abbreviation)]))
+                ? $rolesMap[strtoupper($section->abbreviation)]
+                : 'EMPLOYEE'; // default role if section not in the map
+
     $user->save();
 
     return response()->json(['success' => 'User updated successfully!']);

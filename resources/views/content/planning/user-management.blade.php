@@ -14,12 +14,12 @@
       <table id="usersTable" class="table">
         <thead class="table-light">
           <tr>
-            <th>No.</th>
-            <th>Name</th>
-            <th>Division</th>
-            <th>Section</th>
-            <th>Status</th>
-            <th>Action</th>
+          <th style="width:5%;">No.</th>
+          <th style="width:20%;">Name</th>
+          <th style="width:20%;">Division</th>
+          <th style="width:25%;">Section</th>
+          <th style="width:10%;">Status</th>
+          <th style="width:20%;">Action</th>
           </tr>
         </thead>
       </table>

@@ -173,7 +173,7 @@
       "slug": "profile",
       "roles": [
         "HR-PLANNING",
-        "HR-Welfare",
+        "HR-WELFARE",
         "HR-PAS",
         "HR-L&D",
         "EMPLOYEE"
@@ -252,7 +252,7 @@
       "slug": "profile",
       "roles": [
         "HR-PLANNING",
-        "HR-Welfare",
+        "HR-WELFARE",
         "HR-PAS",
         "HR-L&D",
         "EMPLOYEE"
@@ -357,7 +357,7 @@
       "slug": "profile",
       "roles": [
         "HR-PLANNING",
-        "HR-Welfare",
+        "HR-WELFARE",
         "HR-PAS",
         "HR-L&D",
         "EMPLOYEE"
@@ -401,7 +401,7 @@
       "slug": "profile",
       "roles": [
         "HR-PLANNING",
-        "HR-Welfare",
+        "HR-WELFARE",
         "HR-PAS",
         "HR-L&D",
         "EMPLOYEE"
@@ -640,7 +640,7 @@
       "icon": "menu-icon tf-icons ri-layout-2-line",
       "slug": "ui",
       "roles": [
-        "HR-Welfare"
+        "HR-WELFARE"
       ],
       "submenu": [
         {
@@ -648,7 +648,7 @@
           "name": "Dashboard",
           "slug": "dashboardwelfare",
           "roles": [
-            "HR-Welfare"
+            "HR-WELFARE"
           ]
         },
         {
@@ -656,7 +656,7 @@
           "name": "Archive of Memorandum",
           "slug": "memorandum",
           "roles": [
-            "HR-Welfare"
+            "HR-WELFARE"
           ]
         },
         {
@@ -664,7 +664,7 @@
           "name": "Hall of Awardees",
           "slug": "awardees",
           "roles": [
-            "HR-Welfare"
+            "HR-WELFARE"
           ]
         },
         {
@@ -672,7 +672,7 @@
           "name": "DSWD Rewards Program Overview and Committee",
           "slug": "welfare/overview",
           "roles": [
-            "HR-Welfare"
+            "HR-WELFARE"
           ]
         },
         {
@@ -680,7 +680,7 @@
           "name": "Character Building Program",
           "slug": "character",
           "roles": [
-            "HR-Welfare"
+            "HR-WELFARE"
           ]
         },
         {
@@ -688,7 +688,7 @@
           "name": "Monitoring and Evaluation of the Awardee",
           "slug": "monitoring",
           "roles": [
-            "HR-Welfare"
+            "HR-WELFARE"
           ]
         }
       ]

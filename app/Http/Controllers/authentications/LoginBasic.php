@@ -77,12 +77,14 @@ class LoginBasic extends Controller
         Auth::attempt($credentials);
         $request->session()->regenerate();
 
-        // Role-based redirect
-        return match ($user->role) {
+        $userRole = strtoupper($user->role);
+
+        return match ($userRole) {
             'HR-PLANNING' => redirect()->route('content.planning.dashboard'),
-            'HR-Welfare',
+            'HR-WELFARE',
             'HR-PAS',
             'HR-L&D'      => redirect()->route('dashboard-analytics'),
+            'EMPLOYEE'    => redirect()->route('profile.basic-info.index'),
             default       => $this->logoutUnauthorized(),
         };
     }
@@ -154,7 +156,7 @@ class LoginBasic extends Controller
         // Role-based redirect
         return match ($user->role) {
             'HR-PLANNING' => redirect()->route('content.planning.dashboard'),
-            'HR-Welfare',
+            'HR-WELFARE',
             'HR-PAS',
             'HR-L&D'      => redirect()->route('dashboard-analytics'),
             default       => $this->logoutUnauthorized(),
