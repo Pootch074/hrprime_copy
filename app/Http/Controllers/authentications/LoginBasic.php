@@ -185,4 +185,4 @@ class LoginBasic extends Controller
 
         return redirect()->route('auth-login-basic');
     }
-}
+} 
