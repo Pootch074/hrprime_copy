@@ -1,5 +1,4 @@
 @extends('layouts/contentNavbarLayout')
-
 @section('title', 'User Management')
 
 @section('content')
@@ -14,12 +13,12 @@
       <table id="usersTable" class="table">
         <thead class="table-light">
           <tr>
-          <th style="width:5%;">No.</th>
-          <th style="width:20%;">Name</th>
-          <th style="width:20%;">Division</th>
-          <th style="width:25%;">Section</th>
-          <th style="width:10%;">Status</th>
-          <th style="width:20%;">Action</th>
+            <th style="width:5%;">No.</th>
+            <th style="width:20%;">Name</th>
+            <th style="width:20%;">Division</th>
+            <th style="width:25%;">Section</th>
+            <th style="width:10%;">Status</th>
+            <th style="width:20%;">Action</th>
           </tr>
         </thead>
       </table>
@@ -36,22 +35,10 @@
         <div class="modal-body">
           <input type="hidden" id="user_id" name="user_id">
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label>First Name</label>
-              <input type="text" id="first_name" class="form-control text-uppercase" readonly>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label>Middle Name</label>
-              <input type="text" id="middle_name" class="form-control text-uppercase" readonly>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label>Last Name</label>
-              <input type="text" id="last_name" class="form-control text-uppercase" readonly>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label>Extension Name</label>
-              <input type="text" id="extension_name" class="form-control text-uppercase" readonly>
-            </div>
+            <div class="col-md-6 mb-3"><label>First Name</label><input type="text" id="first_name" class="form-control text-uppercase" readonly></div>
+            <div class="col-md-6 mb-3"><label>Middle Name</label><input type="text" id="middle_name" class="form-control text-uppercase" readonly></div>
+            <div class="col-md-6 mb-3"><label>Last Name</label><input type="text" id="last_name" class="form-control text-uppercase" readonly></div>
+            <div class="col-md-6 mb-3"><label>Extension Name</label><input type="text" id="extension_name" class="form-control text-uppercase" readonly></div>
             <div class="col-md-6 mb-3">
               <label>Division</label>
               <select id="division_id" name="division_id" class="form-control" required>
@@ -73,6 +60,30 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-success" id="saveUserBtn">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Deactivation Modal -->
+<div class="modal fade" id="deactivateModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="deactivateForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Deactivate User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="deactivate_user_id" name="user_id">
+          <div class="mb-3">
+            <label for="reason" class="form-label">Reason for Deactivation</label>
+            <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Deactivate</button>
         </div>
       </form>
     </div>
@@ -113,9 +124,11 @@ function loadSections(divisionId, selected = null) {
 }
 
 // Edit User
+const editUrlTemplate = "{{ url('planning/user-management/edit') }}/";
+
 $('#usersTable').on('click', '.edit', function() {
     const id = $(this).data('id');
-    $.get(`/planning/user-management/edit/${id}`, function(user) {
+    $.get(editUrlTemplate + id, function(user) {
         $('#user_id').val(user.id);
         $('#first_name').val(user.first_name);
         $('#middle_name').val(user.middle_name);
@@ -150,10 +163,56 @@ $('#userForm').submit(function(e) {
 });
 
 // Load Sections on Division Change
-$('#division_id').on('change', function() {
-    loadSections($(this).val());
+$('#division_id').on('change', function() { loadSections($(this).val()); });
+
+// Activate / Deactivate
+// Show Deactivate Modal
+$('#usersTable').on('click', '.toggle-status', function() {
+    const id = $(this).data('id');
+    const isDeactivate = $(this).text().trim() === 'Deactivate';
+
+    if(isDeactivate){
+        $('#deactivate_user_id').val(id);
+        $('#reason').val('');
+        new bootstrap.Modal(document.getElementById('deactivateModal')).show();
+    } else {
+        // Activate directly
+        $.ajax({
+            url: `/planning/user-management/activate/${id}`,
+            type: 'PATCH',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function(res){ toastr.success(res.success); table.ajax.reload(null,false); },
+            error: function(xhr){ toastr.error(xhr.responseJSON?.message ?? 'Action failed.'); }
+        });
+    }
 });
 
-// Activate / Deactivate handled as in your original script
+// Submit Deactivation
+$('#deactivateForm').submit(function(e){
+    e.preventDefault();
+    const id = $('#deactivate_user_id').val();
+    const reason = $('#reason').val();
+
+    if(!reason.trim()){
+        toastr.warning('Reason is required.');
+        return;
+    }
+
+    $.ajax({
+        url: `/planning/user-management/deactivate/${id}`,
+        type: 'PATCH',
+        data: { reason: reason },
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        success: function(res){
+            toastr.success(res.success);
+            bootstrap.Modal.getInstance(document.getElementById('deactivateModal')).hide();
+            table.ajax.reload(null,false);
+        },
+        error: function(xhr){
+            toastr.error(xhr.responseJSON?.message ?? 'Action failed.');
+        }
+    });
+});
+
 </script>
 @endpush

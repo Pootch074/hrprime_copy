@@ -277,18 +277,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/import', [UserController::class, 'importEmployees'])->name('planning.import');
   });
 
-Route::get('/planning/user-management/sections/{division}', [UserManagementController::class, 'getSections']);
-  Route::prefix('planning/user-management')->group(function () {
+Route::prefix('planning/user-management')->group(function () {
     Route::get('/', [UserManagementController::class, 'index'])->name('user-management.index');
     Route::get('/list', [UserManagementController::class, 'list'])->name('user-management.list');
     Route::get('/edit/{id}', [UserManagementController::class, 'edit']);
-    Route::post('/store', [UserManagementController::class, 'store'])->name('user-management.store');
+    Route::get('/sections/{division}', [UserManagementController::class, 'getSections']);
     Route::post('/update/{id}', [UserManagementController::class, 'update']);
-    Route::patch('/deactivate/{id}', [UserManagementController::class, 'deactivate'])->name('user-management.deactivate');
-    Route::patch('/activate/{id}', [UserManagementController::class, 'activate'])->name('user-management.activate');
-
-    
-  });
+    Route::patch('/activate/{id}', [UserManagementController::class, 'activate']);
+    Route::patch('/deactivate/{id}', [UserManagementController::class, 'deactivate']);
+});
 
 Route::prefix('planning')->group(function () {
     Route::get('user-permission', [UserPermissionController::class, 'index']);
