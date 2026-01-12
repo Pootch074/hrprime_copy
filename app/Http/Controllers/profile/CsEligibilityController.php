@@ -18,6 +18,14 @@ class CsEligibilityController extends Controller
 
         public function store(Request $request)
         {
+            $request->validate([
+                'eligibility' => 'required|string|max:255',
+                'rating'      => 'nullable|numeric', // ✅ make it integer
+                'exam_date'   => 'nullable|date',
+                'exam_place'  => 'nullable|string|max:255',
+                'license_number' => 'nullable|string|max:255',
+                'license_validity' => 'nullable|date',
+            ]);
 
             CsEligibility::create([
                 'user_id' => auth()->id(),
@@ -31,6 +39,7 @@ class CsEligibilityController extends Controller
 
             return response()->json(['success' => true]);
         }
+
 
     public function show($id)
     {

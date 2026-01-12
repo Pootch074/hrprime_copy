@@ -117,102 +117,302 @@ $(document).ready(function() {
                 </div>
 
             `);
-           let family = data.familyBackgrounds?.[0]; // first (and only) family record
+            let family = data.family_backgrounds?.[0];
 
-let familyHtml = '<div class="mb-3 p-2 border rounded">';
+            let familyHtml = '<div class="mb-3 p-2 rounded">';
 
-if(family){
-    const fatherFullName = [
-        family.father_first_name,
-        family.father_middle_name,
-        family.father_surname,
-        family.father_extension_name
-    ].filter(Boolean).join(' ');
+            if(family){
+                // Father
+                const fatherFullName = [
+                    family.father_first_name,
+                    family.father_middle_name,
+                    family.father_surname,
+                    family.father_extension_name
+                ].filter(Boolean).join(' ');
+                familyHtml += `<p><b>Father's Name:</b> ${fatherFullName || 'N/A'}</p>`;
 
-    familyHtml += `<p><b>Father's Name:</b> ${fatherFullName || 'N/A'}</p>`;
+                // Mother
+                const motherFullName = [
+                    family.mother_first_name,
+                    family.mother_middle_name,
+                    family.mother_surname,
+                    family.mother_extension_name
+                ].filter(Boolean).join(' ');
+                familyHtml += `<p><b>Mother's Name:</b> ${motherFullName || 'N/A'}</p>`;
 
-    const motherFullName = [
-        family.mother_first_name,
-        family.mother_middle_name,
-        family.mother_surname,
-        family.mother_extension_name
-    ].filter(Boolean).join(' ');
+                // Spouse
+                const spouseFullName = [
+                    family.spouse_first_name,
+                    family.spouse_extension_name,
+                    family.spouse_middle_name,
+                    family.spouse_surname
+                ].filter(Boolean).join(' ');
 
-    familyHtml += `<p><b>Mother's Name:</b> ${motherFullName || 'N/A'}</p>`;
-}
+                let spouseBirthday = '';
+                if(family.spouse_birthday){
+                    const parts = family.spouse_birthday.split('-');
+                    if(parts.length === 3){
+                        spouseBirthday = ` (Born: ${parts[2]}/${parts[1]}/${parts[0]})`;
+                    }
+                }
 
-familyHtml += '</div>';
+                familyHtml += `<p><b>Spouse:</b> ${spouseFullName || 'N/A'}${spouseBirthday}</p>`;
 
-$('#family-backgroundContent').html(familyHtml);
+                // Children
+                if(family.children && family.children.length > 0){
+                    familyHtml += `<p><b>Children:</b></p><ul>`;
+                    family.children.forEach(child => {
+                        const childFullName = [
+                            child.first_name,
+                            child.middle_name,
+                            child.last_name
+                        ].filter(Boolean).join(' ');
+
+                        let childBirthday = '';
+                        if(child.birthday){
+                            const parts = child.birthday.split('-');
+                            if(parts.length === 3){
+                                childBirthday = ` (Born: ${parts[2]}/${parts[1]}/${parts[0]})`;
+                            }
+                        }
+
+                        familyHtml += `<li>${childFullName || 'N/A'}${childBirthday}</li>`;
+                    });
+                    familyHtml += `</ul>`;
+                } else {
+                    familyHtml += `<p><b>Children:</b> N/A</p>`;
+                }
+
+            } else {
+                familyHtml += `<p>No family background found.</p>`;
+            }
+
+            familyHtml += '</div>';
+
+            $('#family-backgroundContent').html(familyHtml);
+
+     
+
+        // Education
+        let educationHtml = '';
+
+        if (data.educations && data.educations.length > 0) {
+            data.educations.forEach(e => {
+                const title = e.title || ''; // title of the education
+                const level = e.level_of_education || 'N/A';
+                const degree = e.degree_course || 'N/A';
+                const school = e.school_name || 'N/A';
+
+                let startYear = e.from ? e.from.split('-')[0] : 'N/A';
+                let endYear = e.to ? e.to.split('-')[0] : 'N/A';
+
+                let dateRange = startYear || endYear ? ` (${startYear} - ${endYear})` : '';
+
+                
+                educationHtml += `<p>
+                        <b>${level}</b><br>
+                        ${school}<br>
+                        ${degree}<br>
+                        ${dateRange}
+                </p>
+                `;
+            
+            });
+        } else {
+            educationHtml = '<p>No records.</p>';
+        }
+
+        $('#educationContent').html(educationHtml);
 
 
-            // Education
-            let educationHtml = data.educations?.length
-                ? '<ul>' + data.educations.map(e => `<li>${e.degree} - ${e.school}</li>`).join('') + '</ul>'
-                : 'No records.';
-            $('#educationContent').html(educationHtml);
+        // CS Eligibility
+        let csHtml = '';
 
-            // CS Eligibility
-            let csHtml = data.csEligibilities?.length
-                ? '<ul>' + data.csEligibilities.map(c => `<li>${c.eligibility} - ${c.rating}</li>`).join('') + '</ul>'
-                : 'No records.';
-            $('#cs-eligibilityContent').html(csHtml);
+        if (data.cs_eligibilities && data.cs_eligibilities.length > 0) {
+            data.cs_eligibilities.forEach(c => {
+                const eligibility = c.eligibility || 'N/A';
+                const rating = c.rating !== null ? c.rating : 'N/A';
+                const examPlace = c.exam_place || 'N/A';
+                const licenseNumber = c.license_number || 'N/A';
+
+                // Full dates
+                const examDate = c.exam_date ? new Date(c.exam_date).toLocaleDateString('en-GB') : 'N/A';
+                const licenseValidity = c.license_validity ? new Date(c.license_validity).toLocaleDateString('en-GB') : 'N/A';
+
+                csHtml += `
+                        <b>${eligibility}</b><br>
+                        Rating: ${rating}<br>
+                        Exam: ${examDate} at ${examPlace}<br>
+                        License: ${licenseNumber}<br>
+                        (Valid: ${licenseValidity})
+
+                `;
+            });
+            csHtml += '</ul>';
+        } else {
+            csHtml = 'No records.';
+        }
+
+        $('#cs-eligibilityContent').html(csHtml);
 
             // Work Experience
-            $('#work-experienceContent').html(
-                data.workExperiences?.length
-                    ? data.workExperiences.map(w => `<p>${w.position} at ${w.company}</p>`).join('')
-                    : 'No records.'
-            );
+            let workHtml = '';
+            if (data.work_experiences && data.work_experiences.length > 0) {
+                workHtml = '<ul>';
+                data.work_experiences.forEach(w => {
+                    const position = w.position_title || 'N/A';
+                    const company = w.department_agency || 'N/A';
+                    const startYear = w.date_from ? w.date_from.split('-')[0] : 'N/A';
+                    const endYear = w.date_to ? w.date_to.split('-')[0] : 'N/A';
+                   
+                    workHtml += `<p>
+                        <b>${position}</b><br>
+                        ${company}<br>
+                        (${startYear} - ${endYear})<br>
+                        </p>
+                `;
+                });
+                workHtml += '</ul>';
+            } else {
+                workHtml = 'No records.';
+            }
+            $('#work-experienceContent').html(workHtml);
 
             // Voluntary Work
-            $('#voluntary-workContent').html(
-                data.voluntaryWorks?.length
-                    ? data.voluntaryWorks.map(v => `<p>${v.organization} - ${v.role}</p>`).join('')
-                    : 'No records.'
-            );
+            let voluntaryHtml = '';
+            if (data.voluntary_works && data.voluntary_works.length > 0) {
+                voluntaryHtml = '<ul>';
+                data.voluntary_works.forEach(v => {
+                    const organization = v.organization_name || 'N/A';
+                    const role = v.position_nature_of_work || 'N/A';
+                    const startYear = v.date_from ? v.date_from.split('-')[0] : 'N/A';
+                    const endYear = v.date_to ? v.date_to.split('-')[0] : 'N/A';
+                    const hours = v.number_of_hours || 'N/A';
+                    
+                    voluntaryHtml += `<li>${organization} - ${role} (${startYear} - ${endYear}, ${hours} hours)</li>`;
+                });
+                voluntaryHtml += '</ul>';
+            } else {
+                voluntaryHtml = 'No records.';
+            }
+            $('#voluntary-workContent').html(voluntaryHtml);
 
-            // Learning and Development
-            $('#landdContent').html(
-                data.learningAndDevelopments?.length
-                    ? data.learningAndDevelopments.map(ld => `<p>${ld.program} - ${ld.hours} hours</p>`).join('')
-                    : 'No records.'
-            );
+           // Learning and Development
+            let landdHtml = '';
+            if (data.learning_and_developments && data.learning_and_developments.length > 0) {
+                landdHtml = '<ul>';
+                data.learning_and_developments.forEach(ld => {
+                    const title = ld.title || 'N/A';
+                    const hours = ld.number_of_hours || 'N/A';
+                    const startYear = ld.inclusive_date_from ? ld.inclusive_date_from.split('-')[0] : 'N/A';
+                    const endYear = ld.inclusive_date_to ? ld.inclusive_date_to.split('-')[0] : 'N/A';
+                    const type = ld.type_of_ld || '';
+                    const conductedBy = ld.conducted_by || '';
+                    
+                    let extraInfo = [];
+                    if(type) extraInfo.push(type);
+                    if(conductedBy) extraInfo.push(conductedBy);
+
+                    landdHtml += `<li>${title} - ${hours} hours (${startYear} - ${endYear}${extraInfo.length ? ', ' + extraInfo.join(', ') : ''})</li>`;
+                });
+                landdHtml += '</ul>';
+            } else {
+                landdHtml = 'No records.';
+            }
+            $('#landdContent').html(landdHtml);
 
             // References
-            $('#referencesContent').html(
-                data.references?.length
-                    ? data.references.map(r => `<p>${r.name} - ${r.contact}</p>`).join('')
-                    : 'No records.'
-            );
+            let referencesHtml = '';
+            if (data.references && data.references.length > 0) {
+                referencesHtml = '<ul>';
+                data.references.forEach(r => {
+                    const name = r.name || 'N/A';
+                    const contact = r.contact_number || 'N/A';
+                    const address = r.ref_address || '';
+                    const position = r.position || '';
+                    
+                    let extraInfo = [];
+                    if(address) extraInfo.push(address);
+                    if(position) extraInfo.push(position);
+
+                    referencesHtml += `<li>${name}${extraInfo.length ? ' - ' + extraInfo.join(', ') : ''} (${contact})</li>`;
+                });
+                referencesHtml += '</ul>';
+            } else {
+                referencesHtml = 'No records.';
+            }
+            $('#referencesContent').html(referencesHtml);
+
 
             // Government IDs
-            $('#idContent').html(
-                data.governmentIds?.length
-                    ? data.governmentIds.map(g => `<p>${g.type} - ${g.number}</p>`).join('')
-                    : 'No records.'
-            );
+            let idsHtml = '';
+            if (data.government_ids && data.government_ids.length > 0) {
+                idsHtml = '<ul>';
+                data.government_ids.forEach(g => {
+                    // We'll list all possible IDs
+                    if(g.sss_id) idsHtml += `<li>SSS: ${g.sss_id}</li>`;
+                    if(g.gsis_id) idsHtml += `<li>GSIS: ${g.gsis_id}</li>`;
+                    if(g.pagibig_id) idsHtml += `<li>PAG-IBIG: ${g.pagibig_id}</li>`;
+                    if(g.philhealth_id) idsHtml += `<li>PhilHealth: ${g.philhealth_id}</li>`;
+                    if(g.tin) idsHtml += `<li>TIN: ${g.tin}</li>`;
+                    if(g.philsys) idsHtml += `<li>PHILSYS: ${g.philsys}</li>`;
+                    if(g.gov_issued_id && g.id_number) {
+                        let extra = [];
+                        if(g.date_issuance) extra.push(`Issued: ${g.date_issuance}`);
+                        if(g.place_issuance) extra.push(`Place: ${g.place_issuance}`);
+                        idsHtml += `<li>${g.gov_issued_id}: ${g.id_number}${extra.length ? ' (' + extra.join(', ') + ')' : ''}</li>`;
+                    }
+                });
+                idsHtml += '</ul>';
+            } else {
+                idsHtml = 'No records.';
+            }
+            $('#idContent').html(idsHtml);
 
-            // Non-academic
-            $('#non-academicContent').html(
-                data.nonAcademics?.length
-                    ? data.nonAcademics.map(n => `<p>${n.activity} - ${n.role}</p>`).join('')
-                    : 'No records.'
-            );
+           // Non-academic
+            let nonAcadHtml = '';
+            if (data.non_academics && data.non_academics.length > 0) {
+                nonAcadHtml = '<ul>';
+                data.non_academics.forEach(n => {
+                    const recognition = n.recognition || 'N/A';
+                    nonAcadHtml += `<li>${recognition}</li>`;
+                });
+                nonAcadHtml += '</ul>';
+            } else {
+                nonAcadHtml = 'No records.';
+            }
+            $('#non-academicContent').html(nonAcadHtml);
 
-            // Organization
-            $('#organizationContent').html(
-                data.organizations?.length
-                    ? data.organizations.map(o => `<p>${o.name} - ${o.position}</p>`).join('')
-                    : 'No records.'
-            );
 
-            // Skills
-            $('#skillsContent').html(
-                data.Skills?.length
-                    ? data.Skills.map(s => `<p>${s.skill} (${s.level})</p>`).join('')
-                    : 'No records.'
-            );
+           // Organization
+            let orgHtml = '';
+            if (data.organizations && data.organizations.length > 0) {
+                orgHtml = '<ul>';
+                data.organizations.forEach(o => {
+                    const name = o.organization_name || 'N/A';
+                    orgHtml += `<li>${name}</li>`;
+                });
+                orgHtml += '</ul>';
+            } else {
+                orgHtml = 'No records.';
+            }
+            $('#organizationContent').html(orgHtml);
+
+
+           // Skills
+            let skillsHtml = '';
+            if (data.skills && data.skills.length > 0) {
+                skillsHtml = '<ul>';
+                data.skills.forEach(s => {
+                    const skill = s.skill_name || 'N/A';
+                    skillsHtml += `<li>${skill}</li>`;
+                });
+                skillsHtml += '</ul>';
+            } else {
+                skillsHtml = 'No records.';
+            }
+            $('#skillsContent').html(skillsHtml);
+
 
             // Other Information
             $('#other-informationContent').html(

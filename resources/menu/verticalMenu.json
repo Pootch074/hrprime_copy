@@ -51,9 +51,9 @@
           ]
         },
         {
-          "url": "profile/view",
-          "name": "Employee",
-          "slug": "employee",
+          "url": "planning/list-of-employee",
+          "name": "List of Employee",
+          "slug": "list-of-employee",
           "roles": [
             "HR-PLANNING"
           ]

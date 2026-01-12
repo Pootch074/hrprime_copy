@@ -16,10 +16,10 @@ class EmployeeProfileController extends Controller
     }
 
     // Return employee data as JSON
-    public function fetchEmployee($id)
+   public function fetchEmployee($id)
 {
     $employee = User::with([
-        'familyBackgrounds',
+        'familyBackgrounds.children',
         'educations',
         'csEligibilities',
         'workExperiences',
@@ -41,8 +41,6 @@ class EmployeeProfileController extends Controller
         'permProvince',
         'permCity',
         'permBarangay',
-
-
     ])->find($id);
 
     if (!$employee) {
@@ -51,6 +49,7 @@ class EmployeeProfileController extends Controller
 
     return response()->json($employee);
 }
+
 
 
 }

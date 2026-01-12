@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Child extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'family_background_id',
         'first_name',
         'middle_name',
         'last_name',
         'birthday',
-        'gender',
     ];
 
     public function familyBackground()

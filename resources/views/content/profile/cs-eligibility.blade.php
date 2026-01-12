@@ -77,8 +77,8 @@
             <input type="text" name="eligibility" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label>RATING</label>
-            <input type="text" name="rating" class="form-control">
+              <label>RATING</label>
+              <input type="number" name="rating" class="form-control" min="0" step="0.01">
           </div>
           <div class="mb-3">
             <label>DATE OF EXAMINATION</label>
@@ -126,8 +126,8 @@
             <input type="text" name="eligibility" id="editCareer" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label>RATING</label>
-            <input type="text" name="rating" id="editRating" class="form-control">
+              <label>RATING</label>
+              <input type="number" name="rating" id="editRating" class="form-control" min="0" step="0.01">
           </div>
           <div class="mb-3">
             <label>DATE OF EXAMINATION</label>

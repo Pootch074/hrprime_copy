@@ -33,52 +33,52 @@ class PositionController extends Controller
    * Store a new position with qualifications (optional)
    */
   public function store(Request $request)
-  {
+{
     $validated = $request->validate([
-      'position_name'   => 'required|string|max:255',
-      'abbreviation'    => 'required|string|max:50',
-      'salary_grade_id' => 'nullable|exists:salary_grades,id',
-      'employment_status_id' => 'nullable|exists:employment_statuses,id',
+        'position_name' => 'required|string|max:255',
+        'abbreviation'  => 'required|string|max:50',
     ]);
 
+    // Convert to uppercase
     $validated['position_name'] = strtoupper($validated['position_name']);
     $validated['abbreviation']  = strtoupper($validated['abbreviation']);
 
     $position = Position::create($validated);
 
-    // Attach qualifications if provided
-    if ($request->has('qualifications')) {
-      $position->qualifications()->sync($request->qualifications);
-    }
+    return response()->json([
+        'success' => true,
+        'message' => 'Position created successfully.',
+        'position' => $position
+    ]);
+}
 
-    return response()->json(['success' => true, 'message' => 'Position created successfully.']);
-  }
 
   /**
    * Update a position and sync qualifications
    */
-  public function update(Request $request, $id)
-  {
+ public function update(Request $request, $id)
+{
+    // Validate only the two fields
     $validated = $request->validate([
-      'position_name'   => 'required|string|max:255',
-      'abbreviation'    => 'required|string|max:50',
-      'salary_grade_id' => 'nullable|exists:salary_grades,id',
-      'employment_status_id' => 'nullable|exists:employment_statuses,id',
+        'position_name' => 'required|string|max:255',
+        'abbreviation'  => 'required|string|max:50',
     ]);
 
+    // Convert to uppercase
     $validated['position_name'] = strtoupper($validated['position_name']);
     $validated['abbreviation']  = strtoupper($validated['abbreviation']);
 
+    // Find the position and update
     $position = Position::findOrFail($id);
     $position->update($validated);
 
-    // Update qualifications
-    if ($request->has('qualifications')) {
-      $position->qualifications()->sync($request->qualifications);
-    }
+    return response()->json([
+        'success' => true,
+        'message' => 'Position updated successfully.',
+        'position' => $position
+    ]);
+}
 
-    return response()->json(['success' => true, 'message' => 'Position updated successfully.']);
-  }
 
   /**
    * Delete a position

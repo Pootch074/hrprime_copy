@@ -105,13 +105,15 @@
     <div class="modal-content">
       <h5 class="modal-title m-3">Add New Position</h5>
       <form id="positionForm">
-        <div class="modal-body">
-          @include('content.planning.position_form')
+        <div class="mb-3">
+            <label for="position_name" class="form-label">Position Name</label>
+            <input type="text" name="position_name" id="position_name" class="form-control" required>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-success">Add</button>
+        <div class="mb-3">
+            <label for="abbreviation" class="form-label">Abbreviation</label>
+            <input type="text" name="abbreviation" id="abbreviation" class="form-control" required>
         </div>
+        <button type="submit" class="btn btn-success">Add</button>
       </form>
     </div>
   </div>
@@ -165,22 +167,26 @@
     new bootstrap.Modal(document.getElementById('positionModal')).show();
   });
 
-  $('#positionForm').submit(function(e) {
+ $('#positionForm').submit(function(e) {
     e.preventDefault();
     $.ajax({
-      url: '{{ route("position.store") }}',
-      method: 'POST',
-      data: $(this).serialize(),
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      },
-      success: function(response) {
-        toastr.success('Position added successfully!');
-        bootstrap.Modal.getInstance(document.getElementById('positionModal')).hide();
-        setTimeout(() => location.reload(), 500);
-      }
+        url: '{{ route("position.store") }}',
+        method: 'POST',
+        data: $(this).serialize(),
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            toastr.success(response.message);
+            bootstrap.Modal.getInstance(document.getElementById('positionModal')).hide();
+            setTimeout(() => location.reload(), 500);
+        },
+        error: function(xhr) {
+            toastr.error(xhr.responseJSON?.message || 'Something went wrong');
+        }
     });
-  });
+});
+
 
   $(document).on('click', '.edit-btn', function() {
     let data = $(this).data();

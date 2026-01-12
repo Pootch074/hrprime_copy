@@ -46,11 +46,11 @@
   use App\Http\Controllers\RequestsController;
   use App\Http\Controllers\AuthenticCopyController;
   use App\Http\Controllers\AuthenticCopyRequestController;
-  use App\Http\Controllers\Profile\EmployeeProfileController;
+  use App\Http\Controllers\profile\EmployeeProfileController;
 
   //Planning
-  use App\Http\Controllers\Planning\UserPermissionController;
-  use App\Http\Controllers\Planning\ModuleController;
+  use App\Http\Controllers\planning\UserPermissionController;
+  use App\Http\Controllers\planning\ModuleController;
   use App\Http\Controllers\planning\UserManagementController;
   use App\Http\Controllers\planning\DashboardController;
   use App\Http\Controllers\planning\ListofEmployee;
@@ -258,14 +258,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/next-number', [ApplicantController::class, 'nextApplicantNumber']);
   });
 
-Route::prefix('planning/list-of-employee')->name('employee.')->middleware(['auth', 'prevent-back-history'])->group(function () {
-    Route::get('/', [UserController::class, 'bladeIndex'])->name('view-blade'); // Employee list
-    Route::get('/{id}', [UserController::class, 'show'])->name('show'); // View employee
-    Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit'); // Edit employee
-    Route::put('/{id}', [UserController::class, 'update'])->name('update'); // Update employee
-    Route::delete('/{id}', [UserController::class, 'destroy'])->name('delete'); // Delete employee
+Route::prefix('planning/list-of-employee')
+    ->name('employee.')
+    ->middleware(['auth', 'prevent-back-history'])
+    ->group(function () {
+        Route::get('/', [UserController::class, 'bladeIndex'])->name('view-blade');
+        Route::get('/{id}', [UserController::class, 'show'])->name('show'); 
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit'); 
+        Route::put('/{id}', [UserController::class, 'update'])->name('update'); 
+        Route::delete('/{id}', [UserController::class, 'destroy'])->name('delete'); 
 });
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile/view', [EmployeeProfileController::class, 'index'])->name('profile.view');
     Route::get('/profile/user/{id}', [EmployeeProfileController::class, 'fetchEmployee'])->name('profile.fetchEmployee');
@@ -275,6 +277,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/list-of-employee', [UserController::class, 'index'])->name('planning.list-of-employee');
     Route::get('/import-form', [UserController::class, 'showImportForm'])->name('planning.import-form');
     Route::post('/import', [UserController::class, 'importEmployees'])->name('planning.import');
+    Route::get('/employee/{id}', [UserController::class, 'show'])->name('employee.show');
   });
 
 Route::prefix('planning/user-management')->group(function () {
