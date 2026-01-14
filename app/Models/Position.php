@@ -9,26 +9,26 @@ class Position extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'position_level_id',
-        'position_name',
-        'abbreviation',
+     protected $fillable = [
         'item_no',
-        'salary_grade_id',
-        'employment_status_id',
-        'status',
+        'office_location_id',
         'division_id',
         'section_id',
         'program',
-        'official_station',
+        'created_at',
+        'position_name',
+        'abbreviation',
         'parenthetical_title',
-        'level',
-        'salary_step',
+        'position_level_id',
+        'salary_tranche_id',
+        'salary_grade_id',
+        'salary_step_id',
         'monthly_rate',
         'designation',
         'special_order',
         'obsu',
         'fund_source',
+        'employment_status_id',
         'type_of_request',
     ];
 

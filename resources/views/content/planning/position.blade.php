@@ -37,13 +37,34 @@
               <div class="d-inline-flex gap-1">
 
                 {{-- Edit button --}}
-                <button class="btn btn-sm btn-primary edit-btn"
-                  data-id="{{ $position->id }}"
-                  data-position_name="{{ $position->position_name }}"
-                  data-abbreviation="{{ $position->abbreviation }}"
-                  data-status="{{ $position->status }}">
-                  Edit
-                </button>
+                    <button class="btn btn-sm btn-primary edit-btn"
+                        data-id="{{ $position->id }}"
+                        data-item_no="{{ $position->item_no }}"
+                        data-office_location_id="{{ $position->office_location_id }}"
+                        data-division_id="{{ $position->division_id }}"
+                        data-section_id="{{ $position->section_id }}"
+                        data-program="{{ $position->program }}"
+                        data-created_at="{{ $position->created_at->format('Y-m-d') }}"
+                        data-position_name="{{ $position->position_name }}"
+                        data-abbreviation="{{ $position->abbreviation }}"
+                        data-parenthetical_title="{{ $position->parenthetical_title }}"
+                        data-position_level_id="{{ $position->position_level_id }}"
+                        data-salary_tranche_id="{{ $position->salary_tranche_id }}"
+                        data-salary_grade_id="{{ $position->salary_grade_id }}"
+                        data-salary_step_id="{{ $position->salary_step_id }}"
+                        data-monthly_rate="{{ $position->monthly_rate }}"
+                        data-designation="{{ $position->designation }}"
+                        data-special_order="{{ $position->special_order }}"
+                        data-obsu="{{ $position->obsu }}"
+                        data-fund_source="{{ $position->fund_source }}"
+                        data-employment_status_id="{{ $position->employment_status_id }}"
+                        data-type_of_request="{{ $position->type_of_request }}"
+                    >
+                        Edit
+                    </button>
+
+
+
 
 
                 {{-- Add Requirements button --}}
@@ -213,55 +234,141 @@ $(document).ready(function() {
   });
 
 });
+$(document).on('click', '.edit-btn', function () {
 
-  $(document).on('click', '.edit-btn', function() {
-    let data = $(this).data();
+    const data = $(this).data();
+
+    // set the ID (required for update)
     $('#editPositionId').val(data.id);
-    $('#edit_position_name').val(data.positionName); // camelCase
-    $('#edit_abbreviation').val(data.abbreviation);
-    $('#edit_status').val(data.status);
-    new bootstrap.Modal(document.getElementById('editPositionModal')).show();
-  });
 
+// Simple inputs
+      $('#edit_item_no').val(data.item_no);
+      $('#edit_program').val(data.program);
+      $('#edit_created_at').val(data.created_at);
+      $('#edit_position_name').val(data.position_name);
+      $('#edit_abbreviation').val(data.abbreviation);
+      $('#edit_parenthetical_title').val(data.parenthetical_title);
+      $('#edit_designation').val(data.designation);
+      $('#edit_special_order').val(data.special_order);
+      $('#edit_obsu').val(data.obsu);
+      $('#edit_fund_source').val(data.fund_source);
+      $('#edit_type_of_request').val(data.type_of_request);
+      $('#edit_employment_status_id').val(data.employment_status_id).trigger('change');
 
-  $('#editPositionForm').submit(function(e) {
-    e.preventDefault();
-    let id = $('#editPositionId').val();
-    $.ajax({
-      url: `/planning/position/${id}/update`,
-      method: 'POST',
-      data: $(this).serialize(),
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      },
-      success: function(response) {
-        toastr.success('Position updated successfully!');
-        bootstrap.Modal.getInstance(document.getElementById('editPositionModal')).hide();
-        setTimeout(() => location.reload(), 500);
+      // Dropdowns without dependencies
+      $('#edit_office_location_id').val(data.office_location_id).trigger('change');
+      $('#edit_position_level_id').val(data.position_level_id).trigger('change');
+
+      // Division → Section (dependent dropdown)
+      $('#edit_division_id').val(data.division_id).trigger('change');
+      if(data.division_id){
+          $.get(`/division/${data.division_id}/sections`, function(sections){
+              let options = '<option value="">Select Section</option>';
+              sections.forEach(s => {
+                  options += `<option value="${s.id}">${s.name}</option>`;
+              });
+              $('#edit_section_id').html(options).val(data.section_id).trigger('change');
+          });
       }
-    });
-  });
 
-  let deleteId = null;
-  $(document).on('click', '.delete-btn', function() {
+      // Salary Tranche → Grade → Step (dependent dropdowns)
+      $('#edit_salary_tranche').val(data.salary_tranche_id).trigger('change');
+      if(data.salary_tranche_id){
+          $.get(`/planning/get-salary-grades/${data.salary_tranche_id}`, function(grades){
+              let options = '<option value="">Select Salary Grade</option>';
+              grades.forEach(g => {
+                  options += `<option value="${g.id}">SG ${g.salary_grade}</option>`;
+              });
+              $('#edit_salary_grade_id').html(options).val(data.salary_grade_id).trigger('change');
+
+              // Salary Steps
+              if(data.salary_grade_id){
+                  $.get(`/planning/get-salary-steps/${data.salary_grade_id}`, function(steps){
+                      let options = '<option value="">Select Step</option>';
+                      steps.forEach(s => {
+                          options += `<option value="${s.id}" data-rate="${s.monthly_rate}">Step ${s.step}</option>`;
+                      });
+                      $('#edit_salary_step_id').html(options).val(data.salary_step_id);
+                      $('#edit_monthly_rate').val(data.monthly_rate);
+                  });
+              }
+          });
+      }
+
+      // Show modal
+      new bootstrap.Modal(document.getElementById('editPositionModal')).show();
+
+    // open the modal
+    new bootstrap.Modal(
+        document.getElementById('editPositionModal')
+    ).show();
+});
+$(document).on('submit', '#editPositionForm', function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+    const submitBtn = form.find('button[type="submit"]');
+
+    submitBtn.prop('disabled', true).text('Saving...');
+
+    $.ajax({
+        url: "{{ route('position.update') }}", // 👈 make sure this route exists
+        type: "POST",
+        data: form.serialize(),
+        success: function (response) {
+            toastr.success('Position updated successfully!');
+            bootstrap.Modal.getInstance(
+                document.getElementById('editPositionModal')
+            ).hide();
+
+            setTimeout(() => location.reload(), 500);
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                let errorMsg = '';
+                $.each(errors, function (key, val) {
+                    errorMsg += val[0] + '<br>';
+                });
+                toastr.error(errorMsg);
+            } else {
+                toastr.error('Failed to update position.');
+            }
+        },
+        complete: function () {
+            submitBtn.prop('disabled', false).text('Save Changes');
+        }
+    });
+});
+
+let deleteId = null;
+
+$(document).on('click', '.delete-btn', function() {
     deleteId = $(this).data('id');
     new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
-  });
+});
 
-  $('#confirmDeleteBtn').click(function() {
-    $.ajax({
-      url: `/planning/position/${deleteId}/delete`,
-      method: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      },
-      success: function(response) {
+$('#confirmDeleteBtn').click(function() {
+$.ajax({
+    url: `/planning/position/${deleteId}/delete`,
+    type: 'DELETE', // ← match Route::delete
+    data: {
+        _token: $('meta[name="csrf-token"]').attr('content')
+    },
+    success: function(response) {
         toastr.success('Deleted successfully!');
         bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
         setTimeout(() => location.reload(), 500);
-      }
-    });
-  });
+    },
+    error: function(xhr) {
+        console.log(xhr);
+        toastr.error('Failed to delete the position.');
+    }
+});
+});
+
+
+
 
 
   $('#positionTable').DataTable();

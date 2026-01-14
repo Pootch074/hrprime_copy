@@ -541,8 +541,8 @@ Route::prefix('planning')->group(function () {
 Route::prefix('planning/position')->group(function () {
     Route::get('/', [PositionController::class, 'index'])->name('position.index');
     Route::post('/store', [PositionController::class, 'store'])->name('position.store');
-    Route::post('/update/{id}', [PositionController::class, 'update'])->name('position.update');
-    Route::post('/delete/{id}', [PositionController::class, 'destroy'])->name('position.delete');
+    Route::post('/update', [PositionController::class, 'update'])->name('position.update');
+    Route::delete('/{id}/delete', [PositionController::class, 'destroy'])->name('position.destroy');
 });
 
 

@@ -18,7 +18,6 @@ return new class extends Migration
     $table->foreignId('office_location_id')->nullable()->constrained('office_locations')->nullOnDelete();
     $table->string('parenthetical_title')->nullable();
     $table->string('level')->nullable();
-    $table->integer('salary_step')->nullable();
     $table->decimal('monthly_rate', 12,2)->nullable();
     $table->string('designation')->nullable();
     $table->string('special_order')->nullable();
@@ -46,7 +45,6 @@ return new class extends Migration
                 'program',
                 'parenthetical_title',
                 'level',
-                'salary_step',
                 'monthly_rate',
                 'designation',
                 'special_order',

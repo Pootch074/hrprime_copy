@@ -12,6 +12,7 @@ use App\Models\Division;
 use App\Models\OfficeLocation;
 use App\Models\EmploymentStatus;
 use App\Models\Section;
+use App\Models\PositionLevel;
 
 class PositionController extends Controller
 {
@@ -24,59 +25,66 @@ class PositionController extends Controller
             'employmentStatuses' => EmploymentStatus::all(),
             'divisions'          => Division::all(),
             'officeLocations'    => OfficeLocation::all(),
+            'positionLevels' => PositionLevel::orderBy('level_name')->get(),
              ]);
          }
 
         // Store new position
-        public function store(Request $request)
-        {
+       public function store(Request $request)
+    {
             $validated = $request->validate([
-                'position_name'        => 'required|string|max:255',
-                'abbreviation'         => 'required|string|max:50',
-                'salary_tranche_id'    => 'nullable|exists:salary_tranche,id',
-                'salary_grade_id'      => 'nullable|exists:salary_grades,id',
-                'salary_step_id'       => 'nullable|exists:salary_step,id',
-                'employment_status_id' => 'nullable|exists:employment_statuses,id',
+                'item_no'              => 'required|string|max:255',
+                'office_location_id'   => 'nullable|exists:office_locations,id',
                 'division_id'          => 'nullable|exists:divisions,id',
                 'section_id'           => 'nullable|exists:sections,id',
-                'office_location_id'   => 'nullable|exists:office_locations,id',
-            ]);
-
-            $validated['position_name'] = strtoupper($validated['position_name']);
-            $validated['abbreviation']  = strtoupper($validated['abbreviation']);
-
-            $position = Position::create($validated);
-
-            // Return the created position
-            return response()->json([
-                'success' => true,
-                'id' => $position->id,
-                'position_name' => $position->position_name,
-                'abbreviation' => $position->abbreviation,
-                'status' => $position->status ?? 'Active', // default if null
-            ]);
-        }
-        // Update existing position
-        public function update(Request $request, $id)
-        {
-            $validated = $request->validate([
+                'program'              => 'nullable|string|max:255',
+                'created_at'           => 'required|date',
                 'position_name'        => 'required|string|max:255',
                 'abbreviation'         => 'required|string|max:50',
-                'salary_tranche_id'    => 'nullable|exists:salary_tranche,id',
+                'parenthetical_title'  => 'nullable|string|max:255',
+                'position_level_id'                => 'nullable|string|max:50',
+                'salary_tranche_id'    => 'nullable|exists:salary_tranche,id', // ✅ Check table name
                 'salary_grade_id'      => 'nullable|exists:salary_grades,id',
-                'salary_step_id'       => 'nullable|exists:salary_step,id',
+                'salary_step_id'       => 'nullable|exists:salary_step,id', // ✅ Check table name
+                'monthly_rate'         => 'nullable|numeric',
+                'designation'          => 'nullable|string|max:255',
+                'special_order'        => 'nullable|string|max:255',
+                'obsu'                 => 'nullable|string|max:255',
+                'fund_source'          => 'nullable|string|max:255',
                 'employment_status_id' => 'nullable|exists:employment_statuses,id',
-                'division_id'          => 'nullable|exists:divisions,id',
-                'section_id'           => 'nullable|exists:sections,id',
-                'office_location_id'   => 'nullable|exists:office_locations,id',
-        ]);
+                'type_of_request'      => 'nullable|string|max:50',
+            ]);
 
+
+        // Optional: uppercase some fields
         $validated['position_name'] = strtoupper($validated['position_name']);
         $validated['abbreviation']  = strtoupper($validated['abbreviation']);
 
-        Position::findOrFail($id)->update($validated);
+        $position = Position::create($validated);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'id' => $position->id,
+            'position_name' => $position->position_name,
+            'abbreviation' => $position->abbreviation,
+            'status' => $position->status ?? 'Active',
+        ]);
+    }
+
+        // Update existing position
+        public function update(Request $request)
+        {
+            $request->validate([
+                'id' => 'required|exists:positions,id',
+                'position_name' => 'required',
+                'abbreviation' => 'required',
+            ]);
+
+            $position = Position::findOrFail($request->id);
+
+            $position->update($request->all());
+
+            return response()->json(['success' => true]);
         }
 
         // Delete position
