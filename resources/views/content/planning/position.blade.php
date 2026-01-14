@@ -99,25 +99,29 @@
 </div>
 
 
-<!-- Add Modal -->
+<!-- Add Position Modal -->
 <div class="modal fade" id="positionModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <h5 class="modal-title m-3">Add New Position</h5>
       <form id="positionForm">
-        <div class="mb-3">
-            <label for="position_name" class="form-label">Position Name</label>
-            <input type="text" name="position_name" id="position_name" class="form-control" required>
+        @csrf
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Position</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="mb-3">
-            <label for="abbreviation" class="form-label">Abbreviation</label>
-            <input type="text" name="abbreviation" id="abbreviation" class="form-control" required>
+        <div class="modal-body">
+          @include('content.planning.position_form')
         </div>
-        <button type="submit" class="btn btn-success">Add</button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Add</button>
+        </div>
       </form>
     </div>
   </div>
 </div>
+
+
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editPositionModal" tabindex="-1" aria-hidden="true">
@@ -158,35 +162,57 @@
 
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+
+
 <script>
+$(document).ready(function() {
+
+  // Open Add Position modal
   $('#openModalBtn').click(function() {
     $('#positionForm')[0].reset();
     new bootstrap.Modal(document.getElementById('positionModal')).show();
   });
 
- $('#positionForm').submit(function(e) {
+  // Submit Add Position form
+  $('#positionForm').submit(function(e) {
     e.preventDefault();
-    $.ajax({
-        url: '{{ route("position.store") }}',
-        method: 'POST',
-        data: $(this).serialize(),
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            toastr.success(response.message);
-            bootstrap.Modal.getInstance(document.getElementById('positionModal')).hide();
-            setTimeout(() => location.reload(), 500);
-        },
-        error: function(xhr) {
-            toastr.error(xhr.responseJSON?.message || 'Something went wrong');
-        }
-    });
-});
 
+    let form = $(this);
+    let submitBtn = form.find('button[type="submit"]');
+    submitBtn.prop('disabled', true).text('Adding...');
+
+    $.ajax({
+      url: "{{ route('position.store') }}", // ← Blade route helper must render here
+      type: 'POST',
+      data: form.serialize(),
+      success: function(response) {
+        toastr.success('Position added successfully!');
+        bootstrap.Modal.getInstance(document.getElementById('positionModal')).hide();
+        setTimeout(() => location.reload(), 500);
+      },
+      error: function(xhr) {
+        if (xhr.status === 422) {
+          let errors = xhr.responseJSON.errors;
+          let errorMsg = '';
+          $.each(errors, function(key, val) {
+            errorMsg += val[0] + '<br>';
+          });
+          toastr.error(errorMsg);
+        } else {
+          toastr.error('An error occurred. Please try again.');
+        }
+      },
+      complete: function() {
+        submitBtn.prop('disabled', false).text('Add');
+      }
+    });
+  });
+
+});
 
   $(document).on('click', '.edit-btn', function() {
     let data = $(this).data();
@@ -332,4 +358,86 @@
     });
   });
 </script>
+<script>
+$(document).ready(function () {
+
+  // ===== DIVISION → SECTION =====
+  $('#division_id').off('change').on('change', function () {
+    const divisionId = $(this).val();
+    const $section = $('#section_id');
+
+    $section.html('<option value="">Select Section</option>');
+
+    if (!divisionId) return;
+
+    $.get(`/division/${divisionId}/sections`, function (sections) {
+      let options = '<option value="">Select Section</option>';
+      sections.forEach(s => {
+        options += `<option value="${s.id}">${s.name}</option>`;
+      });
+      $section.html(options);
+    });
+  });
+
+
+  // ===== TRANCHE → GRADE =====
+  $('#salary_tranche').off('change').on('change', function () {
+
+    const trancheId = $(this).val();
+
+    const $grade = $('#salary_grade_id');
+    const $step  = $('#salary_step_id');
+
+    $grade.html('<option value="">Select Salary Grade</option>');
+    $step.html('<option value="">Select Step</option>');
+    $('#monthly_rate').val('');
+
+    if (!trancheId) return;
+
+    $.get(`/planning/get-salary-grades/${trancheId}`, function (grades) {
+      let options = '<option value="">Select Salary Grade</option>';
+      grades.forEach(g => {
+        options += `<option value="${g.id}">SG ${g.salary_grade}</option>`;
+      });
+      $grade.html(options);
+    });
+  });
+
+
+  // ===== GRADE → STEP =====
+  $('#salary_grade_id').off('change').on('change', function () {
+
+    const gradeId = $(this).val();
+    const $step = $('#salary_step_id');
+
+    $step.html('<option value="">Select Step</option>');
+    $('#monthly_rate').val('');
+
+    if (!gradeId) return;
+
+        $.get(`/planning/get-salary-steps/${gradeId}`, function (steps) {
+          let options = '<option value="">Select Step</option>';
+          steps.forEach(s => {
+            options += `
+              <option value="${s.id}" data-rate="${s.monthly_rate}">
+                Step ${s.step}
+              </option>`;
+          });
+          $step.html(options);
+        });
+      });
+
+
+  // ===== STEP → RATE =====
+  $('#salary_step_id').off('change').on('change', function () {
+    const rate = $(this).find(':selected').data('rate') || '';  
+    $('#monthly_rate').val(rate);
+  });
+
+});
+</script>
+
+
+
+
 @endpush

@@ -531,17 +531,19 @@ Route::prefix('planning')->group(function () {
     Route::post('/{id}/delete', [SalaryGradeController::class, 'destroy'])->name('salary-grade.delete');
   });
 
-  // Route::get('/employee/{id}/edit', [UserController::class, 'edit'])->name('employee.edit');
-  // Route::put('/employee/{id}/update', [UserController::class, 'update'])->name('employee.update');
-  // Route::get('/employee/sections', [UserController::class, 'getSections'])->name('employee.sections');
+Route::prefix('planning')->group(function () {
+    Route::get('/get-salary-grades/{tranche}', [PositionController::class, 'getSalaryGrades']);
+    Route::get('/get-salary-steps/{grade}', [PositionController::class, 'getSalarySteps']);
+});
 
 
-  Route::prefix('planning/position')->group(function () {
-    Route::get('/', [App\Http\Controllers\Planning\PositionController::class, 'index'])->name('position.index');
-    Route::post('/store', [App\Http\Controllers\Planning\PositionController::class, 'store'])->name('position.store');
-    Route::post('/{id}/update', [App\Http\Controllers\Planning\PositionController::class, 'update'])->name('position.update');
-    Route::post('/{id}/delete', [App\Http\Controllers\Planning\PositionController::class, 'destroy'])->name('position.delete');
-  });
+
+Route::prefix('planning/position')->group(function () {
+    Route::get('/', [PositionController::class, 'index'])->name('position.index');
+    Route::post('/store', [PositionController::class, 'store'])->name('position.store');
+    Route::post('/update/{id}', [PositionController::class, 'update'])->name('position.update');
+    Route::post('/delete/{id}', [PositionController::class, 'destroy'])->name('position.delete');
+});
 
 
   Route::prefix('/planning/position-level')->group(function () {
@@ -566,12 +568,6 @@ Route::prefix('planning')->group(function () {
 
   // Division Sections (used for dynamic dropdowns etc.)
   Route::get('/division/{id}/sections', [DivisionController::class, 'getSections']);
-
-  // // Employee Edit/Update (can be grouped separately if needed)
-  // Route::get('/employee/{id}/edit', [UserController::class, 'edit'])->name('employee.edit');
-  // Route::prefix('/planning/list-of-employee')->name('employee.')->group(function () {
-  //   Route::delete('/{id}', [UserController::class, 'destroy'])->name('delete');
-  // });
 
   // Report Generation
   Route::prefix('planning')->group(function () {

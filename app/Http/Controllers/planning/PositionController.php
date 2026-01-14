@@ -5,101 +5,121 @@ namespace App\Http\Controllers\Planning;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Position;
-use App\Models\Requirement;
-use App\Models\Qualification;
 use App\Models\SalaryGrade;
+use App\Models\SalaryTranche;
+use App\Models\SalaryStep;
+use App\Models\Division;
+use App\Models\OfficeLocation;
 use App\Models\EmploymentStatus;
+use App\Models\Section;
 
 class PositionController extends Controller
 {
-  /**
-   * Display list of positions with related models
-   */
-  public function index()
-  {
-    $positions = Position::with(['salaryGrade', 'employmentStatus', 'requirements'])->get();
-    $salaryGrades = SalaryGrade::all();
-    $employmentStatuses = EmploymentStatus::all();
-    // $qualifications = Qualification::all();
+    // List all positions
+        public function index()
+            {
+        return view('content.planning.position', [
+            'positions'          => Position::with(['employmentStatus'])->get(),
+            'salaryTranches'     => SalaryTranche::orderBy('tranche_name')->get(),
+            'employmentStatuses' => EmploymentStatus::all(),
+            'divisions'          => Division::all(),
+            'officeLocations'    => OfficeLocation::all(),
+             ]);
+         }
 
-    return view('content.planning.position', compact(
-      'positions',
-      'salaryGrades',
-      'employmentStatuses'
-    ));
-  }
+        // Store new position
+        public function store(Request $request)
+        {
+            $validated = $request->validate([
+                'position_name'        => 'required|string|max:255',
+                'abbreviation'         => 'required|string|max:50',
+                'salary_tranche_id'    => 'nullable|exists:salary_tranche,id',
+                'salary_grade_id'      => 'nullable|exists:salary_grades,id',
+                'salary_step_id'       => 'nullable|exists:salary_step,id',
+                'employment_status_id' => 'nullable|exists:employment_statuses,id',
+                'division_id'          => 'nullable|exists:divisions,id',
+                'section_id'           => 'nullable|exists:sections,id',
+                'office_location_id'   => 'nullable|exists:office_locations,id',
+            ]);
 
-  /**
-   * Store a new position with qualifications (optional)
-   */
-  public function store(Request $request)
-{
-    $validated = $request->validate([
-        'position_name' => 'required|string|max:255',
-        'abbreviation'  => 'required|string|max:50',
-    ]);
+            $validated['position_name'] = strtoupper($validated['position_name']);
+            $validated['abbreviation']  = strtoupper($validated['abbreviation']);
 
-    // Convert to uppercase
-    $validated['position_name'] = strtoupper($validated['position_name']);
-    $validated['abbreviation']  = strtoupper($validated['abbreviation']);
+            $position = Position::create($validated);
 
-    $position = Position::create($validated);
+            // Return the created position
+            return response()->json([
+                'success' => true,
+                'id' => $position->id,
+                'position_name' => $position->position_name,
+                'abbreviation' => $position->abbreviation,
+                'status' => $position->status ?? 'Active', // default if null
+            ]);
+        }
+        // Update existing position
+        public function update(Request $request, $id)
+        {
+            $validated = $request->validate([
+                'position_name'        => 'required|string|max:255',
+                'abbreviation'         => 'required|string|max:50',
+                'salary_tranche_id'    => 'nullable|exists:salary_tranche,id',
+                'salary_grade_id'      => 'nullable|exists:salary_grades,id',
+                'salary_step_id'       => 'nullable|exists:salary_step,id',
+                'employment_status_id' => 'nullable|exists:employment_statuses,id',
+                'division_id'          => 'nullable|exists:divisions,id',
+                'section_id'           => 'nullable|exists:sections,id',
+                'office_location_id'   => 'nullable|exists:office_locations,id',
+        ]);
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Position created successfully.',
-        'position' => $position
-    ]);
-}
+        $validated['position_name'] = strtoupper($validated['position_name']);
+        $validated['abbreviation']  = strtoupper($validated['abbreviation']);
 
+        Position::findOrFail($id)->update($validated);
 
-  /**
-   * Update a position and sync qualifications
-   */
- public function update(Request $request, $id)
-{
-    // Validate only the two fields
-    $validated = $request->validate([
-        'position_name' => 'required|string|max:255',
-        'abbreviation'  => 'required|string|max:50',
-    ]);
+        return response()->json(['success' => true]);
+        }
 
-    // Convert to uppercase
-    $validated['position_name'] = strtoupper($validated['position_name']);
-    $validated['abbreviation']  = strtoupper($validated['abbreviation']);
+        // Delete position
+        public function destroy($id)
+        {
+            Position::findOrFail($id)->delete();
+            return response()->json(['success' => true]);
+        }
 
-    // Find the position and update
-    $position = Position::findOrFail($id);
-    $position->update($validated);
+        // Get sections for a division
+        public function getSections($divisionId)
+        {
+        return Section::where('division_id', $divisionId)->select('id', 'name')
+        ->get();
+        }
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Position updated successfully.',
-        'position' => $position
-    ]);
-}
+        // Get salary grades by tranche
+        public function getSalaryGrades($trancheId)
+        {
+        return SalaryGrade::where('tranche_id', $trancheId) 
+        ->select('id', 'salary_grade')              
+        ->orderBy('salary_grade')                   
+        ->get();
+        }
 
+        // Get salary steps by grade
+        public function getSalarySteps($gradeId)
+        {
+        return SalaryStep::where('grade_id', $gradeId)
+        ->select('id', 'step', 'salary_amount as monthly_rate') 
+        ->orderBy('step')
+        ->get();
+        }
+        public function getMonthlyRate(Request $request)
+        {
+        $rate = SalaryStep::where('id', $request->step_id)
+        ->where('grade_id', $request->grade_id)
+        ->whereHas('grade', function ($q) use ($request) {
+        $q->where('tranche_id', $request->tranche_id);
+        })
+        ->value('salary_amount'); // ← updated to match your column name
 
-  /**
-   * Delete a position
-   */
-  public function destroy($id)
-  {
-    $position = Position::findOrFail($id);
-    $position->delete();
-
-    return response()->json(['success' => true, 'message' => 'Position deleted successfully.']);
-  }
-  public function updateStatus(Request $request, $id)
-  {
-    $request->validate([
-      'status' => 'required|in:On going Hiring,Close Hiring,For Examination,For Interview'
-    ]);
-
-    $position = Position::findOrFail($id);
-    $position->status = $request->status;
-    $position->save();
-
-    return redirect()->back()->with('success', 'Position status updated successfully!');
-  }
-}
+        return response()->json(['monthly_rate' => $rate]);
+        }
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
